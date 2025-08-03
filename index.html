@@ -124,8 +124,7 @@
         gap: 20px;
       }
       .post:nth-child(even) {
-        flex-direction: column-reverse;
-        text-align: right;
+        text-align: left;
       }
       @media (min-width: 768px) {
         .post {
@@ -133,6 +132,8 @@
           align-items: flex-start;
         }
         .post:nth-child(even) {
+          flex-direction: row-reverse;
+          text-align: right;
         }
       }
       .post img {
