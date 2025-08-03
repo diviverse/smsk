@@ -114,7 +114,7 @@
 
       .posts {
         max-width: 1200px;
-        margin: 60px auto;
+        margin: 10vh auto;
         padding: 0 20px;
       }
       .post {
@@ -125,6 +125,7 @@
       }
       .post:nth-child(even) {
         flex-direction: column-reverse;
+        text-align: right;
       }
       @media (min-width: 768px) {
         .post {
@@ -132,7 +133,6 @@
           align-items: flex-start;
         }
         .post:nth-child(even) {
-          flex-direction: row-reverse;
         }
       }
       .post img {
@@ -200,7 +200,6 @@
 
       const srcRoot = "src";
       (async () => {
-        /* NEW – ask GitHub for the file list */
         const apiURL = `https://api.github.com/repos/diviverse/smsk/contents/src`;
         const listResp = await fetch(apiURL);
         if (!listResp.ok) throw new Error("Cannot list src");
