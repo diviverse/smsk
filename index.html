@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <title>Slider + Spiral Posts</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     <style>
       * {
         margin: 0;
@@ -201,7 +201,7 @@
       const srcRoot = "src";
       (async () => {
         /* NEW – ask GitHub for the file list */
-        const apiURL = `https://api.github.com/repos/<?= $owner ?>/<?= $repo ?>/contents/src`;
+        const apiURL = `https://api.github.com/repos/diviverse/smsk/contents/src`;
         const listResp = await fetch(apiURL);
         if (!listResp.ok) throw new Error("Cannot list src");
         const files = await listResp.json();
