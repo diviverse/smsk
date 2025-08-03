@@ -200,18 +200,14 @@
 
       const srcRoot = "src";
       (async () => {
-        const listResp = await fetch(`${srcRoot}/`);
-        if (!listResp.ok) {
-          alert("Could not list /src folder.");
-          return;
-        }
-        const listText = await listResp.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(listText, "text/html");
-        const links = [...doc.links].map((a) => a.href);
-        const jpgs = links
-          .filter((h) => /\.jpe?g$/i.test(h))
-          .map((h) => h.split("/").pop());
+        /* NEW – ask GitHub for the file list */
+        const apiURL = `https://api.github.com/repos/<?= $owner ?>/<?= $repo ?>/contents/src`;
+        const listResp = await fetch(apiURL);
+        if (!listResp.ok) throw new Error("Cannot list src");
+        const files = await listResp.json();
+        const jpgs = files
+          .filter((f) => f.type === "file" && /\.jpe?g$/i.test(f.name))
+          .map((f) => f.name);
 
         const posts = [];
         for (const jpg of jpgs) {
