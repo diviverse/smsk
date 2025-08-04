@@ -5,12 +5,5 @@
         "date": "2024-08-03",
         "body": "Any multi-line\ndescription here.",
         "img": "src\/1.jpg"
-    },
-    {
-        "id": 4,
-        "title": "A Rose",
-        "date": "2024-08-04",
-        "body": "Hi!",
-        "img": ""
     }
 ]
