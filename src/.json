@@ -33,12 +33,5 @@
         "date": "2025-08-04",
         "body": "Hello",
         "img": "src\/5.jpg"
-    },
-    {
-        "id": 6,
-        "title": "A Rose",
-        "date": "2025-08-04",
-        "body": "Hello",
-        "img": "src\/6.jpg"
     }
 ]
