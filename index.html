@@ -165,10 +165,23 @@
       .post p {
         white-space: pre-line;
       }
+
+      .logo {
+        position: fixed;
+        top: -5px;
+        right: 25px;
+        font-size: 60px;
+        font-weight: 500;
+        color: rgba(0, 0, 0, 0.6);
+        user-select: none;
+        pointer-events: none;
+        z-index: 9;
+      }
     </style>
   </head>
   <body>
     <div id="loading" style="text-align: center; padding: 2rem">Loading...</div>
+    <div class="logo">S</div>
     <main>
       <div class="slider" id="slider">
         <button class="arrow left" aria-label="Previous">
@@ -207,7 +220,6 @@
 
       const srcRoot = "src";
       (async () => {
-        /* ----------  NEW: read single JSON  ---------- */
         const jsonURL =
           "https://raw.githubusercontent.com/diviverse/smsk/main/src/.json";
         const posts = await fetch(jsonURL)
@@ -220,10 +232,9 @@
             return [];
           });
 
-        /* newest first */
         posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-        buildSlider(posts.slice(0, 5)); // 5 newest for slider
+        buildSlider(posts.slice(0, 5));
         buildPosts(posts);
         document.getElementById("loading").remove();
       })();
