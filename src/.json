@@ -1,12 +1,5 @@
 [
     {
-        "id": 1,
-        "title": "My First Post",
-        "date": "2024-08-03",
-        "body": "Any multi-line\ndescription here.",
-        "img": "src\/1.jpg"
-    },
-    {
         "id": 2,
         "title": "A Rose",
         "date": "2025-08-04",
