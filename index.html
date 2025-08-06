@@ -255,8 +255,8 @@
 
         const visiblePosts = posts.filter((p) => p.vis === 1);
         if (visiblePosts.length === 0) {
-          document.getElementById("posts").innerHTML =
-            "<p>No posts to show.</p>";
+          document.getElementById("body").innerHTML =
+            "<p style='padding: 60px; color: dimgray;'>Sorry for the inconvenience.<br>The website is under construction.</p>";
         } else {
           buildSlider(visiblePosts.slice(0, 5));
           buildPosts(visiblePosts);
