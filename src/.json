@@ -4,6 +4,7 @@
         "title": "A Rose",
         "date": "2025-08-04",
         "body": "Hello",
-        "img": "src\/2.jpg"
+        "img": "src\/2.jpg",
+        "visible": "0"
     }
 ]
