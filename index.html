@@ -24,6 +24,18 @@
         color: #222;
       }
 
+      .logo {
+        position: fixed;
+        top: -5px;
+        right: 25px;
+        font-size: 60px;
+        font-weight: 500;
+        color: rgba(0, 0, 0, 0.6);
+        user-select: none;
+        pointer-events: none;
+        z-index: 9;
+      }
+
       .slider {
         position: relative;
         width: 100%;
@@ -149,6 +161,11 @@
       }
 
       @media (min-width: 768px) {
+        .logo-bottom {
+          top: auto;
+          bottom: 5px;
+        }
+
         .slider {
           height: 90vh;
         }
@@ -191,18 +208,6 @@
 
       .post p {
         white-space: pre-line;
-      }
-
-      .logo {
-        position: fixed;
-        top: -5px;
-        right: 25px;
-        font-size: 60px;
-        font-weight: 500;
-        color: rgba(0, 0, 0, 0.6);
-        user-select: none;
-        pointer-events: none;
-        z-index: 9;
       }
     </style>
   </head>
@@ -256,7 +261,9 @@
         const visiblePosts = posts.filter((p) => p.vis === 1);
         if (visiblePosts.length === 0) {
           document.querySelector("main").innerHTML =
-            "<p style='padding: 60px; color: dimgray;'>Sorry for the inconvenience.<br>The website is under construction.</p>";
+            '<p style="padding: 60px; color: dimgray;">Sorry for the inconvenience.<br>The website is under construction.</p>';
+          document.querySelector(".logo").classList.add("logo-bottom");
+          document.querySelector("script").remove();
         } else {
           buildSlider(visiblePosts.slice(0, 5));
           buildPosts(visiblePosts);
