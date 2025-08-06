@@ -299,30 +299,38 @@
           dotEls[current].setAttribute("aria-current", "true");
         }
 
-        function next(timer) {
-          clearInterval(timer);
+        function next() {
           goTo(current + 1);
         }
 
-        function prev(timer) {
-          clearInterval(timer);
+        function prev() {
           goTo(current - 1);
         }
 
         let timer = setInterval(next, 4000);
 
+        slider.querySelector(".arrow.right").addEventListener("click", next);
+        slider.querySelector(".arrow.left").addEventListener("click", prev);
+
         slider
           .querySelector(".arrow.right")
-          .addEventListener("click", () => next(timer));
+          .addEventListener("mouseenter", () => clearInterval(timer));
         slider
           .querySelector(".arrow.left")
-          .addEventListener("click", () => prev(timer));
+          .addEventListener("mouseenter", () => clearInterval(timer));
 
-        slider.addEventListener("mouseenter", () => clearInterval(timer));
-        slider.addEventListener(
-          "mouseleave",
-          () => (timer = setInterval(next, 4000))
-        );
+        slider
+          .querySelector(".arrow.right")
+          .addEventListener(
+            "mouseleave",
+            () => (timer = setInterval(next, 4000))
+          );
+        slider
+          .querySelector(".arrow.left")
+          .addEventListener(
+            "mouseleave",
+            () => (timer = setInterval(next, 4000))
+          );
 
         let startX = 0;
         slider.addEventListener(
