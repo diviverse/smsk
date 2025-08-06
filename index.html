@@ -5,6 +5,10 @@
     <title>My Gallery</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="My Gallery - gallery.smsk.one" />
+    <meta property="og:title" content="My Gallery" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="src/favicon.png" />
     <style>
       * {
         margin: 0;
@@ -202,20 +206,12 @@
       async function fetchText(url) {
         try {
           const res = await fetch(url);
-          if (!res.ok) throw new Error();
+          if (!res.ok) throw new Error("Oops! Something went wrong.");
           return await res.text();
         } catch {
           console.warn("Missing or error loading:", url);
           return null;
         }
-      }
-      function parseMeta(text) {
-        const lines = text.split("\n");
-        return {
-          title: lines[0] || "",
-          date: lines[1] || "",
-          body: lines.slice(2).join("\n"),
-        };
       }
 
       const srcRoot = "src";
@@ -224,7 +220,7 @@
           "https://raw.githubusercontent.com/diviverse/smsk/main/src/.json";
         const posts = await fetch(jsonURL)
           .then((r) => {
-            if (!r.ok) throw new Error("Cannot load .json");
+            if (!r.ok) throw new Error("Oops! Something went wrong.");
             return r.json();
           })
           .catch((err) => {
@@ -234,8 +230,15 @@
 
         posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-        buildSlider(posts.slice(0, 5));
-        buildPosts(posts);
+        const visiblePosts = posts.filter((p) => p.vis === 1);
+        if (visiblePosts.length === 0) {
+          document.getElementById("posts").innerHTML =
+            "<p>No posts to show.</p>";
+        } else {
+          buildSlider(visiblePosts.slice(0, 5));
+          buildPosts(visiblePosts);
+        }
+
         document.getElementById("loading").remove();
       })();
 
@@ -313,7 +316,17 @@
 
           const text = document.createElement("div");
           text.className = "text";
-          text.innerHTML = `<h2>${p.title}</h2><time>${p.date}</time><p>${p.body}</p>`;
+
+          const title = document.createElement("h2");
+          title.textContent = p.title;
+
+          const time = document.createElement("time");
+          time.textContent = p.date;
+
+          const desc = document.createElement("p");
+          desc.textContent = p.body;
+
+          text.append(title, time, desc);
 
           article.appendChild(img);
           article.appendChild(text);
