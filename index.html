@@ -227,6 +227,16 @@
     </style>
   </head>
   <body>
+    <noscript>
+      <style>
+        #loading {
+          display: none;
+        }
+      </style>
+      <div style="padding: 2rem; text-align: center">
+        JavaScript is required to view this site.
+      </div>
+    </noscript>
     <div id="loading" style="text-align: center; padding: 2rem">Loading...</div>
     <div class="logo">S</div>
     <main>
@@ -244,6 +254,7 @@
         <div class="dots" id="dots"></div>
       </div>
       <section class="posts" id="posts"></section>
+      <div id="pagination" style="text-align: center; margin-top: 30px"></div>
     </main>
     <script>
       async function fetchText(url) {
@@ -252,44 +263,48 @@
           if (!res.ok) throw new Error("Oops! Something went wrong.");
           return await res.text();
         } catch {
-          console.warn("Missing or error loading:", url);
+          console.error("Oops! Something went wrong.");
           return null;
         }
       }
 
       const srcRoot = "src";
       (async () => {
-        const jsonURL =
-          "https://raw.githubusercontent.com/diviverse/smsk/main/src/.json";
-        const posts = await fetch(jsonURL)
-          .then((r) => {
-            if (!r.ok) throw new Error("Oops! Something went wrong.");
-            return r.json();
-          })
-          .catch((err) => {
-            console.error(err);
-            return [];
-          });
+        try {
+          const jsonURL =
+            "https://raw.githubusercontent.com/diviverse/smsk/main/src/.json";
+          const posts = await fetch(jsonURL)
+            .then((r) => {
+              if (!r.ok) throw new Error("Oops! Something went wrong.");
+              return r.json();
+            })
+            .catch(() => {
+              console.error("Oops! Something went wrong.");
+              return [];
+            });
 
-        posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+          posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-        const visiblePosts = posts.filter((p) => p.vis === 1);
-        if (visiblePosts.length === 0) {
-          document.body.outerHTML =
-            '<body class="error">\
-              <p class="error">\
-                Sorry for the inconvenience.\
-                <br>\
-                The website is under construction.\
-              </p>\
-              <div class="logo">S</div>\
-            </body>';
-        } else {
-          buildSlider(visiblePosts.slice(0, 5));
-          buildPosts(visiblePosts);
+          const visiblePosts = posts.filter((p) => p.vis === 1);
+          if (visiblePosts.length === 0) {
+            document.body.outerHTML =
+              '<body class="error">\
+                <p class="error">\
+                  Sorry for the inconvenience.\
+                  <br>\
+                  The website is under construction.\
+                </p>\
+                <div class="logo">S</div>\
+              </body>';
+          } else {
+            buildSlider(visiblePosts.slice(0, 5));
+            buildPosts(visiblePosts);
+          }
+        } catch {
+          console.error("Oops! Something went wrong.");
+        } finally {
+          document.getElementById("loading")?.remove();
         }
-
-        document.getElementById("loading").remove();
       })();
 
       function buildSlider(images) {
@@ -366,16 +381,34 @@
         );
 
         slider.addEventListener("touchend", (e) => {
-          if (e.changedTouches[0].clientX - startX > 40) prev();
-          else if (startX - e.changedTouches[0].clientX > 40) next();
+          if (e.changedTouches[0].clientX - startX > 30) prev();
+          else if (startX - e.changedTouches[0].clientX > 30) next();
         });
 
         goTo(0);
       }
 
-      function buildPosts(posts) {
+      let currentPage = 1;
+      const postsPerPage = 6;
+      let totalPages = 1;
+      let visiblePosts = [];
+
+      function buildPosts(allPosts) {
+        visiblePosts = allPosts;
+        totalPages = Math.ceil(visiblePosts.length / postsPerPage);
+        showPage(currentPage);
+        createPagination();
+      }
+
+      function showPage(page) {
         const ctr = document.getElementById("posts");
-        posts.forEach((p) => {
+        ctr.innerHTML = "";
+
+        const start = (page - 1) * postsPerPage;
+        const end = start + postsPerPage;
+        const postsToShow = visiblePosts.slice(start, end);
+
+        postsToShow.forEach((p) => {
           const article = document.createElement("article");
           article.className = "post";
 
@@ -397,11 +430,36 @@
           desc.textContent = p.body;
 
           text.append(title, time, desc);
-
           article.appendChild(img);
           article.appendChild(text);
           ctr.appendChild(article);
         });
+      }
+
+      function createPagination() {
+        const container = document.getElementById("pagination");
+        container.innerHTML = "";
+
+        for (let i = 1; i <= totalPages; i++) {
+          const btn = document.createElement("button");
+          btn.textContent = i;
+          btn.style.margin = "0 5px";
+          btn.style.padding = "6px 12px";
+          btn.style.border = "1px solid #ccc";
+          btn.style.borderRadius = "4px";
+          btn.style.background = i === currentPage ? "#333" : "#fff";
+          btn.style.color = i === currentPage ? "#fff" : "#000";
+          btn.style.cursor = "pointer";
+
+          btn.addEventListener("click", () => {
+            currentPage = i;
+            showPage(currentPage);
+            createPagination();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          });
+
+          container.appendChild(btn);
+        }
       }
     </script>
   </body>
