@@ -14,13 +14,5 @@
         "body": "Hello!",
         "img": "src\/5.jpg",
         "vis": 0
-    },
-    {
-        "id": 6,
-        "title": "Disneyland",
-        "date": "2025-08-06",
-        "body": "Hello!",
-        "img": "src\/6.jpg",
-        "vis": 0
     }
 ]
