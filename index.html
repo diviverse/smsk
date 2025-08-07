@@ -311,8 +311,6 @@
 
           posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-          console.log(document.referrer);
-
           const visiblePosts = posts.filter((p) => p.vis === 1);
           if (visiblePosts.length === 0) {
             document.body.outerHTML =
