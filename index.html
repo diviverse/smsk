@@ -274,7 +274,7 @@
       <br />
       <p>
         <a
-          href="#"
+          href="https://instagram.com/smsk.one/"
           class="link-primary link-offset-2 link-opacity-50-hover link-underline-opacity-50 link-underline-opacity-100-hover"
         >
           <i class="bi bi-instagram"></i> smsk.one
@@ -310,6 +310,8 @@
             });
 
           posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+          console.log(document.referrer);
 
           const visiblePosts = posts.filter((p) => p.vis === 1);
           if (visiblePosts.length === 0) {
