@@ -224,6 +224,18 @@
       .post p {
         white-space: pre-line;
       }
+
+      .bottom-bar {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #fff;
+        text-align: center;
+        padding: 10px 0;
+        font-weight: bold;
+        box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+        z-index: 9;
+      }
     </style>
   </head>
   <body>
@@ -256,6 +268,20 @@
       <section class="posts" id="posts"></section>
       <div id="pagination" style="text-align: center; margin-top: 30px"></div>
     </main>
+
+    <div class="bottom-bar">
+      Ege Şimşek
+      <br />
+      <p>
+        <a
+          href="#"
+          class="link-primary link-offset-2 link-opacity-50-hover link-underline-opacity-50 link-underline-opacity-100-hover"
+        >
+          <i class="bi bi-instagram"></i> smsk.one
+        </a>
+      </p>
+    </div>
+
     <script>
       async function fetchText(url) {
         try {
