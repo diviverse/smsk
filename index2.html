@@ -81,18 +81,22 @@
         <div class="carousel-indicators" id="dots"></div>
         <div class="carousel-inner"></div>
         <div class="carousel-control-prev">
-          <button type="button" data-bs-target="#slider" data-bs-slide="prev">
-            <span
-              class="carousel-control-prev-icon bg-dark bg-opacity-50 rounded-circle"
-            ></span>
+          <button
+            type="button"
+            class="carousel-control-prev-icon bg-dark bg-opacity-50 rounded-circle"
+            data-bs-target="#slider"
+            data-bs-slide="prev"
+          >
             <span class="visually-hidden">Previous</span>
           </button>
         </div>
         <div class="carousel-control-next">
-          <button type="button" data-bs-target="#slider" data-bs-slide="next">
-            <span
-              class="carousel-control-next-icon bg-dark bg-opacity-50 rounded-circle"
-            ></span>
+          <button
+            type="button"
+            class="carousel-control-next-icon bg-dark bg-opacity-50 rounded-circle"
+            data-bs-target="#slider"
+            data-bs-slide="next"
+          >
             <span class="visually-hidden">Next</span>
           </button>
         </div>
@@ -100,7 +104,7 @@
 
       <section id="posts" class="posts"></section>
 
-      <nav class="mb-5">
+      <nav>
         <ul id="pagination" class="pagination justify-content-center"></ul>
       </nav>
     </main>
@@ -143,7 +147,8 @@
             })
             .catch(() => []);
           posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-          const visiblePosts = posts.filter((p) => p.vis === 1);
+          // const visiblePosts = posts.filter((p) => p.vis === 1);
+          const visiblePosts = new Array(30).fill(posts[0]);
           if (!visiblePosts.length) {
             document.body.innerHTML =
               '<div class="d-flex vh-100 justify-content-center align-items-center"><p class="text-muted">Sorry for the inconvenience.<br>The website is under construction.</p></div>';
@@ -198,18 +203,16 @@
         const start = (page - 1) * postsPerPage;
         const postsToShow = visiblePosts.slice(start, start + postsPerPage);
 
-        let right = true;
+        let right = false;
         postsToShow.forEach((p) => {
           const article = document.createElement("article");
           article.className = `row g-4 align-items-start flex-md-row${
             right ? "-reverse" : ""
           }`;
           article.innerHTML = `
-          <div class="col-md-4">
-            <img src="${p.img}" alt="${
+          <img src="${p.img}" alt="${
             p.title || "Post image"
-          }" class="img-fluid rounded">
-          </div>
+          }" class="img-fluid rounded" style="max-width: 400px;">
           <div class="col-md-8">
             <h2 class="h4">${p.title}</h2>
             <time class="small d-block mb-2 text-body-secondary${
