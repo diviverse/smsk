@@ -53,6 +53,16 @@
         .carousel-item img {
           height: 90vh;
         }
+
+        .posts {
+          margin: 10vh auto;
+        }
+      }
+
+      .posts {
+        max-width: 1200px;
+        margin: 60px auto;
+        padding: 0 20px;
       }
     </style>
   </head>
@@ -66,35 +76,29 @@
     <div id="loading" class="container text-center py-5">Loading...</div>
     <div class="logo">S</div>
 
-    <main>
+    <main class="pb-5">
       <div id="slider" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-indicators" id="dots"></div>
         <div class="carousel-inner"></div>
-        <button
-          class="carousel-control-prev"
-          type="button"
-          data-bs-target="#slider"
-          data-bs-slide="prev"
-        >
-          <span
-            class="carousel-control-prev-icon bg-dark bg-opacity-50 rounded-circle"
-          ></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button
-          class="carousel-control-next"
-          type="button"
-          data-bs-target="#slider"
-          data-bs-slide="next"
-        >
-          <span
-            class="carousel-control-next-icon bg-dark bg-opacity-50 rounded-circle"
-          ></span>
-          <span class="visually-hidden">Next</span>
-        </button>
+        <div class="carousel-control-prev">
+          <button type="button" data-bs-target="#slider" data-bs-slide="prev">
+            <span
+              class="carousel-control-prev-icon bg-dark bg-opacity-50 rounded-circle"
+            ></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+        </div>
+        <div class="carousel-control-next">
+          <button type="button" data-bs-target="#slider" data-bs-slide="next">
+            <span
+              class="carousel-control-next-icon bg-dark bg-opacity-50 rounded-circle"
+            ></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
       </div>
 
-      <section id="posts" class="container my-5"></section>
+      <section id="posts" class="posts"></section>
 
       <nav class="mb-5">
         <ul id="pagination" class="pagination justify-content-center"></ul>
@@ -139,8 +143,7 @@
             })
             .catch(() => []);
           posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-          // const visiblePosts = posts.filter((p) => p.vis === 1);
-          const visiblePosts = new Array(30).fill(posts[0]);
+          const visiblePosts = posts.filter((p) => p.vis === 1);
           if (!visiblePosts.length) {
             document.body.innerHTML =
               '<div class="d-flex vh-100 justify-content-center align-items-center"><p class="text-muted">Sorry for the inconvenience.<br>The website is under construction.</p></div>';
@@ -195,9 +198,12 @@
         const start = (page - 1) * postsPerPage;
         const postsToShow = visiblePosts.slice(start, start + postsPerPage);
 
+        let right = true;
         postsToShow.forEach((p) => {
           const article = document.createElement("article");
-          article.className = "row g-4 mb-5 align-items-start flex-md-row";
+          article.className = `row g-4 align-items-start flex-md-row${
+            right ? "-reverse" : ""
+          }`;
           article.innerHTML = `
           <div class="col-md-4">
             <img src="${p.img}" alt="${
@@ -206,13 +212,14 @@
           </div>
           <div class="col-md-8">
             <h2 class="h4">${p.title}</h2>
-            <time class="small d-block mb-2 text-body-secondary">${
-              p.date
-            }</time>
+            <time class="small d-block mb-2 text-body-secondary${
+              right ? " text-align-right" : ""
+            }">${p.date}</time>
             <p>${p.body}</p>
           </div>
         `;
           ctr.appendChild(article);
+          right = !right;
         });
       }
 
