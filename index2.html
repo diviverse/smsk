@@ -140,7 +140,7 @@
             .catch(() => []);
           posts.sort((a, b) => new Date(b.date) - new Date(a.date));
           // const visiblePosts = posts.filter((p) => p.vis === 1);
-          const visiblePosts = [posts[0], posts[0], posts[0]];
+          const visiblePosts = new Array(30).fill(posts[0]);
           if (!visiblePosts.length) {
             document.body.innerHTML =
               '<div class="d-flex vh-100 justify-content-center align-items-center"><p class="text-muted">Sorry for the inconvenience.<br>The website is under construction.</p></div>';
