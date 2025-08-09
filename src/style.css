@@ -3,6 +3,7 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif;
@@ -10,6 +11,7 @@ body {
   line-height: 1.6;
   color: #222;
 }
+
 .logo {
   position: fixed;
   top: -5px;
@@ -21,25 +23,43 @@ body {
   pointer-events: none;
   z-index: 9;
 }
+
 p.error {
   color: dimgray;
 }
-.slider {
+
+/* .slider {
   position: relative;
   width: 100%;
   height: 60vh;
   overflow: hidden;
 }
+
 .slider-track {
   display: flex;
   height: 100%;
   transition: transform 0.6s ease;
+} */
+
+.slider-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
 }
+
+.slide {
+  scroll-snap-align: start;
+  flex: 0 0 100%;
+  width: 100%;
+}
+
 .slide {
   flex: 0 0 100%;
   height: 100%;
   object-fit: cover;
 }
+
 .arrow {
   position: absolute;
   top: 50%;
@@ -58,20 +78,25 @@ p.error {
   z-index: 3;
   outline: none;
 }
+
 .slider:hover .arrow {
   opacity: 1;
 }
+
 .left {
   left: 12px;
 }
+
 .right {
   right: 12px;
 }
+
 .arrow svg {
   width: 24px;
   height: 24px;
   fill: #fff;
 }
+
 .dots {
   position: absolute;
   bottom: 20px;
@@ -81,6 +106,7 @@ p.error {
   gap: 12px;
   z-index: 3;
 }
+
 .dot {
   width: 16px;
   height: 16px;
@@ -90,29 +116,35 @@ p.error {
   cursor: pointer;
   outline: none;
 }
+
 .dot.active {
   background: #fff;
   transform: scale(1.3);
 }
+
 .dot:focus {
   outline: 2px solid #0d6efd;
 }
+
 @media (hover: none) {
   .arrow {
     opacity: 1;
   }
 }
+
 @media (prefers-color-scheme: dark) {
   body {
     background: #121212;
     color: #eee;
   }
 }
+
 @media (prefers-reduced-motion: reduce) {
   .slider-track {
     transition: none !important;
   }
 }
+
 .posts {
   display: flex;
   flex-direction: column;
@@ -121,14 +153,17 @@ p.error {
   padding: 0 20px;
   gap: 20px;
 }
+
 .post {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
+
 .post:nth-child(even) {
   text-align: right;
 }
+
 @media (max-width: 767px) {
   body.error {
     margin: 0;
@@ -138,52 +173,64 @@ p.error {
     align-items: center;
   }
 }
+
 @media (min-width: 768px) {
   p.error {
     padding: 60px;
   }
+
   .slider {
     height: 90vh;
   }
+
   .dot {
     height: 2px;
     border: none;
     border-radius: none;
   }
+
   .posts {
     margin: 10vh auto 0;
   }
+
   .post {
     flex-direction: row;
     align-items: flex-start;
   }
+
   .post:nth-child(even) {
     flex-direction: row-reverse;
   }
 }
+
 .post img {
   width: 100%;
   height: auto;
   max-width: 400px;
   border-radius: 0.3rem;
 }
+
 .post .text {
   flex: 1;
   min-width: 0;
 }
+
 .post h2 {
   font-size: 1.6rem;
   margin-bottom: 0.3rem;
 }
+
 .post time {
   display: block;
   font-size: 0.85rem;
   color: #666;
   margin-bottom: 0.6rem;
 }
+
 .post p {
   white-space: pre-line;
 }
+
 .bottom-bar {
   position: fixed;
   bottom: 0;
@@ -194,6 +241,7 @@ p.error {
   box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
   z-index: 9;
 }
+
 #pagination {
   text-align: center;
   margin-top: 1rem;
