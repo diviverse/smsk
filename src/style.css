@@ -83,12 +83,12 @@ p.error {
 }
 .dot {
   width: 16px;
-  height: 2px;
+  height: 16px;
+  border-radius: 50%;
   background: rgba(255, 255, 255, 0.6);
   transition: background 0.3s, transform 0.3s;
   cursor: pointer;
   outline: none;
-  border: none;
 }
 .dot.active {
   background: #fff;
@@ -114,14 +114,16 @@ p.error {
   }
 }
 .posts {
+  display: flex;
+  flex-direction: column;
   max-width: 1200px;
-  margin: 60px auto;
+  margin: 60px auto 0;
   padding: 0 20px;
+  gap: 20px;
 }
 .post {
   display: flex;
   flex-direction: column;
-  margin-bottom: 60px;
   gap: 20px;
 }
 .post:nth-child(even) {
@@ -143,8 +145,13 @@ p.error {
   .slider {
     height: 90vh;
   }
+  .dot {
+    height: 2px;
+    border: none;
+    border-radius: none;
+  }
   .posts {
-    margin: 10vh auto;
+    margin: 10vh auto 0;
   }
   .post {
     flex-direction: row;
@@ -189,5 +196,6 @@ p.error {
 }
 #pagination {
   text-align: center;
-  margin-top: 30px;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
 }
