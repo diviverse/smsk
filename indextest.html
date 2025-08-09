@@ -138,10 +138,10 @@
           dots.appendChild(dot);
         });
 
-        let slideWidth = slider[0].getBoundingClientRect().width;
+        let slideWidth = track.firstChild.getBoundingClientRect().width;
 
         function updateSlideWidth() {
-          slideWidth = slider[0].getBoundingClientRect().width;
+          slideWidth = track.firstChild.getBoundingClientRect().width;
         }
 
         window.addEventListener("resize", updateSlideWidth);
