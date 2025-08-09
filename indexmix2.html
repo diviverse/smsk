@@ -253,26 +253,48 @@
         });
       }
 
+      // function createPagination() {
+      //   const container = document.getElementById("pagination");
+      //   container.innerHTML = "";
+      //   for (let i = 1; i <= totalPages; i++) {
+      //     const btn = document.createElement("button");
+      //     btn.textContent = i;
+      //     btn.style.margin = "0 5px";
+      //     btn.style.padding = "6px 12px";
+      //     btn.style.border = "1px solid #ccc";
+      //     btn.style.borderRadius = "4px";
+      //     btn.style.background = i === currentPage ? "#333" : "#fff";
+      //     btn.style.color = i === currentPage ? "#fff" : "#000";
+      //     btn.style.cursor = "pointer";
+      //     btn.addEventListener("click", () => {
+      //       currentPage = i;
+      //       showPage(currentPage);
+      //       createPagination();
+      //       window.scrollTo({ top: 0, behavior: "smooth" });
+      //     });
+      //     container.appendChild(btn);
+      //   }
+      // }
+
       function createPagination() {
         const container = document.getElementById("pagination");
         container.innerHTML = "";
         for (let i = 1; i <= totalPages; i++) {
-          const btn = document.createElement("button");
-          btn.textContent = i;
-          btn.style.margin = "0 5px";
-          btn.style.padding = "6px 12px";
-          btn.style.border = "1px solid #ccc";
-          btn.style.borderRadius = "4px";
-          btn.style.background = i === currentPage ? "#333" : "#fff";
-          btn.style.color = i === currentPage ? "#fff" : "#000";
-          btn.style.cursor = "pointer";
-          btn.addEventListener("click", () => {
+          const li = document.createElement("li");
+          li.className = `page-item ${i === currentPage ? "active" : ""}`;
+          const a = document.createElement("a");
+          a.className = "page-link bg-body text-body";
+          a.href = "#";
+          a.textContent = i;
+          a.addEventListener("click", (e) => {
+            e.preventDefault();
             currentPage = i;
             showPage(currentPage);
             createPagination();
             window.scrollTo({ top: 0, behavior: "smooth" });
           });
-          container.appendChild(btn);
+          li.appendChild(a);
+          container.appendChild(li);
         }
       }
     </script>
