@@ -109,8 +109,9 @@
             buildSlider(visiblePosts.slice(0, 5));
             buildPosts(visiblePosts);
           }
-        } catch {
+        } catch (err) {
           console.error("Oops! Something went wrong.");
+          console.error(err);
         } finally {
           document.getElementById("loading")?.remove();
         }
