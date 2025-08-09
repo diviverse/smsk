@@ -84,7 +84,6 @@
         }
       }
 
-      const srcRoot = "src";
       (async () => {
         try {
           const jsonURL =
@@ -101,6 +100,7 @@
 
           posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
+          // const visiblePosts = posts.filter((p) => p.vis === 1);
           const visiblePosts = Array(40).fill(posts[0]);
           if (visiblePosts.length === 0) {
             document.body.outerHTML =
@@ -124,16 +124,12 @@
         track.className = "slider-track";
         slider.insertBefore(track, dots);
 
-        const slidesData = [images[images.length - 1], ...images, images[0]];
-        slidesData.forEach((obj) => {
+        images.forEach((obj, i) => {
           const img = document.createElement("img");
           img.className = "slide";
           img.src = obj.img;
           img.alt = obj.title || "Post image";
           track.appendChild(img);
-        });
-
-        images.forEach((_, i) => {
           const dot = document.createElement("button");
           dot.className = "dot";
           dot.setAttribute("aria-current", i === 0 ? "true" : "false");
@@ -142,29 +138,28 @@
         });
 
         const dotEls = dots.querySelectorAll(".dot");
-        let current = 1;
+        let current = 0;
 
         function goTo(n) {
-          current = n + 1;
+          current = n % images.length;
           updatePosition();
         }
 
         function updatePosition() {
           track.style.transition = "transform 0.6s ease";
           track.style.transform = `translateX(-${current * 100}%)`;
-          const realIndex = (current - 1 + images.length) % images.length;
           dotEls.forEach((d, i) => {
-            d.classList.toggle("active", i === realIndex);
-            d.setAttribute("aria-current", i === realIndex ? "true" : "false");
+            d.classList.toggle("active", i === current);
+            d.setAttribute("aria-current", i === current ? "true" : "false");
           });
         }
 
         function next() {
-          current = (current + 1) % images.length;
+          current = ++current % images.length;
           updatePosition();
         }
         function prev() {
-          current = (current - 1) % images.length;
+          current = --current % images.length;
           updatePosition();
         }
 
@@ -253,43 +248,22 @@
         });
       }
 
-      // function createPagination() {
-      //   const container = document.getElementById("pagination");
-      //   container.innerHTML = "";
-      //   for (let i = 1; i <= totalPages; i++) {
-      //     const btn = document.createElement("button");
-      //     btn.textContent = i;
-      //     btn.style.margin = "0 5px";
-      //     btn.style.padding = "6px 12px";
-      //     btn.style.border = "1px solid #ccc";
-      //     btn.style.borderRadius = "4px";
-      //     btn.style.background = i === currentPage ? "#333" : "#fff";
-      //     btn.style.color = i === currentPage ? "#fff" : "#000";
-      //     btn.style.cursor = "pointer";
-      //     btn.addEventListener("click", () => {
-      //       currentPage = i;
-      //       showPage(currentPage);
-      //       createPagination();
-      //       window.scrollTo({ top: 0, behavior: "smooth" });
-      //     });
-      //     container.appendChild(btn);
-      //   }
-      // }
-
       function createPagination() {
         const container = document.getElementById("pagination");
         container.innerHTML = "";
         let b = totalPages >= 5 ? Math.min(totalPages - 4, currentPage - 2) : 0;
+        let c = 0;
         for (let i = 1; i <= Math.min(5, totalPages); i++) {
+          c = i + b;
           const li = document.createElement("li");
-          li.className = `page-item ${i + b === currentPage ? "active" : ""}`;
+          li.className = `page-item ${c === currentPage ? "active" : ""}`;
           const a = document.createElement("a");
           a.className = "page-link bg-body text-body";
           a.href = "#";
-          a.textContent = i == 1 ? "First" : i == 5 ? "Last" : i + b;
+          a.textContent = i == 1 ? "First" : i == 5 ? "Last" : c;
           a.addEventListener("click", (e) => {
             e.preventDefault();
-            currentPage = i == 5 ? totalPages : i + b;
+            currentPage = i == 1 ? 1 : i == 5 ? totalPages : c;
             showPage(currentPage);
             createPagination();
             window.scrollTo({ top: 0, behavior: "smooth" });
