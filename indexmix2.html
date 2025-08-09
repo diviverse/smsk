@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>My Gallery</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="description" content="My Gallery - gallery.smsk.one" />
+    <meta property="og:title" content="My Gallery" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="src/favicon.png" />
+    <link href="src/style.css" rel="stylesheet" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <noscript>
+      <style>
+        #loading {
+          display: none;
+        }
+      </style>
+      <div style="padding: 2rem; text-align: center">
+        JavaScript is required to view this site.
+      </div>
+    </noscript>
+
+    <div id="loading" style="text-align: center; padding: 2rem">Loading...</div>
+    <div class="logo">S</div>
+
+    <main>
+      <div class="slider shadow" id="slider">
+        <button class="arrow left" aria-label="Previous">
+          <svg viewBox="0 0 24 24">
+            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+          </svg>
+        </button>
+        <button class="arrow right" aria-label="Next">
+          <svg viewBox="0 0 24 24">
+            <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" />
+          </svg>
+        </button>
+        <div class="dots" id="dots"></div>
+      </div>
+      <section class="posts" id="posts"></section>
+      <div id="pagination"></div>
+    </main>
+
+    <div class="bottom-bar">
+      Ege Şimşek &nbsp;
+      <a
+        target="_blank"
+        href="https://instagram.com/smsk.one/"
+        class="link-primary"
+        style="text-decoration: none"
+      >
+        <i class="bi bi-instagram"></i> &nbsp;
+        <a
+          class="link-primary link-offset-2 link-underline-opacity-0 link-underline-opacity-75-hover"
+          >smsk.one</a
+        >
+      </a>
+    </div>
+
+    <script>
+      async function fetchText(url) {
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error("Oops! Something went wrong.");
+          return await res.text();
+        } catch {
+          console.error("Oops! Something went wrong.");
+          return null;
+        }
+      }
+
+      const srcRoot = "src";
+      (async () => {
+        try {
+          const jsonURL =
+            "https://raw.githubusercontent.com/diviverse/smsk/main/src/.json";
+          const posts = await fetch(jsonURL)
+            .then((r) => {
+              if (!r.ok) throw new Error("Oops! Something went wrong.");
+              return r.json();
+            })
+            .catch(() => {
+              console.error("Oops! Something went wrong.");
+              return [];
+            });
+
+          posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+          const visiblePosts = Array(30).fill(posts[0]);
+          if (visiblePosts.length === 0) {
+            document.body.outerHTML =
+              '<body class="error"><p class="error">Sorry for the inconvenience.<br>The website is under construction.</p><div class="logo">S</div></body>';
+          } else {
+            buildSlider(visiblePosts.slice(0, 5));
+            buildPosts(visiblePosts);
+          }
+        } catch {
+          console.error("Oops! Something went wrong.");
+        } finally {
+          document.getElementById("loading")?.remove();
+        }
+      })();
+
+      function buildSlider(images) {
+        const slider = document.getElementById("slider");
+        const dots = document.getElementById("dots");
+
+        const track = document.createElement("div");
+        track.className = "slider-track";
+        slider.insertBefore(track, dots);
+
+        // Clone first and last for loop
+        const slidesData = [images[images.length - 1], ...images, images[0]];
+        slidesData.forEach((obj) => {
+          const img = document.createElement("img");
+          img.className = "slide";
+          img.src = obj.img;
+          img.alt = obj.title || "Post image";
+          track.appendChild(img);
+        });
+
+        // Dots for real images
+        images.forEach((_, i) => {
+          const dot = document.createElement("button");
+          dot.className = "dot";
+          dot.setAttribute("aria-current", i === 0 ? "true" : "false");
+          dot.addEventListener("click", () => goTo(i));
+          dots.appendChild(dot);
+        });
+
+        const dotEls = dots.querySelectorAll(".dot");
+        let current = 1; // start at first real slide
+
+        function goTo(n) {
+          current = n + 1;
+          updatePosition();
+        }
+
+        function updatePosition() {
+          track.style.transition = "transform 0.6s ease";
+          track.style.transform = `translateX(-${current * 100}%)`;
+          const realIndex = (current - 1 + images.length) % images.length;
+          dotEls.forEach((d, i) => {
+            d.classList.toggle("active", i === realIndex);
+            d.setAttribute("aria-current", i === realIndex ? "true" : "false");
+          });
+        }
+
+        function next() {
+          current++;
+          updatePosition();
+        }
+        function prev() {
+          current--;
+          updatePosition();
+        }
+
+        track.addEventListener("transitionend", () => {
+          if (current === images.length + 1) {
+            track.style.transition = "none";
+            current = 1;
+            track.style.transform = `translateX(-${current * 100}%)`;
+          } else if (current === 0) {
+            track.style.transition = "none";
+            current = images.length;
+            track.style.transform = `translateX(-${current * 100}%)`;
+          }
+        });
+
+        let timer = setInterval(next, 4000);
+        slider.querySelector(".arrow.right").addEventListener("click", next);
+        slider.querySelector(".arrow.left").addEventListener("click", prev);
+
+        slider.addEventListener("mouseenter", () => clearInterval(timer));
+        slider.addEventListener(
+          "mouseleave",
+          () => (timer = setInterval(next, 4000))
+        );
+
+        let startX = 0;
+        slider.addEventListener(
+          "touchstart",
+          (e) => (startX = e.touches[0].clientX)
+        );
+        slider.addEventListener("touchend", (e) => {
+          const diff = e.changedTouches[0].clientX - startX;
+          if (diff > 30) prev();
+          else if (diff < -30) next();
+        });
+
+        updatePosition();
+      }
+
+      let currentPage = 1;
+      const postsPerPage = 6;
+      let totalPages = 1;
+      let visiblePosts = [];
+
+      function buildPosts(allPosts) {
+        visiblePosts = allPosts;
+        totalPages = Math.ceil(visiblePosts.length / postsPerPage);
+        showPage(currentPage);
+        createPagination();
+      }
+
+      function showPage(page) {
+        const ctr = document.getElementById("posts");
+        ctr.innerHTML = "";
+        const start = (page - 1) * postsPerPage;
+        const end = start + postsPerPage;
+        const postsToShow = visiblePosts.slice(start, end);
+        postsToShow.forEach((p) => {
+          const article = document.createElement("article");
+          article.className = "post";
+          const img = document.createElement("img");
+          img.src = p.img;
+          img.alt = p.title || "Post image";
+          img.loading = "lazy";
+          const text = document.createElement("div");
+          text.className = "text";
+          const title = document.createElement("h2");
+          title.textContent = p.title;
+          const time = document.createElement("time");
+          time.textContent = p.date;
+          const desc = document.createElement("p");
+          desc.textContent = p.body;
+          text.append(title, time, desc);
+          article.appendChild(img);
+          article.appendChild(text);
+          ctr.appendChild(article);
+        });
+      }
+
+      function createPagination() {
+        const container = document.getElementById("pagination");
+        container.innerHTML = "";
+        for (let i = 1; i <= totalPages; i++) {
+          const btn = document.createElement("button");
+          btn.textContent = i;
+          btn.style.margin = "0 5px";
+          btn.style.padding = "6px 12px";
+          btn.style.border = "1px solid #ccc";
+          btn.style.borderRadius = "4px";
+          btn.style.background = i === currentPage ? "#333" : "#fff";
+          btn.style.color = i === currentPage ? "#fff" : "#000";
+          btn.style.cursor = "pointer";
+          btn.addEventListener("click", () => {
+            currentPage = i;
+            showPage(currentPage);
+            createPagination();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          });
+          container.appendChild(btn);
+        }
+      }
+    </script>
+  </body>
+</html>
