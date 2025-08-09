@@ -34,7 +34,7 @@
     <div id="loading" style="text-align: center; padding: 2rem">Loading...</div>
     <div class="logo">S</div>
 
-    <main>
+    <main class="pb-5">
       <div class="slider shadow" id="slider">
         <button class="arrow left" aria-label="Previous">
           <svg viewBox="0 0 24 24">
@@ -101,7 +101,7 @@
 
           posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-          const visiblePosts = Array(30).fill(posts[0]);
+          const visiblePosts = Array(40).fill(posts[0]);
           if (visiblePosts.length === 0) {
             document.body.outerHTML =
               '<body class="error"><p class="error">Sorry for the inconvenience.<br>The website is under construction.</p><div class="logo">S</div></body>';
@@ -279,16 +279,17 @@
       function createPagination() {
         const container = document.getElementById("pagination");
         container.innerHTML = "";
-        for (let i = 1; i <= totalPages; i++) {
+        let b = totalPages >= 5 ? Math.min(totalPages - 4, currentPage - 2) : 0;
+        for (let i = 1; i <= Math.min(5, totalPages); i++) {
           const li = document.createElement("li");
-          li.className = `page-item ${i === currentPage ? "active" : ""}`;
+          li.className = `page-item ${i + b === currentPage ? "active" : ""}`;
           const a = document.createElement("a");
           a.className = "page-link bg-body text-body";
           a.href = "#";
-          a.textContent = i;
+          a.textContent = i == 1 ? "First" : i == 5 ? "Last" : i + b;
           a.addEventListener("click", (e) => {
             e.preventDefault();
-            currentPage = i;
+            currentPage = i == 5 ? totalPages : i + b;
             showPage(currentPage);
             createPagination();
             window.scrollTo({ top: 0, behavior: "smooth" });
