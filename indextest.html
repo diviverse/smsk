@@ -64,12 +64,12 @@
         class="link-primary"
         style="text-decoration: none"
       >
-        <i class="bi bi-instagram"></i> &nbsp;
-        <a
-          class="link-primary link-offset-2 link-underline-opacity-0 link-underline-opacity-75-hover"
+        <i class="bi bi-instagram"></i
+        ><a
+          class="link-primary link-offset-2 link-underline-opacity-0 link-underline-opacity-75-hover ms-1"
           >smsk.one</a
-        >
-      </a>
+        ></a
+      >
     </div>
 
     <script>
@@ -138,10 +138,10 @@
           dots.appendChild(dot);
         });
 
-        let slideWidth = track.firstChild.getBoundingClientRect().width;
+        let slideWidth = track.firstElementChild.getBoundingClientRect().width;
 
         function updateSlideWidth() {
-          slideWidth = track.firstChild.getBoundingClientRect().width;
+          slideWidth = track.firstElementChild.getBoundingClientRect().width;
         }
 
         window.addEventListener("resize", updateSlideWidth);
