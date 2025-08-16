@@ -73,17 +73,6 @@
     </div>
 
     <script>
-      async function fetchText(url) {
-        try {
-          const res = await fetch(url);
-          if (!res.ok) throw new Error("Oops! Something went wrong.");
-          return await res.text();
-        } catch {
-          console.error("Oops! Something went wrong.");
-          return null;
-        }
-      }
-
       (async () => {
         try {
           const jsonURL =
@@ -118,12 +107,15 @@
       })();
 
       function buildSlider(images) {
+        const imgcount = images.length;
         const slider = document.getElementById("slider");
         const dots = document.getElementById("dots");
 
         const track = document.createElement("div");
         track.className = "slider-track";
         slider.insertBefore(track, dots);
+
+        let currentPage = 0;
 
         images.forEach((obj, i) => {
           const img = document.createElement("img");
@@ -146,40 +138,42 @@
 
         window.addEventListener("resize", updateSlideWidth);
 
-        let current = 0;
-
         function goTo(n) {
-          current = n % images.length;
+          currentPage = n;
           updatePosition();
         }
 
         function updatePosition() {
           track.style.transition = "transform 0.6s ease";
-          track.style.transform = `translateX(-${current * slideWidth}px)`;
+          track.style.transform = `translateX(-${currentPage * slideWidth}px)`;
           dots.querySelectorAll(".dot").forEach((d, i) => {
-            d.classList.toggle("active", i === current);
-            d.setAttribute("aria-current", i === current ? "true" : "false");
+            d.classList.toggle("active", i === currentPage);
+            d.setAttribute(
+              "aria-current",
+              i === currentPage ? "true" : "false"
+            );
           });
+          showPage(currentPage);
+          createPagination();
+          window.scrollTo({ top: 0, behavior: "smooth" });
         }
 
         function next() {
-          current = ++current % images.length;
+          currentPage = Math.min(++currentPage, imgcount);
           updatePosition();
         }
         function prev() {
-          current = --current % images.length;
+          currentPage = --currentPage;
           updatePosition();
         }
 
         track.addEventListener("transitionend", () => {
-          if (current === images.length + 1) {
+          if (currentPage === 0) {
             track.style.transition = "none";
-            current = 1;
-            track.style.transform = `translateX(-${current * slideWidth}px)`;
-          } else if (current === 0) {
-            track.style.transition = "none";
-            current = images.length;
-            track.style.transform = `translateX(-${current * slideWidth}px)`;
+            currentPage = imgcount;
+            track.style.transform = `translateX(-${
+              currentPage * slideWidth
+            }px)`;
           }
         });
 
@@ -216,7 +210,6 @@
         updatePosition();
       }
 
-      let currentPage = 1;
       const postsPerPage = 6;
       let totalPages = 1;
       let visiblePosts = [];
@@ -271,10 +264,7 @@
           a.textContent = i == 1 ? "First" : i == 5 ? "Last" : c;
           a.addEventListener("click", (e) => {
             e.preventDefault();
-            currentPage = i == 1 ? 1 : i == 5 ? totalPages : c;
-            showPage(currentPage);
-            createPagination();
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            goTo(i == 1 ? 1 : i == 5 ? totalPages : c);
           });
           li.appendChild(a);
           container.appendChild(li);
