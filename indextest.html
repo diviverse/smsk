@@ -143,6 +143,17 @@
         }
         window.addEventListener("resize", updateSlideWidth);
 
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden) {
+            pauseAutoplay();
+          } else {
+            if (currentSlide < 1) currentSlide = 1;
+            if (currentSlide > imgcount) currentSlide = imgcount;
+            updatePosition(false);
+            resetAutoplay();
+          }
+        });
+
         let currentSlide = 1;
         let timer = null;
 
@@ -280,116 +291,6 @@
         // init
         updatePosition();
       }
-
-      // function buildSlider(images) {
-      //   const imgcount = images.length;
-      //   const slider = document.getElementById("slider");
-      //   const dots = document.getElementById("dots");
-
-      //   const track = document.createElement("div");
-      //   track.className = "slider-track";
-      //   slider.insertBefore(track, dots);
-
-      //   // Clone slides: last at start, first at end
-      //   const firstClone = { ...images[0] };
-      //   const lastClone = { ...images[images.length - 1] };
-
-      //   const allSlides = [lastClone, ...images, firstClone];
-
-      //   allSlides.forEach((obj, i) => {
-      //     const img = document.createElement("img");
-      //     img.className = "slide";
-      //     img.src = obj.img;
-      //     img.alt = obj.title || "Post image";
-      //     track.appendChild(img);
-      //     if (i > 0 && i <= imgcount) {
-      //       const dot = document.createElement("button");
-      //       dot.className = "dot";
-      //       dot.setAttribute("aria-current", i === 1 ? "true" : "false");
-      //       dot.addEventListener("click", () => goTo(i));
-      //       dots.appendChild(dot);
-      //     }
-      //   });
-
-      //   let slideWidth = track.firstElementChild.getBoundingClientRect().width;
-      //   function updateSlideWidth() {
-      //     slideWidth = track.firstElementChild.getBoundingClientRect().width;
-      //     updatePosition(); // keep centered
-      //   }
-      //   window.addEventListener("resize", updateSlideWidth);
-
-      //   let currentSlide = 1; // start on first real slide
-
-      //   function goTo(n) {
-      //     currentSlide = n;
-      //     updatePosition();
-      //   }
-
-      //   function updatePosition() {
-      //     track.style.transition = "transform 0.6s ease";
-      //     track.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
-
-      //     // update dots
-      //     dots.querySelectorAll(".dot").forEach((d, i) => {
-      //       d.classList.toggle("active", i + 1 === currentSlide);
-      //       d.setAttribute(
-      //         "aria-current",
-      //         i + 1 === currentSlide ? "true" : "false"
-      //       );
-      //     });
-      //   }
-
-      //   function next() {
-      //     currentSlide++;
-      //     updatePosition();
-      //   }
-
-      //   function prev() {
-      //     currentSlide--;
-      //     updatePosition();
-      //   }
-
-      //   track.addEventListener("transitionend", () => {
-      //     if (currentSlide === 0) {
-      //       // jumped to clone of last
-      //       track.style.transition = "none";
-      //       currentSlide = imgcount;
-      //       track.style.transform = `translateX(-${
-      //         currentSlide * slideWidth
-      //       }px)`;
-      //     } else if (currentSlide === imgcount + 1) {
-      //       // jumped to clone of first
-      //       track.style.transition = "none";
-      //       currentSlide = 1;
-      //       track.style.transform = `translateX(-${
-      //         currentSlide * slideWidth
-      //       }px)`;
-      //     }
-      //   });
-
-      //   // autoplay + arrows + touch same as yours...
-      //   let timer = setInterval(next, 4000);
-      //   slider.querySelector(".arrow.right").addEventListener("click", next);
-      //   slider.querySelector(".arrow.left").addEventListener("click", prev);
-      //   slider.addEventListener("mouseenter", () => clearInterval(timer));
-      //   slider.addEventListener(
-      //     "mouseleave",
-      //     () => (timer = setInterval(next, 4000))
-      //   );
-
-      //   let startX = 0;
-      //   slider.addEventListener(
-      //     "touchstart",
-      //     (e) => (startX = e.touches[0].clientX)
-      //   );
-      //   slider.addEventListener("touchend", (e) => {
-      //     const diff = e.changedTouches[0].clientX - startX;
-      //     if (diff > 30) prev();
-      //     else if (diff < -30) next();
-      //   });
-
-      //   updatePosition();
-      // }
 
       let currentPage = 1;
       const postsPerPage = 6;
