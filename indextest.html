@@ -115,28 +115,35 @@
         track.className = "slider-track";
         slider.insertBefore(track, dots);
 
-        let currentSlide = 0;
+        // Clone slides: last at start, first at end
+        const firstClone = { ...images[0] };
+        const lastClone = { ...images[images.length - 1] };
 
-        images.forEach((obj, i) => {
+        const allSlides = [lastClone, ...images, firstClone];
+
+        allSlides.forEach((obj, i) => {
           const img = document.createElement("img");
           img.className = "slide";
           img.src = obj.img;
           img.alt = obj.title || "Post image";
           track.appendChild(img);
-          const dot = document.createElement("button");
-          dot.className = "dot";
-          dot.setAttribute("aria-current", i === 0 ? "true" : "false");
-          dot.addEventListener("click", () => goTo(i + 1));
-          dots.appendChild(dot);
+          if (i > 0 && i <= imgcount) {
+            const dot = document.createElement("button");
+            dot.className = "dot";
+            dot.setAttribute("aria-current", i === 1 ? "true" : "false");
+            dot.addEventListener("click", () => goTo(i));
+            dots.appendChild(dot);
+          }
         });
 
         let slideWidth = track.firstElementChild.getBoundingClientRect().width;
-
         function updateSlideWidth() {
           slideWidth = track.firstElementChild.getBoundingClientRect().width;
+          updatePosition(); // keep centered
         }
-
         window.addEventListener("resize", updateSlideWidth);
+
+        let currentSlide = 1; // start on first real slide
 
         function goTo(n) {
           currentSlide = n;
@@ -146,39 +153,49 @@
         function updatePosition() {
           track.style.transition = "transform 0.6s ease";
           track.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
+
+          // update dots
           dots.querySelectorAll(".dot").forEach((d, i) => {
-            d.classList.toggle("active", i === currentSlide);
+            d.classList.toggle("active", i + 1 === currentSlide);
             d.setAttribute(
               "aria-current",
-              i === currentSlide ? "true" : "false"
+              i + 1 === currentSlide ? "true" : "false"
             );
           });
         }
 
         function next() {
-          currentSlide = (currentSlide % imgcount) + 1;
+          currentSlide++;
           updatePosition();
         }
 
         function prev() {
-          currentSlide = --currentSlide || imgcount;
+          currentSlide--;
           updatePosition();
         }
 
         track.addEventListener("transitionend", () => {
           if (currentSlide === 0) {
+            // jumped to clone of last
             track.style.transition = "none";
             currentSlide = imgcount;
+            track.style.transform = `translateX(-${
+              currentSlide * slideWidth
+            }px)`;
+          } else if (currentSlide === imgcount + 1) {
+            // jumped to clone of first
+            track.style.transition = "none";
+            currentSlide = 1;
             track.style.transform = `translateX(-${
               currentSlide * slideWidth
             }px)`;
           }
         });
 
+        // autoplay + arrows + touch same as yours...
         let timer = setInterval(next, 4000);
         slider.querySelector(".arrow.right").addEventListener("click", next);
         slider.querySelector(".arrow.left").addEventListener("click", prev);
-
         slider.addEventListener("mouseenter", () => clearInterval(timer));
         slider.addEventListener(
           "mouseleave",
@@ -194,15 +211,6 @@
           const diff = e.changedTouches[0].clientX - startX;
           if (diff > 30) prev();
           else if (diff < -30) next();
-        });
-
-        const arrows = slider.querySelectorAll(".arrow");
-        arrows.forEach((arrow) => {
-          arrow.addEventListener("mouseenter", () => clearInterval(timer));
-          arrow.addEventListener(
-            "mouseleave",
-            () => (timer = setInterval(next, 4000))
-          );
         });
 
         updatePosition();
