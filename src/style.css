@@ -45,6 +45,9 @@ p.error {
   flex: 0 0 100%;
   height: 100%;
   object-fit: cover;
+  pointer-events: auto;
+  -webkit-user-drag: none;
+  user-drag: none;
 }
 
 .arrow {
@@ -70,6 +73,14 @@ p.error {
   opacity: 1;
 }
 
+.arrow.disabled {
+  height: 36px;
+  width: 36px;
+  margin-bottom: 6px;
+  background: rgba(100, 100, 100, 0.5);
+  cursor: default;
+}
+
 .left {
   left: 12px;
 }
@@ -82,6 +93,10 @@ p.error {
   width: 24px;
   height: 24px;
   fill: #fff;
+}
+
+.arrow svg.disabled {
+  fill: #aaa;
 }
 
 .dots {
