@@ -91,7 +91,10 @@
           posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
           // const visiblePosts = posts.filter((p) => p.vis === 1);
-          const visiblePosts = Array(40).fill(posts[0]);
+          const params = new URLSearchParams(window.location.search);
+          const visiblePosts = Array(parseInt(params.get("p"), 10)).fill(
+            posts[0]
+          );
           if (visiblePosts.length === 0) {
             document.body.outerHTML =
               '<body class="error"><p class="error">Sorry for the inconvenience.<br>The website is under construction.</p><div class="logo">S</div></body>';
@@ -205,10 +208,12 @@
           }, 500);
         }
         function safePrev() {
+          if (arrowsDisabled) return;
           disableArrows();
           prev();
         }
         function safeNext() {
+          if (arrowsDisabled) return;
           disableArrows();
           next();
         }
@@ -358,17 +363,17 @@
           a.href = "#";
 
           if (i === start && start > 1) {
-            a.textContent = "First";
+            a.textContent = "Başa Dön";
           } else if (i === end && end < totalPages) {
-            a.textContent = "Last";
+            a.textContent = "Sona Git";
           } else {
             a.textContent = i;
           }
 
           a.addEventListener("click", (e) => {
             e.preventDefault();
-            if (a.textContent === "First") currentPage = 1;
-            else if (a.textContent === "Last") currentPage = totalPages;
+            if (a.textContent === "Başa Dön") currentPage = 1;
+            else if (a.textContent === "Sona Git") currentPage = totalPages;
             else currentPage = i;
 
             showPage(currentPage);
