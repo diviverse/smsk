@@ -63,8 +63,8 @@ p.error {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition-duration: 0.25s;
   opacity: 0;
-  transition: opacity 0.3s;
   z-index: 3;
   outline: none;
 }
@@ -74,10 +74,9 @@ p.error {
 }
 
 .arrow.disabled {
-  height: 36px;
-  width: 36px;
-  margin-bottom: 6px;
-  background: rgba(100, 100, 100, 0.5);
+  height: 40px;
+  width: 40px;
+  margin-bottom: 4px;
   cursor: default;
 }
 
@@ -93,10 +92,6 @@ p.error {
   width: 24px;
   height: 24px;
   fill: #fff;
-}
-
-.arrow svg.disabled {
-  fill: #aaa;
 }
 
 .dots {
