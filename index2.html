@@ -20,16 +20,6 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
       rel="stylesheet"
     />
-
-    <style>
-      .arrow.disabling {
-        transition: 0.5s ease;
-      }
-
-      .arrow.disabled {
-        transition: none !important;
-      }
-    </style>
   </head>
   <body>
     <noscript>
@@ -128,6 +118,7 @@
 
         const arrowLeft = document.getElementById("arrow-left");
         const arrowRight = document.getElementById("arrow-right");
+        let arrowsDisabled = false;
 
         images.forEach((obj, i) => {
           const img = document.createElement("img");
@@ -169,29 +160,22 @@
           clearInterval(timer);
           timer = setInterval(autoNext, 4000);
         }
-
         function pauseAutoplay() {
           clearInterval(timer);
         }
-
         function resetAutoplay() {
           startAutoplay();
         }
 
         function autoNext() {
-          arrowLeft.classList.add("disabling");
-          arrowRight.classList.add("disabling");
-
+          arrowsDisabled = true;
           arrowLeft.classList.add("disabled");
-          arrowLeft.offsetHeight;
           arrowRight.classList.add("disabled");
-          arrowRight.offsetHeight;
-
           setTimeout(() => {
+            arrowsDisabled = false;
             arrowLeft.classList.remove("disabled");
             arrowRight.classList.remove("disabled");
-          }, 0);
-
+          }, 500);
           next();
         }
 
@@ -213,12 +197,10 @@
           currentSlide = n;
           updatePosition();
         }
-
         function next() {
           currentSlide = (currentSlide + 1) % imgcount;
           updatePosition();
         }
-
         function prev() {
           currentSlide = (currentSlide - 1 + imgcount) % imgcount;
           updatePosition();
@@ -254,8 +236,8 @@
           }
         });
 
-        slider.querySelector(".arrow.right").addEventListener("click", next);
-        slider.querySelector(".arrow.left").addEventListener("click", prev);
+        arrowLeft.addEventListener("click", next);
+        arrowRight.addEventListener("click", prev);
 
         let startX = 0,
           isDragging = false;
@@ -268,8 +250,8 @@
         slider.addEventListener("touchmove", (e) => {
           if (!isDragging) return;
           const delta = e.touches[0].clientX - startX;
-          track.style.transform = `translateX(-${
-            currentSlide * slideWidth - delta
+          track.style.transform = `translateX(${
+            (2 - currentSlide) * slideWidth - delta
           }px)`;
         });
         slider.addEventListener("touchend", (e) => {
