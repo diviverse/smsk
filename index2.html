@@ -10,7 +10,7 @@
     <meta name="description" content="My Gallery – Ege Şimşek" />
     <meta property="og:description" content="My Gallery – Ege Şimşek" />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://gallery.smsk.one/src/1.png" />
+    <meta property="og:image" content="https://gallery.smsk.one/src/1.jpg" />
     <link href="src/style.css" rel="stylesheet" />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
@@ -276,8 +276,8 @@
         slider.addEventListener("mousemove", (e) => {
           if (!isDragging) return;
           const delta = e.clientX - mouseStart;
-          track.style.transform = `translateX(-${
-            currentSlide * slideWidth - delta
+          track.style.transform = `translateX(${
+            (2 - currentSlide) * slideWidth + delta
           }px)`;
         });
         slider.addEventListener("mouseup", (e) => {
