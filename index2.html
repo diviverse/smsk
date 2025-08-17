@@ -150,28 +150,32 @@
           }
         });
 
-        let currentSlide = 1;
+        let currentSlide = 0;
         let timer = null;
 
         function startAutoplay() {
           clearInterval(timer);
           timer = setInterval(next, 4000);
         }
+
         function pauseAutoplay() {
           clearInterval(timer);
         }
+
         function resetAutoplay() {
           startAutoplay();
         }
 
         function updatePosition(animated = true) {
           track.style.transition = animated ? "transform 0.6s ease" : "none";
-          track.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
+          track.style.transform = `translateX(${
+            (2 - currentSlide) * slideWidth
+          }px)`;
           dots.querySelectorAll(".dot").forEach((d, i) => {
-            d.classList.toggle("active", i === currentSlide - 1);
+            d.classList.toggle("active", i === currentSlide);
             d.setAttribute(
               "aria-current",
-              i === currentSlide - 1 ? "true" : "false"
+              i === currentSlide ? "true" : "false"
             );
           });
         }
@@ -182,12 +186,12 @@
         }
 
         function next() {
-          currentSlide = (currentSlide % imgcount) + 1;
+          currentSlide = (currentSlide + 1) % imgcount;
           updatePosition();
         }
 
         function prev() {
-          currentSlide = --currentSlide || imgcount;
+          currentSlide = (currentSlide - 1 + imgcount) % imgcount;
           updatePosition();
         }
 
@@ -324,31 +328,6 @@
           ctr.appendChild(article);
         });
       }
-
-      // function createPagination() {
-      //   const container = document.getElementById("pagination");
-      //   container.innerHTML = "";
-      //   let b = totalPages >= 5 ? Math.min(totalPages - 4, currentPage - 2) : 0;
-      //   let c = 0;
-      //   for (let i = 1; i <= Math.min(5, totalPages); i++) {
-      //     c = i + b;
-      //     const li = document.createElement("li");
-      //     li.className = `page-item ${c === currentPage ? "active" : ""}`;
-      //     const a = document.createElement("a");
-      //     a.className = "page-link bg-body text-body";
-      //     a.href = "#";
-      //     a.textContent = i == 1 ? "First" : i == 5 ? "Last" : c;
-      //     a.addEventListener("click", (e) => {
-      //       e.preventDefault();
-      //       currentPage = i == 1 ? 1 : i == 5 ? totalPages : c;
-      //       showPage(currentPage);
-      //       createPagination();
-      //       window.scrollTo({ top: 0, behavior: "smooth" });
-      //     });
-      //     li.appendChild(a);
-      //     container.appendChild(li);
-      //   }
-      // }
 
       function createPagination() {
         const container = document.getElementById("pagination");
