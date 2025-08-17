@@ -197,12 +197,12 @@
           currentSlide = n;
           updatePosition();
         }
-        function next() {
-          currentSlide = (currentSlide + 1) % imgcount;
-          updatePosition();
-        }
         function prev() {
           currentSlide = (currentSlide - 1 + imgcount) % imgcount;
+          updatePosition();
+        }
+        function next() {
+          currentSlide = (currentSlide + 1) % imgcount;
           updatePosition();
         }
 
@@ -236,8 +236,8 @@
           }
         });
 
-        arrowLeft.addEventListener("click", next);
-        arrowRight.addEventListener("click", prev);
+        arrowLeft.addEventListener("click", prev);
+        arrowRight.addEventListener("click", next);
 
         let startX = 0,
           isDragging = false;
@@ -251,7 +251,7 @@
           if (!isDragging) return;
           const delta = e.touches[0].clientX - startX;
           track.style.transform = `translateX(${
-            (2 - currentSlide) * slideWidth - delta
+            (2 - currentSlide) * slideWidth + delta
           }px)`;
         });
         slider.addEventListener("touchend", (e) => {
