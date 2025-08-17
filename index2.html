@@ -158,25 +158,13 @@
 
         function startAutoplay() {
           clearInterval(timer);
-          timer = setInterval(autoNext, 4000);
+          timer = setInterval(safeNext, 4000);
         }
         function pauseAutoplay() {
           clearInterval(timer);
         }
         function resetAutoplay() {
           startAutoplay();
-        }
-
-        function autoNext() {
-          arrowsDisabled = true;
-          arrowLeft.classList.add("disabled");
-          arrowRight.classList.add("disabled");
-          setTimeout(() => {
-            arrowsDisabled = false;
-            arrowLeft.classList.remove("disabled");
-            arrowRight.classList.remove("disabled");
-          }, 500);
-          next();
         }
 
         function updatePosition(animated = true) {
@@ -204,6 +192,25 @@
         function next() {
           currentSlide = (currentSlide + 1) % imgcount;
           updatePosition();
+        }
+
+        function disableArrows() {
+          arrowsDisabled = true;
+          arrowLeft.classList.add("disabled");
+          arrowRight.classList.add("disabled");
+          setTimeout(() => {
+            arrowsDisabled = false;
+            arrowLeft.classList.remove("disabled");
+            arrowRight.classList.remove("disabled");
+          }, 500);
+        }
+        function safePrev() {
+          disableArrows();
+          prev();
+        }
+        function safeNext() {
+          disableArrows();
+          next();
         }
 
         startAutoplay();
@@ -236,8 +243,8 @@
           }
         });
 
-        arrowLeft.addEventListener("click", prev);
-        arrowRight.addEventListener("click", next);
+        arrowLeft.addEventListener("click", safePrev);
+        arrowRight.addEventListener("click", safeNext);
 
         let startX = 0,
           isDragging = false;
