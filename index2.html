@@ -65,11 +65,13 @@
         href="https://instagram.com/smsk.one/"
         class="link-primary text-decoration-none"
       >
-        <i class="bi bi-instagram"></i
-        ><a
-          class="link-primary link-offset-2 link-underline-opacity-0 link-underline-opacity-75-hover ms-1"
-          >smsk.one</a
-        ></a
+        <i class="bi bi-instagram"></i>
+      </a>
+      <a
+        target="_blank"
+        href="https://instagram.com/smsk.one/"
+        class="link-primary link-offset-2 link-underline-opacity-0 link-underline-opacity-75-hover ms-1"
+        >smsk.one</a
       >
     </div>
 
@@ -136,7 +138,7 @@
           const dot = document.createElement("button");
           dot.className = "dot";
           dot.setAttribute("aria-current", i === 0 ? "true" : "false");
-          dot.addEventListener("click", () => goTo(i + 1));
+          dot.addEventListener("click", () => goTo(i));
           dots.appendChild(dot);
         });
 
