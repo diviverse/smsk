@@ -32,16 +32,16 @@
           display: none;
         }
       </style>
-      <div style="padding: 2rem; text-align: center">
+      <div class="p-4 text-align-center">
         JavaScript is required to view this site.
       </div>
     </noscript>
 
-    <div id="loading" style="text-align: center; padding: 2rem">Loading...</div>
+    <div id="loading" class="text-align-center p-4">Loading...</div>
     <div class="logo">S</div>
 
     <main class="pb-5">
-      <div class="slider shadow" id="slider">
+      <div class="slider shadow justify-content-center" id="slider">
         <button class="arrow left" aria-label="Previous">
           <svg viewBox="0 0 24 24">
             <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
@@ -67,8 +67,7 @@
       <a
         target="_blank"
         href="https://instagram.com/smsk.one/"
-        class="link-primary"
-        style="text-decoration: none"
+        class="link-primary text-decoration-none"
       >
         <i class="bi bi-instagram"></i
         ><a
@@ -79,8 +78,6 @@
     </div>
 
     <script>
-      const isMobile = window.matchMedia("(max-width: 768px)").matches;
-
       (async () => {
         try {
           const jsonURL =
@@ -107,12 +104,7 @@
             const ogImageMeta = document.getElementById("og-image");
             ogImageMeta.setAttribute("content", lastPost.img);
 
-            if (isMobile) {
-              buildSliderMobile(visiblePosts.slice(0, 5));
-            } else {
-              buildSliderDesktop(visiblePosts.slice(0, 5));
-            }
-
+            buildSlider(visiblePosts.slice(0, 5));
             buildPosts(visiblePosts);
           }
         } catch (err) {
@@ -123,83 +115,7 @@
         }
       })();
 
-      function buildSliderMobile(images) {
-        const imgcount = images.length;
-        const slider = document.getElementById("slider");
-        const dots = document.getElementById("dots");
-
-        const track = document.createElement("div");
-        track.className = "slider-track";
-        slider.insertBefore(track, dots);
-
-        let currentSlide = 0;
-
-        images.forEach((obj, i) => {
-          const img = document.createElement("img");
-          img.className = "slide";
-          img.src = obj.img;
-          img.alt = obj.title || "Post image";
-          track.appendChild(img);
-
-          const dot = document.createElement("button");
-          dot.className = "dot";
-          dot.setAttribute("aria-current", i === 0 ? "true" : "false");
-          dot.addEventListener("click", () => goTo(i + 1));
-          dots.appendChild(dot);
-        });
-
-        let slideWidth = track.firstElementChild.getBoundingClientRect().width;
-
-        function updateSlideWidth() {
-          slideWidth = track.firstElementChild.getBoundingClientRect().width;
-        }
-        window.addEventListener("resize", updateSlideWidth);
-
-        function goTo(n) {
-          currentSlide = n;
-          updatePosition();
-        }
-
-        function updatePosition() {
-          track.style.transition = "transform 0.6s ease";
-          track.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
-          dots.querySelectorAll(".dot").forEach((d, i) => {
-            d.classList.toggle("active", i === currentSlide);
-            d.setAttribute(
-              "aria-current",
-              i === currentSlide ? "true" : "false"
-            );
-          });
-        }
-
-        function next() {
-          currentSlide = (currentSlide + 1) % imgcount;
-          updatePosition();
-        }
-
-        function prev() {
-          currentSlide = (currentSlide - 1 + imgcount) % imgcount;
-          updatePosition();
-        }
-
-        slider.querySelector(".arrow.right").addEventListener("click", next);
-        slider.querySelector(".arrow.left").addEventListener("click", prev);
-
-        let startX = 0;
-        slider.addEventListener(
-          "touchstart",
-          (e) => (startX = e.touches[0].clientX)
-        );
-        slider.addEventListener("touchend", (e) => {
-          const diff = e.changedTouches[0].clientX - startX;
-          if (diff > 30) prev();
-          else if (diff < -30) next();
-        });
-
-        updatePosition();
-      }
-
-      function buildSliderDesktop(images) {
+      function buildSlider(images) {
         const imgcount = images.length;
         const slider = document.getElementById("slider");
         const dots = document.getElementById("dots");
@@ -278,20 +194,16 @@
           currentSlide = n;
           updatePosition();
         }
+
         function next() {
-          currentSlide++;
-          updatePosition();
-        }
-        function prev() {
-          currentSlide--;
+          currentSlide = (currentSlide % imgcount) + 1;
           updatePosition();
         }
 
-        track.addEventListener("transitionend", () => {
-          if (currentSlide === 0) currentSlide = imgcount;
-          if (currentSlide === imgcount + 1) currentSlide = 1;
-          updatePosition(false);
-        });
+        function prev() {
+          currentSlide = --currentSlide || imgcount;
+          updatePosition();
+        }
 
         // autoplay
         startAutoplay();
