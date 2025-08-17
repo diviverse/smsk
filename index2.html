@@ -20,6 +20,16 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
       rel="stylesheet"
     />
+
+    <style>
+      .arrow {
+        transition: 0.5s ease;
+      }
+
+      .arrow.disabled {
+        transition: none;
+      }
+    </style>
   </head>
   <body>
     <noscript>
@@ -37,13 +47,13 @@
     <div class="logo">S</div>
 
     <main class="pb-5">
-      <div class="slider shadow justify-content-center" id="slider">
-        <button class="arrow left" aria-label="Previous">
+      <div class="slider shadow" id="slider">
+        <button id="arrow-left" class="arrow left" aria-label="Previous">
           <svg viewBox="0 0 24 24">
             <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
           </svg>
         </button>
-        <button class="arrow right" aria-label="Next">
+        <button id="arrow-right" class="arrow right" aria-label="Next">
           <svg viewBox="0 0 24 24">
             <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" />
           </svg>
@@ -116,7 +126,9 @@
         track.className = "slider-track  justify-content-center";
         slider.insertBefore(track, dots);
 
-        // build slides
+        const arrowLeft = document.getElementById("arrow-left");
+        const arrowRight = document.getElementById("arrow-right");
+
         images.forEach((obj, i) => {
           const img = document.createElement("img");
           img.className = "slide";
@@ -155,7 +167,7 @@
 
         function startAutoplay() {
           clearInterval(timer);
-          timer = setInterval(next, 4000);
+          timer = setInterval(autoNext, 4000);
         }
 
         function pauseAutoplay() {
@@ -164,6 +176,20 @@
 
         function resetAutoplay() {
           startAutoplay();
+        }
+
+        function autoNext() {
+          arrowLeft.classList.add("disabled");
+          arrowLeft.offsetHeight;
+          arrowRight.classList.add("disabled");
+          arrowRight.offsetHeight;
+
+          document.setTimeout(() => {
+            arrowLeft.classList.remove("disabled");
+            arrowRight.classList.remove("disabled");
+          }, 0);
+
+          next();
         }
 
         function updatePosition(animated = true) {
@@ -195,17 +221,14 @@
           updatePosition();
         }
 
-        // autoplay
         startAutoplay();
 
-        // hover pause on arrows/dots
         const pauseAreas = [...slider.querySelectorAll(".arrow"), dots];
         pauseAreas.forEach((el) => {
           el.addEventListener("mouseenter", pauseAutoplay);
           el.addEventListener("mouseleave", resetAutoplay);
         });
 
-        // press-and-hold anywhere
         let isHolding = false;
         document.addEventListener("mousedown", () => {
           isHolding = true;
@@ -228,11 +251,9 @@
           }
         });
 
-        // arrows
         slider.querySelector(".arrow.right").addEventListener("click", next);
         slider.querySelector(".arrow.left").addEventListener("click", prev);
 
-        // touch drag
         let startX = 0,
           isDragging = false;
         slider.addEventListener("touchstart", (e) => {
@@ -255,12 +276,11 @@
           if (Math.abs(delta) > slideWidth / 8) {
             delta < 0 ? next() : prev();
           } else {
-            updatePosition(); // snap back
+            updatePosition();
           }
           resetAutoplay();
         });
 
-        // desktop drag (optional)
         let mouseStart = 0;
         slider.addEventListener("mousedown", (e) => {
           pauseAutoplay();
@@ -284,7 +304,6 @@
           resetAutoplay();
         });
 
-        // init
         updatePosition();
       }
 
@@ -336,7 +355,6 @@
         let start = Math.max(1, currentPage - 2);
         let end = Math.min(totalPages, start + 4);
 
-        // adjust start again if we don’t have 5 pages
         start = Math.max(1, end - 4);
 
         for (let i = start; i <= end; i++) {
