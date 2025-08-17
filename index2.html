@@ -22,12 +22,12 @@
     />
 
     <style>
-      .arrow {
+      .arrow.disabling {
         transition: 0.5s ease;
       }
 
       .arrow.disabled {
-        transition: none;
+        transition: none !important;
       }
     </style>
   </head>
@@ -179,6 +179,9 @@
         }
 
         function autoNext() {
+          arrowLeft.classList.add("disabling");
+          arrowRight.classList.add("disabling");
+
           arrowLeft.classList.add("disabled");
           arrowLeft.offsetHeight;
           arrowRight.classList.add("disabled");
