@@ -47,7 +47,6 @@ p.error {
   object-fit: cover;
   pointer-events: auto;
   -webkit-user-drag: none;
-  user-drag: none;
 }
 
 .arrow {
@@ -243,4 +242,12 @@ p.error {
   text-align: center;
   margin-top: 1rem;
   margin-bottom: 1.5rem;
+}
+
+.grab {
+  cursor: grab;
+}
+
+.grab:active {
+  cursor: grabbing;
 }
