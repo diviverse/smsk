@@ -72,7 +72,7 @@ p.error {
   opacity: 1;
 }
 
-.arrow.disabled {
+.arrow.clicked {
   height: 40px;
   width: 40px;
   margin-bottom: 4px;
@@ -183,6 +183,16 @@ p.error {
     height: 2px;
     border: none;
     border-radius: 0;
+  }
+
+  .dot::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 18px;
+    transform: translate(0, -50%);
+    top: 0;
+    left: -2px;
   }
 
   .posts {
