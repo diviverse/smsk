@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>My Gallery</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <meta property="og:title" content="My Gallery" />
+    <meta property="og:url" content="https://gallery.smsk.one/index3.html" />
+    <meta name="description" content="My Gallery – Ege Şimşek" />
+    <meta property="og:description" content="My Gallery – Ege Şimşek" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://gallery.smsk.one/src/1.jpg" />
+    <link href="src/style.css" rel="stylesheet" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <noscript>
+      <style>
+        #loading {
+          display: none;
+        }
+      </style>
+      <div class="p-4 text-center">
+        JavaScript is required to view this site.
+      </div>
+    </noscript>
+
+    <div id="loading" class="text-center p-4">Loading...</div>
+    <div class="logo">S</div>
+
+    <main class="pb-5">
+      <div class="slider shadow" id="slider">
+        <button id="arrow-left" class="arrow left" aria-label="Previous">
+          <svg viewBox="0 0 24 24">
+            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+          </svg>
+        </button>
+        <button id="arrow-right" class="arrow right" aria-label="Next">
+          <svg viewBox="0 0 24 24">
+            <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" />
+          </svg>
+        </button>
+        <div class="dots" id="dots"></div>
+      </div>
+
+      <section class="posts" id="posts"></section>
+
+      <nav>
+        <ul id="pagination" class="pagination justify-content-center"></ul>
+      </nav>
+    </main>
+
+    <div class="bottom-bar">
+      Ege Şimşek &nbsp;
+      <a
+        target="_blank"
+        href="https://instagram.com/smsk.one/"
+        class="link-primary link-offset-2 link-underline-opacity-0 link-underline-opacity-75-hover"
+      >
+        <span><i class="bi bi-instagram pe-1"></i>smsk.one</span></a
+      >
+    </div>
+
+    <script>
+      class TimeoutQueue {
+        constructor() {
+          this.jobs = [];
+          this.isRunning = false;
+        }
+
+        add(fn, delay = 0, id = Symbol("job")) {
+          this.jobs.push({ fn, delay, id });
+          if (!this.isRunning) this.runNext();
+          return id;
+        }
+
+        tryRemoveById(id) {
+          this.jobs = this.jobs.filter((job) => job.id !== id);
+        }
+
+        tryRemoveByIndex(ix) {
+          this.tryRemoveById(this.jobs[ix]?.id);
+        }
+
+        pop() {
+          this.tryRemoveByIndex(this.jobs.length - 1);
+        }
+
+        runNext() {
+          if (this.jobs.length === 0) {
+            this.isRunning = false;
+            return;
+          }
+
+          this.isRunning = true;
+          const { fn, delay, id } = this.jobs.shift();
+
+          this.currentTimeout = setTimeout(() => {
+            fn();
+            this.runNext();
+          }, delay);
+        }
+
+        clear() {
+          clearTimeout(this.currentTimeout);
+          this.jobs = [];
+          this.isRunning = false;
+        }
+      }
+
+      (async () => {
+        try {
+          const jsonURL =
+            "https://raw.githubusercontent.com/diviverse/smsk/main/src/.json";
+          const posts = await fetch(jsonURL)
+            .then((r) => {
+              if (!r.ok) throw new Error("Oops! Something went wrong.");
+              return r.json();
+            })
+            .catch(() => {
+              console.error("Oops! Something went wrong.");
+              return [];
+            });
+
+          posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+          // const visiblePosts = posts.filter((p) => p.vis === 1);
+          const params = new URLSearchParams(window.location.search);
+          const visiblePosts = Array(parseInt(params.get("p"), 10)).fill(
+            posts[0]
+          );
+          if (visiblePosts.length === 0) {
+            document.body.outerHTML =
+              '<body class="error">\
+                <p class="error">\
+                  Sorry for the inconvenience.<br />The website is under construction.\
+                </p>\
+                <div class="logo">S</div>\
+              </body>';
+          } else {
+            buildSlider(visiblePosts.slice(0, 5));
+            buildPosts(visiblePosts);
+          }
+        } catch (err) {
+          console.error("Oops! Something went wrong.");
+          console.error(err);
+        } finally {
+          document.getElementById("loading")?.remove();
+        }
+      })();
+
+      function buildSlider(images) {
+        const imgcount = images.length;
+        const slider = document.getElementById("slider");
+        const dots = document.getElementById("dots");
+
+        const track = document.createElement("div");
+        track.className = "slider-track  justify-content-center";
+        slider.insertBefore(track, dots);
+
+        const arrowLeft = document.getElementById("arrow-left");
+        const arrowRight = document.getElementById("arrow-right");
+        let queue = new TimeoutQueue();
+        let queueIndex = 0;
+
+        let offsetX = imgcount / 2 - 0.5;
+
+        images.forEach((obj, i) => {
+          const img = document.createElement("img");
+          img.className = "slide";
+          img.src = obj.img;
+          img.alt = obj.title || "Post image";
+          img.draggable = false;
+          if (imgcount > 1) img.classList.add("grab");
+          track.appendChild(img);
+
+          const dot = document.createElement("button");
+          dot.className = "dot";
+          dot.setAttribute("aria-current", i === 0 ? "true" : "false");
+          dot.addEventListener("click", () => goTo(i));
+          dots.appendChild(dot);
+        });
+
+        let slideWidth = track.firstElementChild.getBoundingClientRect().width;
+        function updateSlideWidth() {
+          slideWidth = track.firstElementChild.getBoundingClientRect().width;
+          updatePosition();
+        }
+        window.addEventListener("resize", updateSlideWidth);
+
+        let currentSlide = 0;
+        let timer = null;
+
+        function startAutoplay() {
+          if (imgcount <= 1) return;
+          clearInterval(timer);
+          timer = setInterval(() => changeBySafely(), 4000);
+        }
+        function pauseAutoplay() {
+          clearInterval(timer);
+        }
+
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden) {
+            pauseAutoplay();
+          } else {
+            if (currentSlide < 1) currentSlide = 1;
+            if (currentSlide > imgcount) currentSlide = imgcount;
+            updatePosition(false);
+            startAutoplay();
+          }
+        });
+
+        function updatePosition(animated = true) {
+          track.style.transition = animated ? "transform 0.6s ease" : "none";
+          track.style.transform = `translateX(${
+            (offsetX - currentSlide) * slideWidth
+          }px)`;
+          dots.querySelectorAll(".dot").forEach((d, i) => {
+            d.classList.toggle("active", i === currentSlide);
+            d.setAttribute(
+              "aria-current",
+              i === currentSlide ? "true" : "false"
+            );
+          });
+        }
+
+        function simulateArrowClick(inf = false) {
+          if (!Number.isNaN(queueIndex)) {
+            queueIndex = NaN;
+            arrowLeft.classList.add("clicked");
+            arrowRight.classList.add("clicked");
+            if (!inf) {
+              queue.add(() => {
+                queueIndex = 0;
+                arrowLeft.classList.remove("clicked");
+                arrowRight.classList.remove("clicked");
+              }, 500);
+            }
+          }
+        }
+
+        function goTo(n) {
+          currentSlide = n;
+          updatePosition();
+        }
+        function changeBy(x = 1) {
+          currentSlide = (currentSlide + x + imgcount) % imgcount;
+          updatePosition();
+        }
+        function changeBySafely(x = 1) {
+          if (queueIndex === 0) {
+            simulateArrowClick();
+            changeBy(x);
+          } else {
+            queueIndex = (Number.isNaN(queueIndex) ? 0 : queueIndex) + x;
+            queue.tryRemoveByIndex(1);
+
+            if (queueIndex !== 0) {
+              queue.add(() => changeBy(queueIndex));
+            }
+          }
+        }
+
+        if (imgcount > 1) {
+          startAutoplay();
+
+          const pauseAreas = [arrowLeft, arrowRight, dots];
+          pauseAreas.forEach((el) => {
+            el.addEventListener("mouseenter", pauseAutoplay);
+            el.addEventListener("mouseleave", startAutoplay);
+          });
+
+          let isHolding = false;
+          document.addEventListener("mousedown", () => {
+            isHolding = true;
+            pauseAutoplay();
+          });
+          document.addEventListener("mouseup", () => {
+            if (isHolding) {
+              isHolding = false;
+              startAutoplay();
+            }
+          });
+          document.addEventListener("touchstart", () => {
+            isHolding = true;
+            pauseAutoplay();
+          });
+          document.addEventListener("touchend", () => {
+            if (isHolding) {
+              isHolding = false;
+              startAutoplay();
+            }
+          });
+
+          arrowLeft.addEventListener("click", () => changeBySafely(-1));
+          arrowRight.addEventListener("click", () => changeBySafely(1));
+
+          let startX = 0,
+            isDragging = false;
+          slider.addEventListener("touchstart", (e) => {
+            pauseAutoplay();
+            startX = e.touches[0].clientX;
+            isDragging = true;
+            track.style.transition = "none";
+          });
+          slider.addEventListener("touchmove", (e) => {
+            if (!isDragging) return;
+            const delta = e.touches[0].clientX - startX;
+            track.style.transform = `translateX(${
+              (offsetX - currentSlide) * slideWidth + delta
+            }px)`;
+          });
+          slider.addEventListener("touchend", (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            const delta = e.changedTouches[0].clientX - startX;
+            if (Math.abs(delta) > slideWidth / 8)
+              delta < 0 ? changeBy(1) : changeBy(-1);
+            else updatePosition();
+            startAutoplay();
+          });
+
+          let mouseStart = 0;
+          slider.addEventListener("mousedown", (e) => {
+            pauseAutoplay();
+            mouseStart = e.clientX;
+            isDragging = true;
+            track.style.transition = "none";
+          });
+          slider.addEventListener("mousemove", (e) => {
+            if (!isDragging) return;
+            const delta = e.clientX - mouseStart;
+            track.style.transform = `translateX(${
+              (offsetX - currentSlide) * slideWidth + delta
+            }px)`;
+          });
+          slider.addEventListener("mouseup", (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            const delta = e.clientX - mouseStart;
+            if (Math.abs(delta) > slideWidth / 8)
+              delta < 0 ? changeBy(1) : changeBy(-1);
+            else updatePosition();
+            startAutoplay();
+          });
+        } else {
+          simulateArrowClick(true);
+        }
+
+        updateSlideWidth();
+      }
+
+      let currentPage = 1;
+      const postsPerPage = 6;
+      let totalPages = 1;
+      let visiblePosts = [];
+
+      function buildPosts(allPosts) {
+        visiblePosts = allPosts;
+        totalPages = Math.ceil(visiblePosts.length / postsPerPage);
+        showPage(currentPage);
+        createPagination();
+      }
+
+      function showPage(page) {
+        const ctr = document.getElementById("posts");
+        ctr.innerHTML = "";
+        const start = (page - 1) * postsPerPage;
+        const end = start + postsPerPage;
+        const postsToShow = visiblePosts.slice(start, end);
+        postsToShow.forEach((p) => {
+          const article = document.createElement("article");
+          article.className = "post";
+          const img = document.createElement("img");
+          img.src = p.img;
+          img.alt = p.title || "Post image";
+          img.loading = "lazy";
+          img.draggable = false;
+          const text = document.createElement("div");
+          text.className = "text";
+          const title = document.createElement("h2");
+          title.textContent = p.title;
+          const time = document.createElement("time");
+          time.textContent = p.date;
+          const desc = document.createElement("p");
+          desc.textContent = p.body;
+          text.append(title, time, desc);
+          article.appendChild(img);
+          article.appendChild(text);
+          ctr.appendChild(article);
+        });
+      }
+
+      function newEllipsis() {
+        const elps = document.createElement("span");
+        elps.className = "mx-2 my-1";
+        elps.textContent = "...";
+        return elps;
+      }
+
+      function createPagination() {
+        const container = document.getElementById("pagination");
+        container.innerHTML = "";
+
+        let start = Math.max(1, currentPage - 2);
+        let end = Math.min(totalPages, start + 4);
+
+        start = Math.max(1, end - 4);
+
+        for (let i = start; i <= end; i++) {
+          const li = document.createElement("li");
+          li.className = `page-item ${i === currentPage ? "active" : ""}`;
+
+          const a = document.createElement("a");
+          a.className = "page-link bg-body text-body";
+          a.href = "#";
+
+          if (i === start && start > 1) {
+            a.textContent = 1;
+            a.pageType = 1;
+          } else if (i === end && end < totalPages) {
+            a.textContent = totalPages;
+            a.pageType = -1;
+          } else {
+            a.textContent = i;
+            a.pageType = 0;
+          }
+
+          a.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (a.pageType === 1) currentPage = 1;
+            else if (a.pageType === -1) currentPage = totalPages;
+            else currentPage = i;
+
+            showPage(currentPage);
+            createPagination();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          });
+
+          if (a.pageType === -1) container.appendChild(newEllipsis());
+
+          li.appendChild(a);
+          container.appendChild(li);
+
+          if (a.pageType === 1) container.appendChild(newEllipsis());
+        }
+      }
+    </script>
+  </body>
+</html>
