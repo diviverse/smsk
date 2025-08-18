@@ -142,18 +142,6 @@
           updatePosition();
         }
         window.addEventListener("resize", updateSlideWidth);
-        updateSlideWidth();
-
-        document.addEventListener("visibilitychange", () => {
-          if (document.hidden) {
-            pauseAutoplay();
-          } else {
-            if (currentSlide < 1) currentSlide = 1;
-            if (currentSlide > imgcount) currentSlide = imgcount;
-            updatePosition(false);
-            resetAutoplay();
-          }
-        });
 
         let currentSlide = 0;
         let timer = null;
@@ -169,6 +157,17 @@
         function resetAutoplay() {
           startAutoplay();
         }
+
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden) {
+            pauseAutoplay();
+          } else {
+            if (currentSlide < 1) currentSlide = 1;
+            if (currentSlide > imgcount) currentSlide = imgcount;
+            updatePosition(false);
+            resetAutoplay();
+          }
+        });
 
         function updatePosition(animated = true) {
           track.style.transition = animated ? "transform 0.6s ease" : "none";
@@ -301,7 +300,7 @@
           resetAutoplay();
         });
 
-        updatePosition();
+        updateSlideWidth();
       }
 
       let currentPage = 1;
