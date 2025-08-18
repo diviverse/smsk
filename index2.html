@@ -349,6 +349,13 @@
         });
       }
 
+      function newEllipsis() {
+        const elps = document.createElement("span");
+        elps.className = "mx-2 my-1";
+        elps.textContent = "...";
+        return elps;
+      }
+
       function createPagination() {
         const container = document.getElementById("pagination");
         container.innerHTML = "";
@@ -385,8 +392,14 @@
             window.scrollTo({ top: 0, behavior: "smooth" });
           });
 
+          if (a.textContent === "Sona Git")
+            container.appendChild(newEllipsis());
+
           li.appendChild(a);
           container.appendChild(li);
+
+          if (a.textContent === "Başa Dön")
+            container.appendChild(newEllipsis());
         }
       }
     </script>
