@@ -28,12 +28,12 @@
           display: none;
         }
       </style>
-      <div class="p-4 text-align-center">
+      <div class="p-4 text-center">
         JavaScript is required to view this site.
       </div>
     </noscript>
 
-    <div id="loading" class="text-align-center p-4">Loading...</div>
+    <div id="loading" class="text-center p-4">Loading...</div>
     <div class="logo">S</div>
 
     <main class="pb-5">
@@ -63,15 +63,9 @@
       <a
         target="_blank"
         href="https://instagram.com/smsk.one/"
-        class="link-primary text-decoration-none"
+        class="link-primary link-offset-2 link-underline-opacity-0 link-underline-opacity-75-hover"
       >
-        <i class="bi bi-instagram"></i>
-      </a>
-      <a
-        target="_blank"
-        href="https://instagram.com/smsk.one/"
-        class="link-primary link-offset-2 link-underline-opacity-0 link-underline-opacity-75-hover ms-1"
-        >smsk.one</a
+        <span><i class="bi bi-instagram pe-1"></i>smsk.one</span></a
       >
     </div>
 
@@ -148,6 +142,7 @@
           updatePosition();
         }
         window.addEventListener("resize", updateSlideWidth);
+        updateSlideWidth();
 
         document.addEventListener("visibilitychange", () => {
           if (document.hidden) {
@@ -164,6 +159,7 @@
         let timer = null;
 
         function startAutoplay() {
+          if (imgcount <= 1) return;
           clearInterval(timer);
           timer = setInterval(safeNext, 4000);
         }
@@ -371,20 +367,17 @@
 
           const a = document.createElement("a");
           a.className = "page-link bg-body text-body";
+          a.textContent = i;
+          a.pageType = 0;
           a.href = "#";
 
-          if (i === start && start > 1) {
-            a.textContent = "Başa Dön";
-          } else if (i === end && end < totalPages) {
-            a.textContent = "Sona Git";
-          } else {
-            a.textContent = i;
-          }
+          if (i === start && start > 1) a.pageType = 1;
+          else if (i === end && end < totalPages) a.pageType = -1;
 
           a.addEventListener("click", (e) => {
             e.preventDefault();
-            if (a.textContent === "Başa Dön") currentPage = 1;
-            else if (a.textContent === "Sona Git") currentPage = totalPages;
+            if (a.pageType === 1) currentPage = 1;
+            else if (a.pageType === -1) currentPage = totalPages;
             else currentPage = i;
 
             showPage(currentPage);
@@ -392,14 +385,12 @@
             window.scrollTo({ top: 0, behavior: "smooth" });
           });
 
-          if (a.textContent === "Sona Git")
-            container.appendChild(newEllipsis());
+          if (a.pageType === -1) container.appendChild(newEllipsis());
 
           li.appendChild(a);
           container.appendChild(li);
 
-          if (a.textContent === "Başa Dön")
-            container.appendChild(newEllipsis());
+          if (a.pageType === 1) container.appendChild(newEllipsis());
         }
       }
     </script>
