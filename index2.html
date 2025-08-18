@@ -127,6 +127,7 @@
           img.src = obj.img;
           img.alt = obj.title || "Post image";
           img.draggable = false;
+          if (imgcount > 1) img.classList.add("grab");
           track.appendChild(img);
 
           const dot = document.createElement("button");
@@ -154,9 +155,6 @@
         function pauseAutoplay() {
           clearInterval(timer);
         }
-        function resetAutoplay() {
-          startAutoplay();
-        }
 
         document.addEventListener("visibilitychange", () => {
           if (document.hidden) {
@@ -165,7 +163,7 @@
             if (currentSlide < 1) currentSlide = 1;
             if (currentSlide > imgcount) currentSlide = imgcount;
             updatePosition(false);
-            resetAutoplay();
+            startAutoplay();
           }
         });
 
@@ -196,15 +194,17 @@
           updatePosition();
         }
 
-        function disableArrows() {
+        function disableArrows(inf = false) {
           arrowsDisabled = true;
           arrowLeft.classList.add("disabled");
           arrowRight.classList.add("disabled");
-          setTimeout(() => {
-            arrowsDisabled = false;
-            arrowLeft.classList.remove("disabled");
-            arrowRight.classList.remove("disabled");
-          }, 500);
+          if (!inf) {
+            setTimeout(() => {
+              arrowsDisabled = false;
+              arrowLeft.classList.remove("disabled");
+              arrowRight.classList.remove("disabled");
+            }, 500);
+          }
         }
         function safePrev() {
           if (arrowsDisabled) return;
@@ -217,88 +217,92 @@
           next();
         }
 
-        startAutoplay();
+        if (imgcount > 1) {
+          startAutoplay();
 
-        const pauseAreas = [arrowLeft, arrowRight, dots];
-        pauseAreas.forEach((el) => {
-          el.addEventListener("mouseenter", pauseAutoplay);
-          el.addEventListener("mouseleave", resetAutoplay);
-        });
+          const pauseAreas = [arrowLeft, arrowRight, dots];
+          pauseAreas.forEach((el) => {
+            el.addEventListener("mouseenter", pauseAutoplay);
+            el.addEventListener("mouseleave", startAutoplay);
+          });
 
-        let isHolding = false;
-        document.addEventListener("mousedown", () => {
-          isHolding = true;
-          pauseAutoplay();
-        });
-        document.addEventListener("mouseup", () => {
-          if (isHolding) {
-            isHolding = false;
-            resetAutoplay();
-          }
-        });
-        document.addEventListener("touchstart", () => {
-          isHolding = true;
-          pauseAutoplay();
-        });
-        document.addEventListener("touchend", () => {
-          if (isHolding) {
-            isHolding = false;
-            resetAutoplay();
-          }
-        });
+          let isHolding = false;
+          document.addEventListener("mousedown", () => {
+            isHolding = true;
+            pauseAutoplay();
+          });
+          document.addEventListener("mouseup", () => {
+            if (isHolding) {
+              isHolding = false;
+              startAutoplay();
+            }
+          });
+          document.addEventListener("touchstart", () => {
+            isHolding = true;
+            pauseAutoplay();
+          });
+          document.addEventListener("touchend", () => {
+            if (isHolding) {
+              isHolding = false;
+              startAutoplay();
+            }
+          });
 
-        arrowLeft.addEventListener("click", safePrev);
-        arrowRight.addEventListener("click", safeNext);
+          arrowLeft.addEventListener("click", safePrev);
+          arrowRight.addEventListener("click", safeNext);
 
-        let startX = 0,
-          isDragging = false;
-        slider.addEventListener("touchstart", (e) => {
-          pauseAutoplay();
-          startX = e.touches[0].clientX;
-          isDragging = true;
-          track.style.transition = "none";
-        });
-        slider.addEventListener("touchmove", (e) => {
-          if (!isDragging) return;
-          const delta = e.touches[0].clientX - startX;
-          track.style.transform = `translateX(${
-            (offsetX - currentSlide) * slideWidth + delta
-          }px)`;
-        });
-        slider.addEventListener("touchend", (e) => {
-          if (!isDragging) return;
-          isDragging = false;
-          const delta = e.changedTouches[0].clientX - startX;
-          if (Math.abs(delta) > slideWidth / 8) {
-            delta < 0 ? next() : prev();
-          } else {
-            updatePosition();
-          }
-          resetAutoplay();
-        });
+          let startX = 0,
+            isDragging = false;
+          slider.addEventListener("touchstart", (e) => {
+            pauseAutoplay();
+            startX = e.touches[0].clientX;
+            isDragging = true;
+            track.style.transition = "none";
+          });
+          slider.addEventListener("touchmove", (e) => {
+            if (!isDragging) return;
+            const delta = e.touches[0].clientX - startX;
+            track.style.transform = `translateX(${
+              (offsetX - currentSlide) * slideWidth + delta
+            }px)`;
+          });
+          slider.addEventListener("touchend", (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            const delta = e.changedTouches[0].clientX - startX;
+            if (Math.abs(delta) > slideWidth / 8) {
+              delta < 0 ? next() : prev();
+            } else {
+              updatePosition();
+            }
+            startAutoplay();
+          });
 
-        let mouseStart = 0;
-        slider.addEventListener("mousedown", (e) => {
-          pauseAutoplay();
-          mouseStart = e.clientX;
-          isDragging = true;
-          track.style.transition = "none";
-        });
-        slider.addEventListener("mousemove", (e) => {
-          if (!isDragging) return;
-          const delta = e.clientX - mouseStart;
-          track.style.transform = `translateX(${
-            (offsetX - currentSlide) * slideWidth + delta
-          }px)`;
-        });
-        slider.addEventListener("mouseup", (e) => {
-          if (!isDragging) return;
-          isDragging = false;
-          const delta = e.clientX - mouseStart;
-          if (Math.abs(delta) > slideWidth / 8) delta < 0 ? next() : prev();
-          else updatePosition();
-          resetAutoplay();
-        });
+          let mouseStart = 0;
+          slider.addEventListener("mousedown", (e) => {
+            pauseAutoplay();
+            mouseStart = e.clientX;
+            isDragging = true;
+            track.style.transition = "none";
+          });
+          slider.addEventListener("mousemove", (e) => {
+            if (!isDragging) return;
+            const delta = e.clientX - mouseStart;
+            track.style.transform = `translateX(${
+              (offsetX - currentSlide) * slideWidth + delta
+            }px)`;
+          });
+          slider.addEventListener("mouseup", (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            const delta = e.clientX - mouseStart;
+            if (Math.abs(delta) > slideWidth / 8) delta < 0 ? next() : prev();
+            else updatePosition();
+            startAutoplay();
+          });
+        } else {
+          disableArrows(true);
+        }
 
         updateSlideWidth();
       }
@@ -366,12 +370,18 @@
 
           const a = document.createElement("a");
           a.className = "page-link bg-body text-body";
-          a.textContent = i;
-          a.pageType = 0;
           a.href = "#";
 
-          if (i === start && start > 1) a.pageType = 1;
-          else if (i === end && end < totalPages) a.pageType = -1;
+          if (i === start && start > 1) {
+            a.textContent = 1;
+            a.pageType = 1;
+          } else if (i === end && end < totalPages) {
+            a.textContent = totalPages;
+            a.pageType = -1;
+          } else {
+            a.textContent = i;
+            a.pageType = 0;
+          }
 
           a.addEventListener("click", (e) => {
             e.preventDefault();
