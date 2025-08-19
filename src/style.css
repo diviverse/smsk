@@ -237,6 +237,7 @@ p.error {
   white-space: pre-line;
 }
 
+/* Keep for now */
 .bottom-bar {
   position: fixed;
   bottom: 0;
@@ -246,6 +247,10 @@ p.error {
   padding: 10px 0;
   box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
   z-index: 9;
+}
+
+.shadow-top {
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
 }
 
 #pagination {
