@@ -1,5 +1,5 @@
-{
-    "0": {
+[
+    {
         "id": 1,
         "title": "Ho\u015fbuldum AFL!",
         "date": "2025-08-07",
@@ -7,7 +7,7 @@
         "img": "src\/1.jpg",
         "vis": 1
     },
-    "1": {
+    {
         "id": 2,
         "title": "Okulda \u0130lk G\u00fcn\u00fcm",
         "date": "2025-09-08",
@@ -15,4 +15,4 @@
         "img": "src\/2.jpg",
         "vis": 1
     }
-}
+]
