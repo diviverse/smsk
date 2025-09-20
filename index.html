@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     <meta property="og:title" content="My Gallery" />
-    <meta property="og:url" content="https://gallery.smsk.one/index3.html" />
+    <meta property="og:url" content="https://gallery.smsk.one/" />
     <meta name="description" content="My Gallery – Ege Şimşek" />
     <meta property="og:description" content="My Gallery – Ege Şimşek" />
     <meta property="og:type" content="website" />
@@ -81,8 +81,7 @@
 
       (async () => {
         try {
-          const jsonURL =
-            "https://raw.githubusercontent.com/diviverse/smsk/main/src/.json";
+          const jsonURL = "/src/.json";
           const posts = await fetch(jsonURL)
             .then((r) => {
               if (!r.ok) throw new Error("Oops! Something went wrong.");
@@ -363,7 +362,6 @@
             pauseAutoplay();
             isDragging = true;
             startX = e.clientX;
-            track.style.transition = "none";
 
             window.addEventListener("mousemove", onMove);
             window.addEventListener("mouseup", onEnd);
@@ -374,7 +372,6 @@
             pauseAutoplay();
             isDragging = true;
             startX = e.touches[0].clientX;
-            track.style.transition = "none";
 
             window.addEventListener("touchmove", onMove, { passive: true });
             window.addEventListener("touchend", onEnd);
