@@ -72,7 +72,7 @@
     <script>
       function crash() {
         document.body.innerHTML =
-          '<p class="error">\
+          '<p class="error mt-5">\
                 Sorry for the inconvenience.<br />The website is under construction.\
               </p>\
               <div class="logo">S</div>';
@@ -82,7 +82,7 @@
 
       (async () => {
         try {
-          const jsonURL = "src/.json";
+          const jsonURL = "https://gallery.smsk.one/src/.json";
           const posts = await fetch(jsonURL)
             .then((r) => {
               if (!r.ok) throw new Error("Oops! Something went wrong.");
