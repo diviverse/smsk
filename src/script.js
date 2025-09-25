@@ -1,6 +1,6 @@
-function crash(msg = "The website is under construction.") {
+function crash() {
   document.body.innerHTML = `<p class="error mt-5">\
-      Sorry for the inconvenience.<br />${msg}\
+      Sorry for the inconvenience.<br />The website is under construction.\
     </p>\
     <div class="logo">S</div>`;
   document.body.classList.add("error");
@@ -8,14 +8,15 @@ function crash(msg = "The website is under construction.") {
 
 (async () => {
   try {
-    const jsonURL = "src/.json";
+    const jsonURL =
+      "https://raw.githubusercontent.com/diviverse/smsk/main/src/.json";
     const posts = await fetch(jsonURL)
       .then((r) => {
         if (!r.ok) throw new Error("Oops! Something went wrong.");
         return r.json();
       })
-      .catch((err) => {
-        crash(err);
+      .catch(() => {
+        crash();
       });
 
     const visiblePosts = posts
@@ -23,15 +24,14 @@ function crash(msg = "The website is under construction.") {
       .sort((a, b) => new Date(b.date) - new Date(a.date));
 
     if (visiblePosts.length === 0) {
-      crash("No posts to show.");
+      crash();
     } else {
       buildSlider(visiblePosts.slice(0, 5));
       buildPosts(visiblePosts);
     }
   } catch (err) {
     console.error("Oops! Something went wrong.");
-    console.error(err);
-    crash(err.message);
+    crash();
   } finally {
     document.getElementById("loading")?.remove();
   }
