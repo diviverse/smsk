@@ -9,7 +9,7 @@ function crash() {
 
 (async () => {
   try {
-    const jsonURL = "https://raw.githubusercontent.com/diviverse/smsk/main/src/.json";
+    const jsonURL = ".json";
     const posts = await fetch(jsonURL)
       .then((r) => {
         if (!r.ok) throw new Error("Oops! Something went wrong.");
@@ -115,10 +115,7 @@ function buildSlider(images) {
   function updateDots() {
     dots.querySelectorAll(".dot").forEach((d, i) => {
       d.classList.toggle("active", i === currentSlide);
-      d.setAttribute(
-        "aria-current",
-        i === currentSlide ? "true" : "false"
-      );
+      d.setAttribute("aria-current", i === currentSlide ? "true" : "false");
     });
   }
 
@@ -152,9 +149,10 @@ function buildSlider(images) {
   }
 
   if (imgcount > 1) {
+    let isHolding = false;
+
     startAutoplay();
 
-    // Pause autoplay on hover/focus
     const pauseAreas = [arrowLeft, arrowRight, dots];
     pauseAreas.forEach((el) => {
       el.addEventListener("mouseenter", pauseAutoplay);
@@ -164,7 +162,6 @@ function buildSlider(images) {
     let isDragging = false;
     let startX = 0;
 
-    // Drag/Swipe Handlers
     function onMove(e) {
       if (!isDragging) return;
       const currentX = e.type.includes("touch")
@@ -179,6 +176,9 @@ function buildSlider(images) {
     function onEnd(e) {
       if (!isDragging) return;
       isDragging = false;
+
+      arrowLeft.classList.add("opacity-100");
+      arrowRight.classList.add("opacity-100");
 
       const endX = e.type.includes("touch")
         ? e.changedTouches[0].clientX
@@ -197,7 +197,6 @@ function buildSlider(images) {
       window.removeEventListener("touchend", onEnd);
     }
 
-    // Mouse drag
     slider.addEventListener("mousedown", (e) => {
       pauseAutoplay();
       isDragging = true;
@@ -207,21 +206,21 @@ function buildSlider(images) {
       window.addEventListener("mouseup", onEnd);
     });
 
-    // Touch drag
     slider.addEventListener("touchstart", (e) => {
       pauseAutoplay();
       isDragging = true;
       startX = e.touches[0].clientX;
 
+      arrowLeft.classList.add("opacity-100");
+      arrowRight.classList.add("opacity-100");
+
       window.addEventListener("touchmove", onMove, { passive: true });
       window.addEventListener("touchend", onEnd);
     });
 
-    // Arrow buttons
     arrowLeft.addEventListener("click", () => changeBy(-1, -1));
     arrowRight.addEventListener("click", () => changeBy(1, 1));
 
-    // Autoplay pause/resume on mouse/touch hold outside arrows
     document.addEventListener("mousedown", () => {
       isHolding = true;
       pauseAutoplay();
