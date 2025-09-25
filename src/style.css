@@ -119,7 +119,7 @@ p.error {
 }
 
 .dot.active {
-  transform: scale(1.3);
+  transform: scale(1.5);
 }
 
 .dot:focus {
@@ -168,7 +168,7 @@ p.error {
   }
 
   p.error {
-    padding: 60px;
+    padding-top: 15px;
   }
 
   .arrow {
