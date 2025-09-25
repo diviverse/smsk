@@ -177,9 +177,6 @@ function buildSlider(images) {
       if (!isDragging) return;
       isDragging = false;
 
-      arrowLeft.classList.add("opacity-100");
-      arrowRight.classList.add("opacity-100");
-
       const endX = e.type.includes("touch")
         ? e.changedTouches[0].clientX
         : e.clientX;
@@ -210,9 +207,6 @@ function buildSlider(images) {
       pauseAutoplay();
       isDragging = true;
       startX = e.touches[0].clientX;
-
-      arrowLeft.classList.add("opacity-100");
-      arrowRight.classList.add("opacity-100");
 
       window.addEventListener("touchmove", onMove, { passive: true });
       window.addEventListener("touchend", onEnd);
