@@ -73,7 +73,6 @@ p.error {
   outline: none;
 }
 
-.slider:active .arrow,
 .slider:hover .arrow {
   opacity: 1;
 }
@@ -160,16 +159,24 @@ p.error {
 }
 
 @media (max-width: 767px) {
-  .dot.active {
-    background: #fff;
-  }
-
   body.error {
     margin: 0;
     height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: start;
+  }
+
+  p.error {
+    padding: 60px;
+  }
+
+  .arrow {
+    opacity: 1;
+  }
+
+  .dot.active {
+    background: #fff;
   }
 }
 
