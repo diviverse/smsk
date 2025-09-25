@@ -167,6 +167,10 @@ p.error {
     align-items: start;
   }
 
+  p.error {
+    padding: 20px 60px;
+  }
+
   .arrow {
     opacity: 1;
   }
