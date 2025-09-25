@@ -8,7 +8,7 @@ function crash(msg = "The website is under construction.") {
 
 (async () => {
   try {
-    const jsonURL = ".json";
+    const jsonURL = "src/.json";
     const posts = await fetch(jsonURL)
       .then((r) => {
         if (!r.ok) throw new Error("Oops! Something went wrong.");
