@@ -1,9 +1,9 @@
 function crash() {
   document.body.innerHTML =
     '<p class="error mt-5">\
-          Sorry for the inconvenience.<br />The website is under construction.\
-        </p>\
-        <div class="logo">S</div>';
+      Sorry for the inconvenience.<br />The website is under construction.\
+    </p>\
+    <div class="logo">S</div>';
   document.body.classList.add("error");
 }
 
