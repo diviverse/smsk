@@ -70,6 +70,7 @@ p.error {
   outline: none;
 }
 
+.slider:active .arrow,
 .slider:hover .arrow {
   opacity: 1;
 }
