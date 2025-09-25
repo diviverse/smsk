@@ -15,7 +15,7 @@ function crash(msg = "The website is under construction.") {
         return r.json();
       })
       .catch((err) => {
-        crash(err.message);
+        crash(err);
       });
 
     const visiblePosts = posts
@@ -168,7 +168,7 @@ function buildSlider(images) {
         : e.clientX;
       const delta = currentX - startX;
       track.style.transform = `translateX(${
-        (offsetX - currentSlide) * slideWidth + delta * 1.3
+        (offsetX - currentSlide) * slideWidth + delta * 1.5
       }px)`;
     }
 
