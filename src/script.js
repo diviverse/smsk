@@ -1,7 +1,6 @@
-function crash(msg = "") {
+function crash(msg = "The website is under construction.") {
   document.body.innerHTML = `<p class="error mt-5">\
-      Sorry for the inconvenience.<br />The website is under construction.\
-      <br />${msg}\
+      Sorry for the inconvenience.<br />${msg}\
     </p>\
     <div class="logo">S</div>`;
   document.body.classList.add("error");
@@ -15,8 +14,8 @@ function crash(msg = "") {
         if (!r.ok) throw new Error("Oops! Something went wrong.");
         return r.json();
       })
-      .catch(() => {
-        crash();
+      .catch((err) => {
+        crash(err.message);
       });
 
     const visiblePosts = posts
@@ -24,7 +23,7 @@ function crash(msg = "") {
       .sort((a, b) => new Date(b.date) - new Date(a.date));
 
     if (visiblePosts.length === 0) {
-      crash();
+      crash("No posts to show.");
     } else {
       buildSlider(visiblePosts.slice(0, 5));
       buildPosts(visiblePosts);
@@ -32,7 +31,7 @@ function crash(msg = "") {
   } catch (err) {
     console.error("Oops! Something went wrong.");
     console.error(err);
-    crash();
+    crash(err.message);
   } finally {
     document.getElementById("loading")?.remove();
   }
