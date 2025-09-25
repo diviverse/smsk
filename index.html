@@ -81,7 +81,7 @@
 
       (async () => {
         try {
-          const jsonURL = "https://raw.githubusercontent.com/diviverse/smsk/main/.json";
+          const jsonURL = "https://raw.githubusercontent.com/diviverse/smsk/main/src/.json";
           const posts = await fetch(jsonURL)
             .then((r) => {
               if (!r.ok) throw new Error("Oops! Something went wrong.");
