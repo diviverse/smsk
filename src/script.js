@@ -19,6 +19,7 @@ function crash() {
         crash();
       });
 
+    console.log(posts);
     const visiblePosts = posts
       .filter((p) => p.vis === 1)
       .sort((a, b) => new Date(b.date) - new Date(a.date));
