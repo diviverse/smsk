@@ -30,8 +30,12 @@ function crash() {
       buildPosts(visiblePosts);
     }
   } catch (err) {
-    console.error("Oops! Something went wrong.");
-    crash();
+    if (new URLSearchParams(location.search).get("debug") === "1") {
+      console.error(err);
+    } else {
+      console.error("Oops! Something went wrong.");
+      crash();
+    }
   } finally {
     document.getElementById("loading")?.remove();
   }
