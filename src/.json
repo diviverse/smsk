@@ -1,4 +1,5 @@
-[{
+[
+    {
         "id": 1,
         "title": "Ho\u015fbuldum AFL!",
         "date": "2025-08-07",
@@ -20,6 +21,6 @@
         "date": "2025-10-05",
         "body": "Bug\u00fcn karde\u015fim beni g\u00fcn\u00fcbirlik ziyarete geldi. \u0130\u015fte okul \u00f6n\u00fcnde birlikte foto\u011fraf\u0131m\u0131z...",
         "img": "src\/2025-10-05.jpg",
-        "vis": 1
+        "vis": 0
     }
 ]
