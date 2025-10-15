@@ -643,6 +643,7 @@
           showLoading(false);
         }
       }
+
       async function conjugateVerb(verb, tenses) {
         try {
           const apiURL = `https://german-verbs-api.onrender.com/german-verbs-api?verb=${encodeURIComponent(
@@ -652,17 +653,16 @@
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
           const data = await response.json();
-
-          // API returns its content inside data.tenses, not data.data
-          const tensesData = data.tenses || data.data || {};
+          const tensesData = data.data || data.tenses || {};
 
           const result = {};
           tenses.forEach((t) => {
             if (tensesData[t]) {
-              // Extract only the verb form (remove pronoun if included)
-              result[t] = tensesData[t].map((line) =>
-                line.replace(/^(ich|du|er\/sie\/es|wir|ihr|sie\/Sie)\s+/i, "")
+              const tenseObj = tensesData[t];
+              const combinedForms = Object.values(tenseObj).map((parts) =>
+                parts.join(" ")
               );
+              result[t] = combinedForms;
             }
           });
 
