@@ -798,42 +798,45 @@
           FUTUR2: "Futur II",
         };
 
-        const allTenses = Object.keys(tenseNames);
+        const verbs = Object.keys(conjugationData);
 
-        // Prepare header row
-        const header = ["Verb", "Türkisch"];
-        allTenses.forEach((tense) => {
-          pronouns.forEach((pronoun) => {
-            header.push(`${tenseNames[tense]} - ${pronoun}`);
-          });
+        // Prepare header row: first cell empty, then verbs
+        const header = ["Tense / Pronomen"];
+        verbs.forEach((verb) => {
+          header.push(
+            verb +
+              (conjugationData[verb].turkish
+                ? ` (${conjugationData[verb].turkish})`
+                : "")
+          );
         });
 
         const wsData = [header];
 
-        // Fill rows for each verb
-        Object.keys(conjugationData).forEach((verb) => {
-          const data = conjugationData[verb];
-          const row = [verb, data.turkish || ""];
-
-          allTenses.forEach((tense) => {
-            const forms = data.conjugations[tense] || [];
-            pronouns.forEach((_, i) => {
-              row.push(forms[i] || "");
+        // For each tense × pronoun, create a row
+        Object.keys(tenseNames).forEach((tense) => {
+          pronouns.forEach((pronoun, idx) => {
+            const row = [`${tenseNames[tense]} - ${pronoun}`];
+            verbs.forEach((verb) => {
+              const forms = conjugationData[verb].conjugations[tense] || [];
+              row.push(forms[idx] || "");
             });
+            wsData.push(row);
           });
-
-          wsData.push(row);
         });
 
         const ws = XLSX.utils.aoa_to_sheet(wsData);
 
-        // Optional styling: bold header
-        const range = XLSX.utils.decode_range(ws["!ref"]);
-        for (let C = range.s.c; C <= range.e.c; ++C) {
-          const cellAddress = XLSX.utils.encode_cell({ r: 0, c: C });
-          if (!ws[cellAddress]) continue;
-          ws[cellAddress].s = { font: { bold: true } };
-        }
+        // Set column widths to auto-fit
+        const colWidths = wsData[0].map((_, colIdx) => {
+          let maxLength = 10;
+          wsData.forEach((row) => {
+            const cell = row[colIdx] || "";
+            if (cell.length > maxLength) maxLength = cell.length;
+          });
+          return { wch: maxLength + 2 }; // extra padding
+        });
+        ws["!cols"] = colWidths;
 
         XLSX.utils.book_append_sheet(wb, ws, "Konjugationen");
         XLSX.writeFile(wb, "verb_konjugationen.xlsx");
