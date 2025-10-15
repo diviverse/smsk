@@ -788,7 +788,6 @@
         }
 
         const wb = XLSX.utils.book_new();
-        const wsData = [];
         const pronouns = ["ich", "du", "er/sie/es", "wir", "ihr", "sie/Sie"];
         const tenseNames = {
           PRASENS: "Präsens",
@@ -799,26 +798,43 @@
           FUTUR2: "Futur II",
         };
 
-        // Header row
-        wsData.push(["Verb", "Türkisch", "Zeit", "Pronomen", "Konjugation"]);
+        const allTenses = Object.keys(tenseNames);
 
-        Object.keys(conjugationData).forEach((verb) => {
-          const data = conjugationData[verb];
-
-          Object.keys(data.conjugations).forEach((tense) => {
-            data.conjugations[tense].forEach((form, index) => {
-              wsData.push([
-                verb,
-                data.turkish || "",
-                tenseNames[tense],
-                pronouns[index],
-                form,
-              ]);
-            });
+        // Prepare header row
+        const header = ["Verb", "Türkisch"];
+        allTenses.forEach((tense) => {
+          pronouns.forEach((pronoun) => {
+            header.push(`${tenseNames[tense]} - ${pronoun}`);
           });
         });
 
+        const wsData = [header];
+
+        // Fill rows for each verb
+        Object.keys(conjugationData).forEach((verb) => {
+          const data = conjugationData[verb];
+          const row = [verb, data.turkish || ""];
+
+          allTenses.forEach((tense) => {
+            const forms = data.conjugations[tense] || [];
+            pronouns.forEach((_, i) => {
+              row.push(forms[i] || "");
+            });
+          });
+
+          wsData.push(row);
+        });
+
         const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+        // Optional styling: bold header
+        const range = XLSX.utils.decode_range(ws["!ref"]);
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+          const cellAddress = XLSX.utils.encode_cell({ r: 0, c: C });
+          if (!ws[cellAddress]) continue;
+          ws[cellAddress].s = { font: { bold: true } };
+        }
+
         XLSX.utils.book_append_sheet(wb, ws, "Konjugationen");
         XLSX.writeFile(wb, "verb_konjugationen.xlsx");
         showAlert("Excel-Export erfolgreich!", "success");
