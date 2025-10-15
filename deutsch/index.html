@@ -246,7 +246,7 @@
         </div>
 
         <!-- Right Column - Tense Selection and Output -->
-        <div class="col-lg-8">
+        <div class="col-lg-8 notranslate">
           <!-- Tense Selection -->
           <div class="card mb-4">
             <div class="card-header bg-info text-white">
@@ -798,9 +798,18 @@
           FUTUR2: "Futur II",
         };
 
+        const selectedTenses = getSelectedTenses(); // only selected
+        if (selectedTenses.length === 0) {
+          showAlert(
+            "Bitte wählen Sie mindestens eine Zeitform aus!",
+            "warning"
+          );
+          return;
+        }
+
         const verbs = Object.keys(conjugationData);
 
-        // Prepare header row: first cell empty, then verbs
+        // Header row: first cell empty, then verbs
         const header = ["Tense / Pronomen"];
         verbs.forEach((verb) => {
           header.push(
@@ -813,8 +822,8 @@
 
         const wsData = [header];
 
-        // For each tense × pronoun, create a row
-        Object.keys(tenseNames).forEach((tense) => {
+        // For each selected tense × pronoun
+        selectedTenses.forEach((tense) => {
           pronouns.forEach((pronoun, idx) => {
             const row = [`${tenseNames[tense]} - ${pronoun}`];
             verbs.forEach((verb) => {
@@ -823,18 +832,19 @@
             });
             wsData.push(row);
           });
+          wsData.push([]); // blank row between tenses
         });
 
         const ws = XLSX.utils.aoa_to_sheet(wsData);
 
-        // Set column widths to auto-fit
+        // Auto-fit column widths
         const colWidths = wsData[0].map((_, colIdx) => {
           let maxLength = 10;
           wsData.forEach((row) => {
             const cell = row[colIdx] || "";
             if (cell.length > maxLength) maxLength = cell.length;
           });
-          return { wch: maxLength + 2 }; // extra padding
+          return { wch: maxLength + 2 };
         });
         ws["!cols"] = colWidths;
 
