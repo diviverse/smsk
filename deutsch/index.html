@@ -742,6 +742,8 @@
 
       // Export functions
       function exportAsText() {
+        conjugateAllVerbs();
+
         if (Object.keys(conjugationData).length === 0) {
           showAlert("Keine Konjugationsdaten vorhanden!", "warning");
           return;
@@ -782,6 +784,8 @@
       }
 
       function exportAsExcel() {
+        conjugateAllVerbs();
+
         if (Object.keys(conjugationData).length === 0) {
           showAlert("Keine Konjugationsdaten vorhanden!", "warning");
           return;
