@@ -649,7 +649,7 @@
           const apiURL = `https://german-verbs-api.onrender.com/german-verbs-api?verb=${encodeURIComponent(
             verb
           )}`;
-          const response = await fetch(encodeURIComponent(apiURL));
+          const response = await fetch(apiURL);
 
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
