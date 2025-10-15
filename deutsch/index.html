@@ -788,6 +788,7 @@
         }
 
         const wb = XLSX.utils.book_new();
+        const wsData = [];
         const pronouns = ["ich", "du", "er/sie/es", "wir", "ihr", "sie/Sie"];
         const tenseNames = {
           PRASENS: "Präsens",
@@ -798,29 +799,27 @@
           FUTUR2: "Futur II",
         };
 
+        // Header row
+        wsData.push(["Verb", "Türkisch", "Zeit", "Pronomen", "Konjugation"]);
+
         Object.keys(conjugationData).forEach((verb) => {
           const data = conjugationData[verb];
-          const wsData = [];
-
-          // Header
-          wsData.push([`${verb}${data.turkish ? ` (${data.turkish})` : ""}`]);
-          wsData.push([]);
 
           Object.keys(data.conjugations).forEach((tense) => {
-            wsData.push([tenseNames[tense]]);
-            wsData.push(["Pronomen", "Konjugation"]);
-
             data.conjugations[tense].forEach((form, index) => {
-              wsData.push([pronouns[index], form]);
+              wsData.push([
+                verb,
+                data.turkish || "",
+                tenseNames[tense],
+                pronouns[index],
+                form,
+              ]);
             });
-
-            wsData.push([]);
           });
-
-          const ws = XLSX.utils.aoa_to_sheet(wsData);
-          XLSX.utils.book_append_sheet(wb, ws, verb);
         });
 
+        const ws = XLSX.utils.aoa_to_sheet(wsData);
+        XLSX.utils.book_append_sheet(wb, ws, "Konjugationen");
         XLSX.writeFile(wb, "verb_konjugationen.xlsx");
         showAlert("Excel-Export erfolgreich!", "success");
       }
