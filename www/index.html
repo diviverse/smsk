@@ -1,1 +1,201 @@
-hi
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ege Eren Şimşek - Student & Math Olympiad Trainee</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script>
+      function detectLanguage() {
+        const userLang = navigator.language || navigator.userLanguage;
+        const lang = userLang.startsWith('tr') ? 'tr' : 'en';
+        return lang;
+      }
+      
+      window.addEventListener('DOMContentLoaded', function() {
+        const savedLang = localStorage.getItem('preferredLanguage') || detectLanguage();
+        setLanguage(savedLang);
+      });
+      
+      function setLanguage(lang) {
+        localStorage.setItem('preferredLanguage', lang);
+        document.documentElement.lang = lang;
+        
+        document.querySelectorAll('[data-lang]').forEach(element => {
+          const key = element.getAttribute('data-lang');
+          if (translations[lang] && translations[lang][key]) {
+            element.textContent = translations[lang][key];
+          }
+        });
+        
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+          btn.classList.remove('active');
+          if (btn.getAttribute('data-lang') === lang) {
+            btn.classList.add('active');
+          }
+        });
+      }
+      
+      const translations = {
+        en: {
+          'nav-home': 'Home',
+          'nav-about': 'About',
+          'nav-blog': 'Blog',
+          'hero-title': 'Ege Eren Şimşek',
+          'hero-subtitle': '14 Years Old • Math Olympiad Trainee • Future Developer',
+          'hero-desc': 'Training for World Mathematics Olympiads while learning web development and AI',
+          'about-title': 'About Me',
+          'about-text': 'Hello! I\'m Ege, a 14-year-old student at Atatürk Fen Lisesi. I\'m passionate about mathematics and programming. My goal is to become a web and software developer while competing in mathematics olympiads. I dream of creating incredible AI systems that can help people learn and grow.',
+          'goals-title': 'My Goals',
+          'goal-1': 'Compete in International Mathematics Olympiads',
+          'goal-2': 'Become a skilled web & software developer',
+          'goal-3': 'Create innovative AI systems',
+          'interests-title': 'My Interests',
+          'interest-1': 'Mathematics & Problem Solving',
+          'interest-2': 'Web Development & Programming',
+          'interest-3': 'Artificial Intelligence',
+          'interest-4': 'Creating Educational Tools',
+          'blog-title': 'Blog',
+          'footer-text': '© 2025 Ege Eren Şimşek. Built with passion for learning.'
+        }, tr: {
+          'nav-home': 'Ana Sayfa',
+          'nav-about': 'Hakkımda',
+          'nav-blog': 'Blog',
+          'hero-title': 'Ege Eren Şimşek',
+          'hero-subtitle': '14 Yaşında • Matematik Olimpiyatı Adayı • Geleceğin Geliştiricisi',
+          'hero-desc': 'Dünya Matematik Olimpiyatları için hazırlanırken web geliştirme ve yapay zekâ öğreniyorum',
+          'about-title': 'Hakkımda',
+          'about-text': 'Merhaba! Ben Ege, 14 yaşındayım ve Atatürk Fen Lisesi\'nde okuyorum. Matematik ve programlamaya tutkuyla bağlıyım. Hedefim matematik olimpiyatlarında yarışırken aynı zamanda web ve yazılım geliştirici olmak. İnsanların öğrenmesine ve gelişmesine yardımcı olacak inanılmaz yapay zekâ sistemleri yaratmayı hayal ediyorum.',
+          'goals-title': 'Hedeflerim',
+          'goal-1': 'Uluslararası Matematik Olimpiyatlarında yarışmak',
+          'goal-2': 'Yetenekli bir web & yazılım geliştirici olmak',
+          'goal-3': 'Yenilikçi yapay zekâ sistemleri yaratmak',
+          'interests-title': 'İlgi Alanlarım',
+          'interest-1': 'Matematik & Problem Çözme',
+          'interest-2': 'Web Geliştirme & Programlama',
+          'interest-3': 'Yapay Zekâ',
+          'interest-4': 'Eğitim Araçları Yaratmak',
+          'blog-title': 'Blog',
+          'footer-text': '© 2025 Ege Eren Şimşek. Öğrenme tutkusuyla yapıldı.'
+        }
+      };
+    </script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand logo" href="#home">S</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#home" data-lang="nav-home">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#about" data-lang="nav-about">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://gallery.smsk.one/" target="_blank" data-lang="nav-blog">Blog</a>
+            </li>
+          </ul>
+          <div class="language-switcher">
+            <button class="btn btn-sm btn-outline-light lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
+            <button class="btn btn-sm btn-outline-light lang-btn" data-lang="tr" onclick="setLanguage('tr')">TR</button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <section id="home" class="hero-section">
+      <div class="container text-center">
+        <div class="hero-content">
+          <h1 class="display-1 fw-bold mb-4" data-lang="hero-title">Ege Eren Şimşek</h1>
+          <p class="lead mb-4" data-lang="hero-subtitle">14 Years Old • Math Olympiad Trainee • Future Developer</p>
+          <p class="mb-5" data-lang="hero-desc">Training for World Mathematics Olympiads while learning web development and AI</p>
+          <a href="#about" class="btn btn-primary btn-lg">Learn More</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="py-5">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6 mb-4 mb-lg-0">
+            <h2 class="display-4 fw-bold mb-4" data-lang="about-title">About Me</h2>
+            <p class="lead mb-4" data-lang="about-text">Hello! I'm Ege, a 14-year-old student at Atatürk Fen Lisesi. I'm passionate about mathematics and programming. My goal is to become a web and software developer while competing in mathematics olympiads. I dream of creating incredible AI systems that can help people learn and grow.</p>
+            
+            <h3 class="h4 mb-3" data-lang="goals-title">My Goals</h3>
+            <ul class="list-unstyled mb-4">
+              <li class="mb-2">🎯 <span data-lang="goal-1">Compete in International Mathematics Olympiads</span></li>
+              <li class="mb-2">💻 <span data-lang="goal-2">Become a skilled web & software developer</span></li>
+              <li class="mb-2">🤖 <span data-lang="goal-3">Create innovative AI systems</span></li>
+            </ul>
+            
+            <h3 class="h4 mb-3" data-lang="interests-title">My Interests</h3>
+            <div class="row">
+              <div class="col-sm-6">
+                <ul class="list-unstyled">
+                  <li class="mb-2">📊 <span data-lang="interest-1">Mathematics & Problem Solving</span></li>
+                  <li class="mb-2">🌐 <span data-lang="interest-2">Web Development & Programming</span></li>
+                </ul>
+              </div>
+              <div class="col-sm-6">
+                <ul class="list-unstyled">
+                  <li class="mb-2">🧠 <span data-lang="interest-3">Artificial Intelligence</span></li>
+                  <li class="mb-2">🎓 <span data-lang="interest-4">Creating Educational Tools</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="bg-dark text-light py-4">
+      <div class="container text-center">
+        <p class="mb-0" data-lang="footer-text">© 2025 Ege Eren Şimşek. Built with passion for learning.</p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        });
+      });
+      
+      window.addEventListener('scroll', function() {
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+        
+        let current = '';
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.clientHeight;
+          if (scrollY >= (sectionTop - 200)) {
+            current = section.getAttribute('id');
+          }
+        });
+        
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + current) {
+            link.classList.add('active');
+          }
+        });
+      }); 
+    </script>
+  </body>
+</html>
