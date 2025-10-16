@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Deutsche Verb Konjugator</title>
+    <meta
+      name="description"
+      content="Professionelle Verbkonjugation für Deutschlernende."
+    />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <script>
+      (function () {
+        const stored = localStorage.getItem("theme");
+        const prefersDark =
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const theme = stored || (prefersDark ? "dark" : "light");
+        if (theme === "dark") document.documentElement.classList.add("dark");
+      })();
+    </script>
+
+    <style>
+      :root {
+        --bg: #f8f9fa;
+        --card: #ffffff;
+        --text: #2c3e50;
+        --primary: #2c3e50;
+        --secondary: #3498db;
+        --accent: #e74c3c;
+        --muted: #6c757d;
+        --surface-2: #f1f5f9;
+      }
+      html.dark {
+        --bg: #0b1220;
+        --card: #0f1724;
+        --text: #e6eef6;
+        --primary: #cfe3ff;
+        --secondary: #5ab0ff;
+        --accent: #ff6b6b;
+        --muted: #98a3b3;
+        --surface-2: #0b122a;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      p,
+      label,
+      strong,
+      .form-text,
+      .text-muted {
+        color: var(--text) !important;
+      }
+
+      .header {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: #fff;
+        padding: 1.6rem 0;
+        margin-bottom: 1.5rem;
+      }
+
+      .card {
+        border: none;
+        border-radius: 12px;
+        background: var(--card);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+      }
+
+      .verb-item {
+        background: var(--card);
+        border-left: 4px solid var(--secondary);
+        padding: 0.9rem;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .conjugation-table {
+        background: var(--card);
+        border-radius: 10px;
+        box-shadow: none;
+      }
+
+      .conjugation-table th {
+        font-weight: 700;
+        color: #fff;
+      }
+
+      .btn-custom {
+        border-radius: 24px;
+        padding: 0.45rem 1.25rem;
+        font-weight: 600;
+      }
+
+      .btn-primary-custom {
+        background: var(--secondary);
+        border: none;
+        color: #fff;
+      }
+
+      .btn-success-custom {
+        background: var(--accent);
+        border: none;
+        color: #fff;
+      }
+
+      .loading {
+        display: none;
+        text-align: center;
+        padding: 1.2rem;
+      }
+
+      .tense-checkbox {
+        margin-right: 1rem;
+        margin-bottom: 0.4rem;
+      }
+
+      th.tense-header[data-tense="PRASENS"] {
+        background: #2b6cb0;
+      }
+
+      th.tense-header[data-tense="PERFEKT"] {
+        background: #1f6f5c;
+      }
+
+      th.tense-header[data-tense="PRATERITUM"] {
+        background: #8a4baf;
+      }
+
+      th.tense-header[data-tense="PLUSQUAMPERFEKT"] {
+        background: #d97706;
+      }
+
+      th.tense-header[data-tense="FUTUR1"] {
+        background: #0ea5e9;
+      }
+
+      th.tense-header[data-tense="FUTUR2"] {
+        background: #ef4444;
+      }
+
+      html.dark th.tense-header[data-tense="PRASENS"] {
+        background: #3b82f6;
+      }
+
+      html.dark th.tense-header[data-tense="PERFEKT"] {
+        background: #14b8a6;
+      }
+
+      html.dark th.tense-header[data-tense="PRATERITUM"] {
+        background: #a78bfa;
+      }
+
+      html.dark th.tense-header[data-tense="PLUSQUAMPERFEKT"] {
+        background: #f59e0b;
+      }
+
+      html.dark th.tense-header[data-tense="FUTUR1"] {
+        background: #38bdf8;
+      }
+
+      html.dark th.tense-header[data-tense="FUTUR2"] {
+        background: #f87171;
+      }
+
+      .mobile-card .card-header {
+        background: var(--secondary);
+        color: #fff;
+        font-weight: 700;
+      }
+
+      .mobile-card .accordion-button {
+        font-weight: 700;
+      }
+
+      @media (max-width: 991.98px) {
+        .btn-custom {
+          width: 100%;
+          margin-bottom: 0.5rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="container">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h1 class="h4 mb-0">
+              <i class="fas fa-book-open"></i> Deutsche Verb Konjugator
+            </h1>
+            <small class="text-white-50"
+              >Professionelle Verbkonjugation für Deutschlernende</small
+            >
+          </div>
+          <div class="d-flex gap-2 align-items-center">
+            <div class="form-check form-switch text-white">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="themeToggle"
+              />
+              <label
+                class="form-check-label text-white-50 ms-2"
+                for="themeToggle"
+                >Dark</label
+              >
+            </div>
+            <button
+              class="btn btn-outline-light btn-custom"
+              onclick="showHelp()"
+            >
+              <i class="fas fa-question-circle"></i> Hilfe
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container mb-5">
+      <div class="row">
+        <div class="col-lg-4 mb-4">
+          <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+              <strong
+                ><i class="fas fa-plus-circle"></i> Verb Hinzufügen</strong
+              >
+            </div>
+            <div class="card-body">
+              <form id="verbForm">
+                <div class="mb-3">
+                  <label for="verbInput" class="form-label"
+                    >Verb (Infinitiv)</label
+                  >
+                  <input
+                    id="verbInput"
+                    class="form-control"
+                    placeholder="z.B. gehen, machen, lernen"
+                    autocapitalize="off"
+                    autocorrect="off"
+                    spellcheck="false"
+                    inputmode="text"
+                  />
+                  <div class="form-text">
+                    Geben Sie ein deutsches Verb im Infinitiv ein.
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="turkishMeaning" class="form-label"
+                    >Türkische Bedeutung (Optional)</label
+                  >
+                  <input
+                    id="turkishMeaning"
+                    class="form-control"
+                    placeholder="z.B. gitmek, yapmak, öğrenmek"
+                    autocapitalize="off"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  class="btn btn-primary-custom btn-custom w-100"
+                >
+                  <i class="fas fa-plus"></i> Verb Hinzufügen
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div class="card">
+            <div
+              class="card-header bg-secondary text-white d-flex justify-content-between align-items-center"
+            >
+              <strong><i class="fas fa-list"></i> Verbliste</strong>
+              <span class="badge bg-light text-dark" id="verbCount">0</span>
+            </div>
+            <div class="card-body" style="max-height: 380px; overflow: auto">
+              <div id="verbList"></div>
+              <div class="text-center mt-3">
+                <button
+                  class="btn btn-outline-danger btn-sm"
+                  onclick="clearAllVerbs()"
+                >
+                  <i class="fas fa-trash"></i> Alle Löschen
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="sortAllVerbs()">
+                  <i class="fas fa-arrow-down-a-z"></i> Verben Alphabetisch
+                  Sortieren
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <section class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+              <strong><i class="fas fa-cog"></i> Konjugationsoptionen</strong>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <label class="mb-2">Zeiten Auswählen:</label>
+                  <div class="form-check tense-checkbox">
+                    <input
+                      id="prasens"
+                      class="form-check-input"
+                      type="checkbox"
+                      checked
+                    /><label class="form-check-label ms-2" for="prasens"
+                      >Präsens</label
+                    >
+                  </div>
+                  <div class="form-check tense-checkbox">
+                    <input
+                      id="perfekt"
+                      class="form-check-input"
+                      type="checkbox"
+                      checked
+                    /><label class="form-check-label ms-2" for="perfekt"
+                      >Perfekt</label
+                    >
+                  </div>
+                  <div class="form-check tense-checkbox">
+                    <input
+                      id="prateritum"
+                      class="form-check-input"
+                      type="checkbox"
+                    /><label class="form-check-label ms-2" for="prateritum"
+                      >Präteritum</label
+                    >
+                  </div>
+                  <div class="form-check tense-checkbox">
+                    <input
+                      id="plusquamperfekt"
+                      class="form-check-input"
+                      type="checkbox"
+                    /><label class="form-check-label ms-2" for="plusquamperfekt"
+                      >Plusquamperfekt</label
+                    >
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="mb-2">&nbsp;</label>
+                  <div class="form-check tense-checkbox">
+                    <input
+                      id="futur1"
+                      class="form-check-input"
+                      type="checkbox"
+                    /><label class="form-check-label ms-2" for="futur1"
+                      >Futur I</label
+                    >
+                  </div>
+                  <div class="form-check tense-checkbox">
+                    <input
+                      id="futur2"
+                      class="form-check-input"
+                      type="checkbox"
+                    /><label class="form-check-label ms-2" for="futur2"
+                      >Futur II</label
+                    >
+                  </div>
+                  <div class="form-check tense-checkbox">
+                    <input
+                      id="turkish"
+                      class="form-check-input"
+                      type="checkbox"
+                      checked
+                    /><label class="form-check-label ms-2" for="turkish"
+                      >Türkische Bedeutung</label
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mt-3">
+                <div class="col-md-6 mb-2">
+                  <button
+                    class="btn btn-success-custom btn-custom w-100"
+                    onclick="conjugateAllVerbs()"
+                  >
+                    <i class="fas fa-sync-alt"></i> Alle Konjugieren
+                  </button>
+                </div>
+                <div class="col-md-6">
+                  <div class="d-grid gap-2">
+                    <button
+                      class="btn btn-outline-primary btn-custom"
+                      onclick="exportAsText()"
+                    >
+                      <i class="fas fa-file-alt"></i> Als Text
+                    </button>
+                    <button
+                      class="btn btn-outline-success btn-custom"
+                      onclick="exportAsExcel()"
+                    >
+                      <i class="fas fa-file-excel"></i> Als Excel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="loading" id="loadingSpinner">
+            <div class="spinner-border" role="status"></div>
+            <p class="mb-0 mt-2">Verben werden konjugiert...</p>
+          </div>
+
+          <div id="conjugationCardsContainer" class="d-block"></div>
+        </section>
+      </div>
+    </main>
+
+    <div class="modal fade" id="helpModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              <i class="fas fa-question-circle"></i> Bedienungsanleitung
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <ol>
+              <li>
+                <strong>Verb Hinzufügen:</strong> Geben Sie ein deutsches Verb
+                im Infinitiv ein.
+              </li>
+              <li>
+                <strong>Türkische Bedeutung:</strong> Optional hinzufügen.
+              </li>
+              <li>
+                <strong>Zeiten Auswählen:</strong> Gewünschte Zeitformen wählen.
+              </li>
+              <li>
+                <strong>Konjugieren:</strong> Klicken Sie auf "Alle konjugieren"
+                oder drücken Sie STRG+Eingabe.
+              </li>
+              <li><strong>Export:</strong> Als Text oder Excel exportieren.</li>
+            </ol>
+            <hr />
+            <h6>Unterstützte Zeitformen:</h6>
+            <ul>
+              <li><strong class="notranslate">Präsens</strong></li>
+              <li><strong class="notranslate">Perfekt</strong></li>
+              <li><strong class="notranslate">Präteritum</strong></li>
+              <li><strong class="notranslate">Plusquamperfekt</strong></li>
+              <li><strong class="notranslate">Futur I</strong></li>
+              <li><strong class="notranslate">Futur II</strong></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+      let verbList = [];
+      let conjugationData = {};
+
+      const PRONOUNS = ["ich", "du", "er/sie/es", "wir", "ihr", "sie/Sie"];
+      const TENSE_NAMES = {
+        PRASENS: "Präsens",
+        PERFEKT: "Perfekt",
+        PRATERITUM: "Präteritum",
+        PLUSQUAMPERFEKT: "Plusquamperfekt",
+        FUTUR1: "Futur I",
+        FUTUR2: "Futur II",
+      };
+
+      const themeToggle = document.getElementById("themeToggle");
+      (function initThemeToggle() {
+        const stored = localStorage.getItem("theme");
+        const prefersDark =
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const dark = stored ? stored === "dark" : prefersDark;
+        applyTheme(dark ? "dark" : "light");
+        themeToggle.checked = dark;
+        themeToggle.addEventListener("change", () => {
+          const wantDark = themeToggle.checked;
+          applyTheme(wantDark ? "dark" : "light");
+          localStorage.setItem("theme", wantDark ? "dark" : "light");
+        });
+        window.matchMedia &&
+          window
+            .matchMedia("(prefers-color-scheme: dark)")
+            .addEventListener("change", (e) => {
+              if (!localStorage.getItem("theme"))
+                applyTheme(e.matches ? "dark" : "light");
+            });
+      })();
+
+      function applyTheme(name) {
+        if (name === "dark") document.documentElement.classList.add("dark");
+        else document.documentElement.classList.remove("dark");
+      }
+
+      function showHelp() {
+        const helpModalEl = document.getElementById("helpModal");
+        const modal = new bootstrap.Modal(helpModalEl);
+        modal.show();
+      }
+
+      function escapeHtml(s) {
+        if (!s) return "";
+        return String(s).replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            }[c])
+        );
+      }
+      function showAlert(msg, type = "info") {
+        const a = document.createElement("div");
+        a.className = `alert alert-${type} alert-dismissible fade show`;
+        a.style.position = "fixed";
+        a.style.top = "16px";
+        a.style.left = "50%";
+        a.style.transform = "translateX(-50%)";
+        a.style.zIndex = 2000;
+        a.innerHTML =
+          escapeHtml(msg) +
+          '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
+        document.body.appendChild(a);
+        setTimeout(() => a.remove(), 4200);
+      }
+      function showLoading(s) {
+        document.getElementById("loadingSpinner").style.display = s
+          ? "block"
+          : "none";
+      }
+
+      function saveToLocalStorage() {
+        localStorage.setItem("verbList", JSON.stringify(verbList));
+      }
+      function loadFromLocalStorage() {
+        const s = localStorage.getItem("verbList");
+        if (s) verbList = JSON.parse(s);
+      }
+
+      document.getElementById("verbForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        addVerb();
+      });
+
+      function addVerb() {
+        const v = document
+          .getElementById("verbInput")
+          .value.trim()
+          .toLowerCase();
+        const turk = document.getElementById("turkishMeaning").value.trim();
+        if (!v) {
+          showAlert("Bitte geben Sie ein Verb ein!", "warning");
+          return;
+        }
+        if (verbList.some((x) => x.verb === v)) {
+          showAlert("Dieses Verb existiert bereits!", "warning");
+          return;
+        }
+        verbList.push({ verb: v, turkish: turk, id: Date.now() });
+        document.getElementById("verbInput").value = "";
+        document.getElementById("turkishMeaning").value = "";
+        updateVerbList();
+        saveToLocalStorage();
+        showAlert("Verb erfolgreich hinzugefügt!", "success");
+      }
+
+      function moveUpVerb(verb) {
+        const index = verbList.findIndex((v) => v.verb === verb);
+        if (index > 0) {
+          [verbList[index - 1], verbList[index]] = [
+            verbList[index],
+            verbList[index - 1],
+          ];
+          updateVerbList();
+          saveToLocalStorage();
+        }
+      }
+
+      function moveDownVerb(verb) {
+        const index = verbList.findIndex((v) => v.verb === verb);
+        if (index === -1 || index >= verbList.length - 1) return;
+        [verbList[index], verbList[index + 1]] = [
+          verbList[index + 1],
+          verbList[index],
+        ];
+        updateVerbList();
+        saveToLocalStorage();
+      }
+
+      function updateVerbList() {
+        const container = document.getElementById("verbList");
+        document.getElementById("verbCount").textContent = verbList.length;
+        if (verbList.length === 0) {
+          container.innerHTML =
+            '<p class="text-muted text-center">Keine Verben vorhanden</p>';
+          return;
+        }
+        container.innerHTML = verbList
+          .map(
+            (it) => `
+          <div class="verb-item">
+            <div><strong>${escapeHtml(it.verb)}</strong>${
+              it.turkish
+                ? ` <small class="text-muted">(${escapeHtml(
+                    it.turkish
+                  )})</small>`
+                : ""
+            }</div>
+            <div>
+              <span>
+                <button class="btn btn-sm btn-outline-secondary move-up" onclick="moveUpVerb('${escapeHtml(
+                  it.verb
+                )}')">↑</button>
+                <button class="btn btn-sm btn-outline-secondary move-down" onclick="moveDownVerb('${escapeHtml(
+                  it.verb
+                )}')">↓</button>
+              </span>
+              <button class="btn btn-sm btn-outline-danger" onclick="removeVerb(${
+                it.id
+              })"><i class="fas fa-times"></i></button>
+            </div>
+          </div>`
+          )
+          .join("");
+      }
+
+      function selectOnly(enc) {
+        const v = decodeURIComponent(enc);
+        verbList = verbList
+          .filter((x) => x.verb === v)
+          .concat(verbList.filter((x) => x.verb !== v));
+        updateVerbList();
+      }
+      function removeVerb(id) {
+        verbList = verbList.filter((x) => x.id !== id);
+        updateVerbList();
+        saveToLocalStorage();
+        showAlert("Verb entfernt!", "info");
+      }
+      function clearAllVerbs() {
+        if (!confirm("Möchten Sie wirklich alle Verben löschen?")) return;
+        verbList = [];
+        conjugationData = {};
+        updateVerbList();
+        document.getElementById("conjugationCardsContainer").innerHTML = "";
+        saveToLocalStorage();
+        showAlert("Alle Verben wurden gelöscht!", "info");
+      }
+
+      function sortAllVerbs() {
+        verbList.sort((a, b) => a.verb.localeCompare(b.verb));
+        updateVerbList();
+      }
+
+      function getSelectedTenses() {
+        const map = {
+          prasens: "PRASENS",
+          perfekt: "PERFEKT",
+          prateritum: "PRATERITUM",
+          plusquamperfekt: "PLUSQUAMPERFEKT",
+          futur1: "FUTUR1",
+          futur2: "FUTUR2",
+        };
+        return Object.keys(map)
+          .filter((k) => document.getElementById(k).checked)
+          .map((k) => map[k]);
+      }
+      function getSelectedVerbs() {
+        return verbList.map((x) => x.verb).filter(Boolean);
+      }
+
+      function stringifyParts(parts) {
+        if (Array.isArray(parts)) return parts.join(" ");
+        if (typeof parts === "string") return parts;
+        return parts ? String(parts) : "";
+      }
+      function extractSixForms(tenseObj) {
+        if (!tenseObj) return ["", "", "", "", "", ""];
+        if (Array.isArray(tenseObj))
+          return Array.from({ length: 6 }, (_, i) =>
+            stringifyParts(tenseObj[i] ?? "")
+          );
+        const keys = ["S1", "S2", "S3", "P1", "P2", "P3"];
+        if (typeof tenseObj === "object")
+          return keys.map((k) => stringifyParts(tenseObj[k] ?? ""));
+        if (typeof tenseObj === "string") return [tenseObj, "", "", "", "", ""];
+        return ["", "", "", "", "", ""];
+      }
+
+      async function fetchVerbFromApi(verb) {
+        const key = `conj_${verb}`;
+        try {
+          const cached = localStorage.getItem(key);
+          if (cached) return JSON.parse(cached);
+          const resp = await fetch(
+            `https://german-verbs-api.onrender.com/german-verbs-api?verb=${encodeURIComponent(
+              verb
+            )}`
+          );
+          if (!resp.ok) throw new Error("HTTP " + resp.status);
+          const data = await resp.json();
+          localStorage.setItem(key, JSON.stringify(data));
+          return data;
+        } catch (e) {
+          console.error("fetch error", verb, e);
+          throw e;
+        }
+      }
+
+      function safeId(str) {
+        return str.replace(/[^a-zA-Z0-9_-]/g, "_");
+      }
+
+      async function conjugateAllVerbsIfNot() {
+        if (
+          document.getElementById("conjugationCardsContainer").innerHTML == ""
+        ) {
+          conjugateAllVerbs();
+        }
+      }
+
+      async function conjugateAllVerbs() {
+        const verbs = getSelectedVerbs();
+        if (verbs.length === 0) {
+          showAlert("Bitte fügen Sie zuerst Verben hinzu!", "warning");
+          return;
+        }
+        const selectedTenses = getSelectedTenses();
+        if (selectedTenses.length === 0) {
+          showAlert(
+            "Bitte wählen Sie mindestens eine Zeitform aus!",
+            "warning"
+          );
+          return;
+        }
+
+        showLoading(true);
+        document.getElementById("conjugationCardsContainer").innerHTML = "";
+        conjugationData = {};
+
+        showAlert("Konjugationen werden geladen...", "info");
+
+        for (const v of verbs) {
+          try {
+            const raw = await fetchVerbFromApi(v);
+            const payload = raw?.data || raw?.tenses || raw || {};
+            const conj = {};
+            selectedTenses.forEach(
+              (t) => (conj[t] = extractSixForms(payload[t]))
+            );
+            conjugationData[v] = {
+              conjugations: conj,
+              turkish: (verbList.find((x) => x.verb === v) || {}).turkish || "",
+            };
+          } catch (e) {
+            console.error("something went wrong", e);
+          }
+
+          displaySingleVerbCard(v, selectedTenses);
+        }
+
+        showLoading(false);
+        showAlert("Konjugation abgeschlossen", "success");
+      }
+
+      function displaySingleVerbCard(verb, tenses) {
+        const container = document.getElementById("conjugationCardsContainer");
+        const showTurkish = document.getElementById("turkish").checked;
+        const vData = conjugationData[verb];
+        const card = document.createElement("div");
+        card.className = "card mobile-card mb-3";
+
+        const header = document.createElement("div");
+        header.className =
+          "card-header d-flex justify-content-between align-items-center";
+        header.innerHTML = `<strong>${escapeHtml(verb)}</strong>${
+          showTurkish && vData.turkish
+            ? ` <small class="text-muted">(${escapeHtml(
+                vData.turkish
+              )})</small>`
+            : ""
+        }`;
+        card.appendChild(header);
+
+        const body = document.createElement("div");
+        body.className = "card-body p-0";
+        const acc = document.createElement("div");
+        acc.className = "accordion";
+        acc.id = "acc-" + safeId(verb);
+
+        tenses.forEach((t, i) => {
+          const item = document.createElement("div");
+          item.className = "accordion-item";
+
+          const h = document.createElement("h2");
+          h.className = "accordion-header";
+
+          const btn = document.createElement("button");
+          btn.className = `accordion-button ${i ? "collapsed" : ""}`;
+          btn.type = "button";
+          btn.setAttribute("data-bs-toggle", "collapse");
+          btn.setAttribute("data-bs-target", `#c-${safeId(verb)}-${t}`);
+          btn.textContent = TENSE_NAMES[t] || t;
+          h.appendChild(btn);
+          item.appendChild(h);
+
+          const collapse = document.createElement("div");
+          collapse.id = `c-${safeId(verb)}-${t}`;
+          collapse.className = `accordion-collapse collapse ${i ? "" : "show"}`;
+
+          const inner = document.createElement("div");
+          inner.className = "accordion-body p-2";
+
+          const tbl = document.createElement("table");
+          tbl.className = "table table-sm mb-0";
+          const tb = document.createElement("tbody");
+
+          PRONOUNS.forEach((p, pi) => {
+            const tr = document.createElement("tr");
+            const th = document.createElement("th");
+            th.style.width = "35%";
+            th.className = "text-start";
+            th.textContent = p;
+            const td = document.createElement("td");
+            td.textContent =
+              vData.conjugations && vData.conjugations[t]
+                ? vData.conjugations[t][pi] || ""
+                : "";
+            tr.appendChild(th);
+            tr.appendChild(td);
+            tb.appendChild(tr);
+          });
+
+          tbl.appendChild(tb);
+          inner.appendChild(tbl);
+          collapse.appendChild(inner);
+          item.appendChild(collapse);
+          acc.appendChild(item);
+        });
+
+        body.appendChild(acc);
+        card.appendChild(body);
+        container.appendChild(card);
+      }
+
+      function createTH(text, align = "left") {
+        const th = document.createElement("th");
+        th.textContent = text;
+        if (align === "center") th.className = "text-center";
+        if (align === "start") th.className = "text-start";
+        return th;
+      }
+      function createTD(text, align = "left", bold = false) {
+        const td = document.createElement("td");
+        td.textContent = text;
+        if (align === "center") td.className = "text-center";
+        if (align === "start") td.className = "text-start";
+        if (bold) td.style.fontWeight = "700";
+        return td;
+      }
+
+      async function conjugateVerb(verb, tenses) {
+        try {
+          const raw = await fetchVerbFromApi(verb);
+          const payload = raw?.data || raw?.tenses || raw || {};
+          const out = {};
+          tenses.forEach((t) => (out[t] = extractSixForms(payload[t])));
+          return out;
+        } catch (e) {
+          console.error("single conjugation error", e);
+        }
+      }
+
+      async function exportAsText() {
+        await conjugateAllVerbsIfNot();
+        if (!Object.keys(conjugationData).length) {
+          showAlert("Keine Konjugationsdaten vorhanden!", "warning");
+          return;
+        }
+        let txt =
+          "DEUTSCHE VERB KONJUGATIONEN\n=====================================\n\n";
+        Object.keys(conjugationData).forEach((v) => {
+          const d = conjugationData[v];
+          txt +=
+            `${v.toUpperCase()}${d.turkish ? ` (${d.turkish})` : ""}\n` +
+            "-".repeat(40) +
+            "\n";
+          Object.keys(d.conjugations).forEach((t) => {
+            txt += `\n${TENSE_NAMES[t] || t}:\n`;
+            d.conjugations[t].forEach(
+              (f, i) => (txt += `${PRONOUNS[i]}: ${f}\n`)
+            );
+          });
+          txt += "\n\n";
+        });
+        downloadFile(txt, "verb_konjugationen.txt", "text/plain");
+        showAlert("Text-Export erfolgreich!", "success");
+      }
+
+      async function exportAsExcel() {
+        await conjugateAllVerbsIfNot();
+        if (!Object.keys(conjugationData).length) {
+          showAlert("Keine Konjugationsdaten vorhanden!", "warning");
+          return;
+        }
+        const selectedTenses = getSelectedTenses();
+        const verbs = Object.keys(conjugationData);
+        const header = [
+          "Tense / Pronomen",
+          ...verbs.map(
+            (v) =>
+              v +
+              (conjugationData[v].turkish
+                ? ` (${conjugationData[v].turkish})`
+                : "")
+          ),
+        ];
+        const wsData = [header];
+        selectedTenses.forEach((t) => {
+          PRONOUNS.forEach((p, pi) => {
+            const row = [(TENSE_NAMES[t] || t) + " - " + p];
+            verbs.forEach((v) =>
+              row.push(
+                conjugationData[v].conjugations &&
+                  conjugationData[v].conjugations[t]
+                  ? conjugationData[v].conjugations[t][pi] || ""
+                  : ""
+              )
+            );
+            wsData.push(row);
+          });
+          wsData.push([]);
+        });
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(wsData);
+        const colWidths = wsData[0].map((_, ci) => {
+          let max = 10;
+          wsData.forEach((r) => {
+            const v = r[ci] || "";
+            if (v.length > max) max = v.length;
+          });
+          return { wch: Math.min(max + 4, 60) };
+        });
+        ws["!cols"] = colWidths;
+        XLSX.utils.book_append_sheet(wb, ws, "Konjugationen");
+        XLSX.writeFile(wb, "verb_konjugationen.xlsx");
+        showAlert("Excel-Export erfolgreich!", "success");
+      }
+
+      function downloadFile(content, filename, contentType) {
+        const blob = new Blob([content], { type: contentType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (e.ctrlKey && e.key === "Enter") conjugateAllVerbs();
+      });
+
+      loadFromLocalStorage();
+      updateVerbList();
+    </script>
+  </body>
+</html>
