@@ -1,0 +1,210 @@
+{
+  "H-A": {
+    "Pazartesi": [
+      { "lesson": "TDvE", "teacher": "EA" },
+      { "lesson": "TDvE", "teacher": "EA" },
+      { "lesson": "Alm", "teacher": "NÖ" },
+      { "lesson": "Alm", "teacher": "NÖ" },
+      { "lesson": "Alm", "teacher": "NÖ" },
+      { "lesson": "Alm", "teacher": "NÖ" },
+      { "lesson": "BT", "teacher": "VŞ" },
+      { "lesson": "BT", "teacher": "VŞ" }
+    ],
+    "Salı": [
+      { "lesson": "Alm", "teacher": "AB" },
+      { "lesson": "Alm", "teacher": "AB" },
+      { "lesson": "Mat", "teacher": "İE" },
+      { "lesson": "Mat", "teacher": "İE" },
+      { "lesson": "Alm", "teacher": "NÖ" },
+      { "lesson": "Alm", "teacher": "NÖ" },
+      { "lesson": "Alm", "teacher": "NÖ" },
+      { "lesson": "Alm", "teacher": "NÖ" }
+    ],
+    "Çarşamba": [
+      { "lesson": "Alm", "teacher": "NÖ" },
+      { "lesson": "İng", "teacher": "FS" },
+      { "lesson": "İng", "teacher": "FS" },
+      { "lesson": "Mat", "teacher": "İE" },
+      { "lesson": "Alm", "teacher": "NÖ" },
+      { "lesson": "Alm", "teacher": "AB" },
+      { "lesson": "Alm", "teacher": "AB" },
+      { "lesson": "Reh", "teacher": "NÖ" }
+    ],
+    "Perşembe": [
+      { "lesson": "Alm", "teacher": "NÖ" },
+      { "lesson": "Alm", "teacher": "NÖ" },
+      { "lesson": "Alm", "teacher": "NÖ" },
+      { "lesson": "Alm", "teacher": "NÖ" },
+      { "lesson": "Alm", "teacher": "NÖ" },
+      { "lesson": "Alm", "teacher": "NÖ" },
+      { "lesson": "BT", "teacher": "VŞ" },
+      { "lesson": "BT", "teacher": "VŞ" }
+    ],
+    "Cuma": [
+      { "lesson": "Bed", "teacher": "HRH" },
+      { "lesson": "Bed", "teacher": "HRH" },
+      { "lesson": "TDvE", "teacher": "EA" },
+      { "lesson": "TDvE", "teacher": "EA" },
+      { "lesson": "İng", "teacher": "FS" },
+      { "lesson": "İng", "teacher": "FS" },
+      { "lesson": "GS/M", "teacher": "Tİ/DK" },
+      { "lesson": "GS/M", "teacher": "Tİ/DK" }
+    ]
+  },
+  "H-B": {
+    "Pazartesi": [
+      { "lesson": "BT", "teacher": "VD" },
+      { "lesson": "BT", "teacher": "VD" },
+      { "lesson": "İng", "teacher": "NA" },
+      { "lesson": "İng", "teacher": "NA" },
+      { "lesson": "İng", "teacher": "NA" },
+      { "lesson": "İng", "teacher": "NA" },
+      { "lesson": "İng", "teacher": "NA" },
+      { "lesson": "İng", "teacher": "NA" }
+    ],
+    "Salı": [
+      { "lesson": "İng", "teacher": "NA" },
+      { "lesson": "İng", "teacher": "NA" },
+      { "lesson": "İng", "teacher": "NA" },
+      { "lesson": "İng", "teacher": "NA" },
+      { "lesson": "GS/M", "teacher": "Tİ/DK" },
+      { "lesson": "GS/M", "teacher": "Tİ/DK" },
+      { "lesson": "Alm", "teacher": "AB" },
+      { "lesson": "Alm", "teacher": "AB" }
+    ],
+    "Çarşamba": [
+      { "lesson": "İng", "teacher": "NA" },
+      { "lesson": "İng", "teacher": "NA" },
+      { "lesson": "TDvE", "teacher": "IY" },
+      { "lesson": "TDvE", "teacher": "IY" },
+      { "lesson": "İng", "teacher": "NA" },
+      { "lesson": "İng", "teacher": "NA" },
+      { "lesson": "İng", "teacher": "NA" },
+      { "lesson": "Reh", "teacher": "NA" }
+    ],
+    "Perşembe": [
+      { "lesson": "Mat", "teacher": "TG" },
+      { "lesson": "Mat", "teacher": "TG" },
+      { "lesson": "Alm", "teacher": "AB" },
+      { "lesson": "Alm", "teacher": "AB" },
+      { "lesson": "Bed", "teacher": "HRH" },
+      { "lesson": "Bed", "teacher": "HRH" },
+      { "lesson": "İng", "teacher": "FS" },
+      { "lesson": "İng", "teacher": "FS" }
+    ],
+    "Cuma": [
+      { "lesson": "İng", "teacher": "NA" },
+      { "lesson": "İng", "teacher": "FS" },
+      { "lesson": "İng", "teacher": "FS" },
+      { "lesson": "TDvE", "teacher": "IY" },
+      { "lesson": "TDvE", "teacher": "IY" },
+      { "lesson": "Mat", "teacher": "TG" },
+      { "lesson": "BT", "teacher": "VD" },
+      { "lesson": "BT", "teacher": "VD" }
+    ]
+  },
+  "H-C": {
+    "Pazartesi": [
+      { "lesson": "Alm", "teacher": "AB" },
+      { "lesson": "Alm", "teacher": "AB" },
+      { "lesson": "TDvE", "teacher": "EA" },
+      { "lesson": "TDvE", "teacher": "EA" },
+      { "lesson": "Bed", "teacher": "HRH" },
+      { "lesson": "Bed", "teacher": "HRH" },
+      { "lesson": "Mat", "teacher": "AGD" },
+      { "lesson": "Mat", "teacher": "AGD" }
+    ],
+    "Salı": [
+      { "lesson": "İng", "teacher": "ADÖ" },
+      { "lesson": "İng", "teacher": "ADÖ" },
+      { "lesson": "İng", "teacher": "ADÖ" },
+      { "lesson": "İng", "teacher": "ADÖ" },
+      { "lesson": "İng", "teacher": "ADÖ" },
+      { "lesson": "BT", "teacher": "MC" },
+      { "lesson": "BT", "teacher": "MC" },
+      { "lesson": "Mat", "teacher": "AGD" }
+    ],
+    "Çarşamba": [
+      { "lesson": "İng", "teacher": "ADÖ" },
+      { "lesson": "İng", "teacher": "ADÖ" },
+      { "lesson": "İng", "teacher": "ADÖ" },
+      { "lesson": "İng", "teacher": "ADÖ" },
+      { "lesson": "İng", "teacher": "ADÖ" },
+      { "lesson": "İng", "teacher": "FS" },
+      { "lesson": "İng", "teacher": "FS" },
+      { "lesson": "Reh", "teacher": "ADÖ" }
+    ],
+    "Perşembe": [
+      { "lesson": "İng", "teacher": "ADÖ" },
+      { "lesson": "İng", "teacher": "ADÖ" },
+      { "lesson": "TDvE", "teacher": "EA" },
+      { "lesson": "TDvE", "teacher": "EA" },
+      { "lesson": "İng", "teacher": "ADÖ" },
+      { "lesson": "İng", "teacher": "ADÖ" },
+      { "lesson": "Alm", "teacher": "AB" },
+      { "lesson": "Alm", "teacher": "AB" }
+    ],
+    "Cuma": [
+      { "lesson": "İng", "teacher": "ADÖ" },
+      { "lesson": "İng", "teacher": "ADÖ" },
+      { "lesson": "GS/M", "teacher": "Tİ/DK" },
+      { "lesson": "GS/M", "teacher": "Tİ/DK" },
+      { "lesson": "BT", "teacher": "MC" },
+      { "lesson": "BT", "teacher": "MC" },
+      { "lesson": "İng", "teacher": "FS" },
+      { "lesson": "İng", "teacher": "FS" }
+    ]
+  },
+  "H-D": {
+    "Pazartesi": [
+      { "lesson": "Bed", "teacher": "HRH" },
+      { "lesson": "Bed", "teacher": "HRH" },
+      { "lesson": "İng", "teacher": "MM" },
+      { "lesson": "İng", "teacher": "MM" },
+      { "lesson": "İng", "teacher": "MM" },
+      { "lesson": "İng", "teacher": "MM" },
+      { "lesson": "İng", "teacher": "MM" },
+      { "lesson": "İng", "teacher": "MM" }
+    ],
+    "Salı": [
+      { "lesson": "İng", "teacher": "MM" },
+      { "lesson": "İng", "teacher": "MM" },
+      { "lesson": "İng", "teacher": "MM" },
+      { "lesson": "Mat", "teacher": "BB" },
+      { "lesson": "İng", "teacher": "FS" },
+      { "lesson": "İng", "teacher": "FS" },
+      { "lesson": "TDvE", "teacher": "SE" },
+      { "lesson": "TDvE", "teacher": "SE" }
+    ],
+    "Çarşamba": [
+      { "lesson": "Alm", "teacher": "AB" },
+      { "lesson": "Alm", "teacher": "AB" },
+      { "lesson": "İng", "teacher": "MM" },
+      { "lesson": "Mat", "teacher": "BB" },
+      { "lesson": "Mat", "teacher": "BB" },
+      { "lesson": "İng", "teacher": "MM" },
+      { "lesson": "İng", "teacher": "MM" },
+      { "lesson": "Reh", "teacher": "MM" }
+    ],
+    "Perşembe": [
+      { "lesson": "Alm", "teacher": "AB" },
+      { "lesson": "Alm", "teacher": "AB" },
+      { "lesson": "BT", "teacher": "MC" },
+      { "lesson": "BT", "teacher": "MC" },
+      { "lesson": "İng", "teacher": "FS" },
+      { "lesson": "İng", "teacher": "FS" },
+      { "lesson": "TDvE", "teacher": "SE" },
+      { "lesson": "TDvE", "teacher": "SE" }
+    ],
+    "Cuma": [
+      { "lesson": "GS/M", "teacher": "Tİ/DK" },
+      { "lesson": "GS/M", "teacher": "Tİ/DK" },
+      { "lesson": "BT", "teacher": "MC" },
+      { "lesson": "BT", "teacher": "MC" },
+      { "lesson": "İng", "teacher": "MM" },
+      { "lesson": "İng", "teacher": "MM" },
+      { "lesson": "İng", "teacher": "MM" },
+      { "lesson": "Reh", "teacher": "MM" }
+    ]
+  }
+}
