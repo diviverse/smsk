@@ -430,16 +430,28 @@
       }
 
       /* ---------- MAP ---------- */
+      const istanbulBounds = [
+        [40.75, 28.5],
+        [41.45, 29.5],
+      ];
+
       const map = L.map("map", {
+        center: [41.0082, 28.9784],
+        zoom: 11,
+        maxBounds: istanbulBounds,
+        maxBoundsViscosity: 1.0,
+        minZoom: 9,
+        maxZoom: 17,
         zoomControl: false,
-      }).setView([41.0082, 28.9784], 11);
+      });
       L.control
         .zoom({
           position: "bottomleft",
         })
         .addTo(map);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "© OpenStreetMap contributors",
+        attribution: "© OpenStreetMap",
+        bounds: istanbulBounds,
       }).addTo(map);
 
       let startMarker = null,
