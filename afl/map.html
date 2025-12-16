@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>İstanbul Ulaşım</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: system-ui, sans-serif;
+      }
+
+      body {
+        margin: 0;
+        display: flex;
+        height: 100vh;
+        background: #eef2f7;
+      }
+
+      /* LEFT PANEL */
+      .sidebar {
+        width: 380px;
+        padding: 16px;
+        background: white;
+        border-right: 1px solid #ddd;
+        overflow-y: auto;
+      }
+
+      h1 {
+        font-size: 18px;
+        margin-bottom: 14px;
+      }
+
+      .section {
+        background: #f8fafc;
+        border-radius: 18px;
+        margin-bottom: 12px;
+        overflow: hidden;
+      }
+
+      .section-header {
+        padding: 14px 16px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        user-select: none;
+      }
+
+      .section-content {
+        padding: 0 16px;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 0.35s ease, opacity 0.25s ease,
+          padding 0.25s ease;
+      }
+
+      .section.open .section-content {
+        padding: 14px 16px;
+        max-height: 600px; /* enough for content */
+        opacity: 1;
+      }
+
+      .section-header span {
+        display: inline-block;
+        transition: transform 0.25s ease;
+      }
+
+      .section.open .section-header span {
+        transform: rotate(90deg);
+      }
+
+      label {
+        font-size: 12px;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 9px;
+        border-radius: 14px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        font-size: 13px;
+      }
+
+      button {
+        width: 100%;
+        padding: 9px;
+        border-radius: 999px;
+        border: none;
+        background: #2563eb;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        margin-bottom: 10px;
+      }
+
+      .search-results div {
+        padding: 8px;
+        cursor: pointer;
+        border-radius: 12px;
+        font-size: 13px;
+      }
+
+      .search-results div:hover {
+        background: #e5e7eb;
+      }
+
+      .point-display {
+        background: #e9eef5;
+        padding: 10px;
+        border-radius: 14px;
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
+
+      /* MAP */
+      #map {
+        flex: 1;
+        position: relative;
+      }
+
+      /* FLOATING RESULT BAR */
+      .floating-result {
+        position: absolute;
+        top: 14px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: white;
+        padding: 12px 20px;
+        border-radius: 999px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        font-weight: 600;
+        font-size: 14px;
+        z-index: 1000;
+        min-width: 280px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar">
+      <h1>İstanbul Ulaşım Simülasyonu</h1>
+
+      <!-- SEARCH -->
+      <div class="section open">
+        <div class="section-header" onclick="toggleSection(this)">
+          Yer Arama <span>▶</span>
+        </div>
+        <div class="section-content">
+          <label>Başlangıç (A)</label>
+          <input id="searchA" placeholder="Örn: Kadıköy" />
+          <button onclick="runSearch('A')">Ara</button>
+          <div id="resultsA" class="search-results"></div>
+
+          <label>Varış (B)</label>
+          <input id="searchB" placeholder="Örn: Beşiktaş" />
+          <button onclick="runSearch('B')">Ara</button>
+          <div id="resultsB" class="search-results"></div>
+        </div>
+      </div>
+
+      <!-- SELECTED POINTS -->
+      <div class="section open">
+        <div class="section-header" onclick="toggleSection(this)">
+          Seçilen Noktalar <span>▶</span>
+        </div>
+        <div class="section-content">
+          <div class="point-display" id="startDisplay">A: seçilmedi</div>
+          <div class="point-display" id="endDisplay">B: seçilmedi</div>
+          <button id="resetBtn">Noktaları Sıfırla</button>
+        </div>
+      </div>
+
+      <!-- TIME -->
+      <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+          Tarih & Saat <span>▶</span>
+        </div>
+        <div class="section-content">
+          <label>Tarih</label>
+          <input type="date" id="dateInput" />
+          <label>Saat</label>
+          <input type="time" id="timeInput" />
+        </div>
+      </div>
+
+      <!-- TRANSFER -->
+      <div class="section">
+        <div class="section-header" onclick="toggleSection(this)">
+          Aktarma <span>▶</span>
+        </div>
+        <div class="section-content">
+          <label>Aktarma Sayısı</label>
+          <select id="transferCount">
+            <option>0</option>
+            <option>1</option>
+          </select>
+
+          <label>Kaçırılan Aktarma</label>
+          <select id="missedTransfer">
+            <option>0</option>
+            <option>1</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div id="map">
+      <div class="floating-result" id="resultBox">Hesaplama yok</div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+      /* ---------- COLLAPSIBLE ---------- */
+      function toggleSection(header) {
+        const section = header.parentElement;
+        const arrow = header.querySelector("span");
+        section.classList.toggle("open");
+        // arrow.textContent = section.classList.contains("open") ? "▼" : "▶";
+      }
+
+      /* ---------- MAP ---------- */
+      const map = L.map("map").setView([41.0082, 28.9784], 11);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        map
+      );
+
+      let startMarker = null,
+        endMarker = null,
+        line = null;
+
+      /* ---------- DEFAULT TIME ---------- */
+      dateInput.valueAsDate = new Date();
+      timeInput.value = new Date().toTimeString().slice(0, 5);
+
+      /* ---------- PLACEHOLDER CALCULATION ---------- */
+      function calculateTravelTime(settings) {
+        return Math.floor(15 + Math.random() * 45);
+      }
+
+      function recalc() {
+        if (!startMarker || !endMarker) return;
+
+        const startDT = new Date(`${dateInput.value}T${timeInput.value}`);
+        const duration = calculateTravelTime({});
+        const arrival = new Date(startDT.getTime() + duration * 60000);
+
+        resultBox.innerHTML = `⏱ ${duration} dk &nbsp;&nbsp;→&nbsp;&nbsp; 🕒 ${arrival.toLocaleTimeString(
+          "tr-TR",
+          { hour: "2-digit", minute: "2-digit" }
+        )}`;
+      }
+
+      /* ---------- MARKERS ---------- */
+      function setMarker(type, lat, lon, label) {
+        const marker = L.marker([lat, lon]).addTo(map);
+
+        if (type === "A") {
+          if (startMarker) map.removeLayer(startMarker);
+          startMarker = marker;
+          startDisplay.textContent = "A: " + label;
+        } else {
+          if (endMarker) map.removeLayer(endMarker);
+          endMarker = marker;
+          endDisplay.textContent = "B: " + label;
+        }
+
+        if (line) map.removeLayer(line);
+        if (startMarker && endMarker) {
+          line = L.polyline([startMarker.getLatLng(), endMarker.getLatLng()], {
+            color: "#2563eb",
+            weight: 4,
+            dashArray: "6 6",
+          }).addTo(map);
+        }
+
+        recalc();
+      }
+
+      /* ---------- SEARCH ---------- */
+      async function runSearch(type) {
+        const input = type === "A" ? searchA : searchB;
+        const container = type === "A" ? resultsA : resultsB;
+        const q = input.value.trim();
+        if (!q) return;
+
+        const url =
+          `https://nominatim.openstreetmap.org/search?format=json` +
+          `&q=${encodeURIComponent(q + ", Istanbul")}` +
+          `&countrycodes=tr&bounded=1` +
+          `&viewbox=28.4,41.3,29.5,40.8`;
+
+        const res = await fetch(url);
+        const data = await res.json();
+        if (!Array.isArray(data)) return;
+
+        container.innerHTML = "";
+        data.slice(0, 5).forEach((p) => {
+          const div = document.createElement("div");
+          div.textContent = p.display_name;
+          div.onclick = () => setMarker(type, p.lat, p.lon, p.display_name);
+          container.appendChild(div);
+        });
+      }
+
+      /* ---------- EVENTS ---------- */
+      ["searchA", "searchB"].forEach((id) => {
+        document.getElementById(id).addEventListener("keydown", (e) => {
+          if (e.key === "Enter") runSearch(id === "searchA" ? "A" : "B");
+        });
+      });
+
+      dateInput.onchange =
+        timeInput.onchange =
+        transferCount.onchange =
+        missedTransfer.onchange =
+          recalc;
+
+      resetBtn.onclick = () => {
+        [startMarker, endMarker, line].forEach((l) => l && map.removeLayer(l));
+        startMarker = endMarker = line = null;
+        startDisplay.textContent = "A: seçilmedi";
+        endDisplay.textContent = "B: seçilmedi";
+        resultBox.textContent = "Hesaplama yok";
+      };
+    </script>
+  </body>
+</html>
