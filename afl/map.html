@@ -500,15 +500,23 @@
 
         document.getElementById(
           "resultBox"
-        ).innerHTML = `<i class="bi bi-clock me-2"></i>${duration} dk &nbsp;&nbsp;→&nbsp;&nbsp; 
+        ).innerHTML = `<i class="bi bi-clock me-2"></i>${duration} dk &nbsp;&nbsp;→&nbsp;&nbsp;
            <i class="bi bi-calendar-check me-2"></i>${arrival.toLocaleTimeString(
              "tr-TR",
              { hour: "2-digit", minute: "2-digit" }
            )}`;
       }
 
+      async function getOSRMRoute(lat1, lon1, lat2, lon2) {
+        const url = `https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=full&geometries=geojson`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("OSRM failed");
+        const data = await res.json();
+        return data.routes[0].geometry;
+      }
+
       /* ---------- MARKERS ---------- */
-      function setMarker(type, lat, lon, label) {
+      async function setMarker(type, lat, lon, label) {
         const marker = L.marker([lat, lon]).addTo(map);
 
         if (type === "A") {
@@ -530,13 +538,46 @@
           const group = new L.featureGroup([startMarker, endMarker]);
           map.fitBounds(group.getBounds().pad(0.1));
 
-          const latlngs = [startMarker.getLatLng(), endMarker.getLatLng()];
+          const startLatLng = startMarker.getLatLng();
+          const endLatLng = endMarker.getLatLng();
 
-          line = L.polyline(latlngs, {
-            color: "#2563eb",
-            weight: 4,
-            opacity: 0.3,
-          }).addTo(map);
+          try {
+            const routeGeoJSON = await getOSRMRoute(
+              startLatLng.lat,
+              startLatLng.lng,
+              endLatLng.lat,
+              endLatLng.lng
+            );
+            line = L.geoJSON(routeGeoJSON, {
+              style: { color: "#2563eb", weight: 5, opacity: 0.8 },
+            }).addTo(map);
+
+            L.polylineDecorator(line, {
+              patterns: [
+                {
+                  offset: 15,
+                  repeat: 15,
+                  symbol: L.Symbol.arrowHead({
+                    pixelSize: 10,
+                    pathOptions: {
+                      fill: true,
+                      fillColor: "#2563eb",
+                      fillOpacity: 0.8,
+                      weight: 2,
+                      color: "#2563eb",
+                    },
+                  }),
+                },
+              ],
+            }).addTo(map);
+          } catch (e) {
+            console.error(e);
+            line = L.polyline([startLatLng, endLatLng], {
+              color: "#2563eb",
+              weight: 4,
+              dashArray: "6 6",
+            }).addTo(map);
+          }
 
           L.polylineDecorator(line, {
             patterns: [
