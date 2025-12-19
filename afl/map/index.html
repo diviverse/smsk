@@ -378,35 +378,6 @@
               </div>
             </div>
           </div>
-
-          <!-- Transfer Section -->
-          <div class="section-card">
-            <div class="section-header" onclick="toggleSection(this)">
-              <span
-                ><i class="bi bi-arrow-left-right text-primary me-2"></i
-                >Aktarma</span
-              >
-              <i class="bi bi-chevron-right text-muted"></i>
-            </div>
-            <div class="section-content">
-              <div class="mb-3">
-                <label class="form-label">Aktarma Sayısı</label>
-                <select class="form-select" id="transferCount">
-                  <option value="0">0</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Kaçırılan Aktarma</label>
-                <select class="form-select" id="missedTransfer">
-                  <option value="0">0</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                </select>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -421,14 +392,11 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet-polylinedecorator@1.6.0/dist/leaflet.polylineDecorator.min.js"></script>
 
     <script>
       /* ---------- COLLAPSIBLE ---------- */
       function toggleSection(header) {
-        const section = header.parentElement;
-        const icon = header.querySelector("i.bi-chevron-right");
-        section.classList.toggle("open");
+        header.parentElement.classList.toggle("open");
       }
 
       /* ---------- MAP ---------- */
@@ -553,25 +521,6 @@
             line = L.geoJSON(routeGeoJSON, {
               style: { color: "#2563eb", weight: 5, opacity: 0.8 },
             }).addTo(map);
-
-            L.polylineDecorator(line, {
-              patterns: [
-                {
-                  offset: 15,
-                  repeat: 15,
-                  symbol: L.Symbol.arrowHead({
-                    pixelSize: 10,
-                    pathOptions: {
-                      fill: true,
-                      fillColor: "#2563eb",
-                      fillOpacity: 0.8,
-                      weight: 2,
-                      color: "#2563eb",
-                    },
-                  }),
-                },
-              ],
-            }).addTo(map);
           } catch (e) {
             console.error(e);
             line = L.polyline([startLatLng, endLatLng], {
@@ -580,25 +529,6 @@
               dashArray: "6 6",
             }).addTo(map);
           }
-
-          L.polylineDecorator(line, {
-            patterns: [
-              {
-                offset: 15,
-                repeat: 15,
-                symbol: L.Symbol.arrowHead({
-                  pixelSize: 10,
-                  pathOptions: {
-                    fill: true,
-                    fillColor: "#2563eb",
-                    fillOpacity: 0.8,
-                    weight: 2,
-                    color: "#2563eb",
-                  },
-                }),
-              },
-            ],
-          }).addTo(map);
         }
 
         recalc();
@@ -667,11 +597,9 @@
         );
       });
 
-      ["dateInput", "timeInput", "transferCount", "missedTransfer"].forEach(
-        (id) => {
-          document.getElementById(id).addEventListener("change", recalc);
-        }
-      );
+      ["dateInput", "timeInput"].forEach((id) => {
+        document.getElementById(id).addEventListener("change", recalc);
+      });
 
       document.getElementById("resetBtn").onclick = () => {
         [startMarker, endMarker, line].forEach((l) => l && map.removeLayer(l));
