@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Germanist</title>
+    <title class="notranslate">Germanist</title>
     <meta
       name="description"
       content="Professionelle Verbkonjugation und Grammatikprüfung für Deutschlernende."
@@ -49,7 +49,7 @@
       <div class="container-final-final-enhanced">
         <div class="d-flex align-items-center justify-content-between">
           <div>
-            <h1 class="h4 mb-0 display-font">
+            <h1 class="h4 mb-0 display-font notranslate">
               <i
                 class="fas fa-globe me-1"
                 style="
@@ -93,7 +93,7 @@
       </div>
     </header>
 
-    <main id="main-content" class="container-final-final-enhanced mb-5">
+    <main class="container-final-final-enhanced mb-5">
       <div class="tab-navigation mb-4">
         <div class="card">
           <div class="card-body p-3">
@@ -165,18 +165,6 @@
                     <li class="nav-item" role="presentation">
                       <button
                         class="nav-link"
-                        id="file-upload-tab"
-                        data-bs-toggle="tab"
-                        data-bs-target="#file-upload-pane"
-                        type="button"
-                        role="tab"
-                      >
-                        <i class="fas fa-file"></i> Datei hochladen
-                      </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                      <button
-                        class="nav-link"
                         id="text-paste-tab"
                         data-bs-toggle="tab"
                         data-bs-target="#text-paste-pane"
@@ -184,6 +172,18 @@
                         role="tab"
                       >
                         <i class="fas fa-paste"></i> Text einfügen
+                      </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link"
+                        id="file-upload-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#file-upload-pane"
+                        type="button"
+                        role="tab"
+                      >
+                        <i class="fas fa-file"></i> Datei hochladen
                       </button>
                     </li>
                     <li class="nav-item ms-auto">
@@ -553,7 +553,7 @@
                     >
                     <textarea
                       id="grammarTextInput"
-                      class="form-control optimize-legibility"
+                      class="form-control optimize-legibility notranslate"
                       rows="10"
                       placeholder="Geben Sie hier Ihren deutschen Text ein, um Grammatikfehler zu finden..."
                     ></textarea>
@@ -586,8 +586,9 @@
                       onclick="copyCorrectedText()"
                       id="copyCorrectedBtn"
                       style="display: none"
+                      title="Kopiert den aktuellen Text aus dem Eingabefeld"
                     >
-                      <i class="fas fa-copy"></i> Korrigierten Text kopieren
+                      <i class="fas fa-copy"></i> Text kopieren
                     </button>
                   </div>
 
@@ -615,7 +616,7 @@
                       <div class="card-body">
                         <div
                           id="highlightedText"
-                          class="grammar-highlighted-text"
+                          class="grammar-highlighted-text notranslate"
                         ></div>
                       </div>
                     </div>
@@ -720,38 +721,38 @@
             </ol>
             <hr class="my-4" />
             <h6 class="text-gradient">Unterstützte Zeitformen:</h6>
-            <ul class="list-unstyled">
+            <ul class="list-unstyled notranslate">
               <li>
                 <i class="fas fa-check-circle text-primary me-2"></i
-                ><strong class="notranslate">Präsens</strong>
+                ><strong>Präsens</strong>
               </li>
               <li>
                 <i class="fas fa-check-circle text-primary me-2"></i
-                ><strong class="notranslate">Perfekt</strong>
+                ><strong>Perfekt</strong>
               </li>
               <li>
                 <i class="fas fa-check-circle text-primary me-2"></i
-                ><strong class="notranslate">Präteritum</strong>
+                ><strong>Präteritum</strong>
               </li>
               <li>
                 <i class="fas fa-check-circle text-primary me-2"></i
-                ><strong class="notranslate">Plusquamperfekt</strong>
+                ><strong>Plusquamperfekt</strong>
               </li>
               <li>
                 <i class="fas fa-check-circle text-primary me-2"></i
-                ><strong class="notranslate">Futur I</strong>
+                ><strong>Futur I</strong>
               </li>
               <li>
                 <i class="fas fa-check-circle text-primary me-2"></i
-                ><strong class="notranslate">Futur II</strong>
+                ><strong>Futur II</strong>
               </li>
               <li>
                 <i class="fas fa-check-circle text-primary me-2"></i
-                ><strong class="notranslate">Konjunktiv I</strong>
+                ><strong>Konjunktiv I</strong>
               </li>
               <li>
                 <i class="fas fa-check-circle text-primary me-2"></i
-                ><strong class="notranslate">Konjunktiv II</strong>
+                ><strong>Konjunktiv II</strong>
               </li>
             </ul>
           </div>
@@ -806,6 +807,7 @@
         loadFromLocalStorage();
         updateVerbList();
         addKeyboardShortcuts();
+        restoreActiveTab();
       });
 
       function initializeParticles() {
@@ -897,7 +899,6 @@
           position: fixed;
           top: 20px;
           left: 50%;
-          transform: translateX(-50%);
           z-index: 2000;
           background: linear-gradient(135deg, ${colors[type]} 0%, ${colors[type]}dd 100%);
           color: white;
@@ -906,9 +907,10 @@
           padding: 16px 24px;
           font-weight: 500;
           box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-          animation: slideInDown 0.3s ease-out;
           min-width: 300px;
           max-width: 90vw;
+          transform: translateX(-50%);
+          animation: slideInDownCentered 0.3s ease-out;
         `;
 
         document.body.appendChild(alertDiv);
@@ -2001,9 +2003,22 @@
         if (tabName === "grammar") {
           const grammarTabInstance = new bootstrap.Tab(grammarTab);
           grammarTabInstance.show();
+          localStorage.setItem("activeTab", "grammar");
         } else {
           const conjugationTabInstance = new bootstrap.Tab(conjugationTab);
           conjugationTabInstance.show();
+          localStorage.setItem("activeTab", "conjugation");
+        }
+      }
+
+      // Restore active tab on page load
+      function restoreActiveTab() {
+        const savedTab = localStorage.getItem("activeTab");
+        if (savedTab === "grammar" || savedTab === "conjugation") {
+          // Wait for DOM to be ready
+          setTimeout(() => {
+            switchTab(savedTab);
+          }, 100);
         }
       }
 
@@ -2056,7 +2071,7 @@
           showAlert(
             `Bitte warten Sie ${remainingSeconds} Sekunde${
               remainingSeconds > 1 ? "n" : ""
-            } vor der nächsten Prüfung. (Rate Limit: 6 Anfragen pro Minute)`,
+            } vor der nächsten Prüfung. (Rate Limit: 12 Anfragen pro Minute)`,
             "warning"
           );
           return;
@@ -2127,21 +2142,105 @@
           return;
         }
 
+        // Sort errors by offset in reverse order to avoid position shifts when inserting marks
         const sortedErrors = [...errors].sort((a, b) => b.offset - a.offset);
-        let highlightedText = escapeHtml(text);
 
+        // Start with the original text (not escaped yet)
+        let highlightedText = text;
+
+        // Insert error marks in the original text first (before escaping)
         sortedErrors.forEach((error) => {
           const start = error.offset;
           const end = start + error.length;
           const before = highlightedText.substring(0, start);
           const errorText = highlightedText.substring(start, end);
           const after = highlightedText.substring(end);
+          // Insert mark tags in the original text with click handler
           highlightedText = `${before}<mark class="grammar-error" data-error-id="${
             error.offset
-          }" title="${escapeHtml(error.message)}">${errorText}</mark>${after}`;
+          }" data-error-offset="${error.offset}" title="${error.message.replace(
+            /"/g,
+            "&quot;"
+          )} (Klicken für Details)">${errorText}</mark>${after}`;
         });
 
-        highlightedDiv.innerHTML = highlightedText.replace(/\n/g, "<br>");
+        // Now escape the HTML (this will escape everything except the mark tags we just inserted)
+        // We need to escape the text parts but preserve the mark tags
+        // Split by mark tags, escape each part, then rejoin
+        const parts = highlightedText.split(/(<mark[^>]*>.*?<\/mark>)/g);
+        let escapedText = parts
+          .map((part) => {
+            // If it's a mark tag, don't escape it (but escape the content inside)
+            if (part.startsWith("<mark")) {
+              // Extract the tag attributes and content
+              const tagMatch = part.match(/^(<mark[^>]*>)(.*?)(<\/mark>)$/);
+              if (tagMatch) {
+                const [, openTag, content, closeTag] = tagMatch;
+                // Escape only the content inside the mark tag
+                return openTag + escapeHtml(content) + closeTag;
+              }
+              return part;
+            }
+            // Regular text - escape it
+            return escapeHtml(part);
+          })
+          .join("");
+
+        highlightedDiv.innerHTML = escapedText.replace(/\n/g, "<br>");
+
+        // Add click event listeners to error marks
+        highlightedDiv.querySelectorAll(".grammar-error").forEach((mark) => {
+          mark.style.cursor = "pointer";
+          mark.addEventListener("click", function () {
+            const errorOffset = parseInt(
+              this.getAttribute("data-error-offset")
+            );
+            scrollToError(errorOffset);
+          });
+        });
+      }
+
+      function scrollToError(errorOffset) {
+        // Find the error item in the error list (not the mark element)
+        // Use the error-item class to ensure we get the list item, not the mark
+        const errorItem = document.querySelector(
+          `.error-item[data-error-offset="${errorOffset}"]`
+        );
+
+        if (errorItem) {
+          // Ensure the grammar results section is visible
+          const resultsDiv = document.getElementById("grammarResults");
+          if (resultsDiv && resultsDiv.style.display === "none") {
+            resultsDiv.style.display = "block";
+          }
+
+          // Small delay to ensure DOM is ready
+          setTimeout(() => {
+            // Scroll to the error item
+            errorItem.scrollIntoView({ behavior: "smooth", block: "center" });
+
+            // Add a temporary highlight effect
+            errorItem.style.transition = "background-color 0.3s ease";
+            const originalBg =
+              errorItem.style.backgroundColor ||
+              window.getComputedStyle(errorItem).backgroundColor;
+            errorItem.style.backgroundColor = "rgba(59, 130, 246, 0.2)";
+
+            setTimeout(() => {
+              errorItem.style.backgroundColor = originalBg || "";
+              setTimeout(() => {
+                errorItem.style.transition = "";
+              }, 300);
+            }, 2000);
+          }, 50);
+        } else {
+          console.warn(
+            `Error item with offset ${errorOffset} not found. Available offsets:`,
+            Array.from(
+              document.querySelectorAll(".error-item[data-error-offset]")
+            ).map((el) => el.getAttribute("data-error-offset"))
+          );
+        }
       }
 
       function displayErrorList(errors) {
@@ -2169,7 +2268,9 @@
               .filter((v, i, a) => a.indexOf(v) === i);
 
             return `
-              <div class="error-item mb-3 p-3 border-start border-4 border-warning bg-light rounded">
+              <div class="error-item mb-3 p-3 border-start border-4 border-warning bg-light rounded" data-error-offset="${
+                error.offset
+              }" id="error-${error.offset}">
                 <div class="d-flex justify-content-between align-items-start mb-2">
                   <div>
                     <strong class="text-danger">
@@ -2186,10 +2287,12 @@
                   error.message
                 )}</p>
                 <p class="mb-2 text-muted small">
-                  <strong>Kontext:</strong> ...${escapeHtml(context)}...
+                  <strong>Kontext:</strong> ...<span class="notranslate">${escapeHtml(
+                    context
+                  )}</span>...
                 </p>
                 <p class="mb-2">
-                  <strong>Gefunden:</strong> <code class="text-danger">${escapeHtml(
+                  <strong>Gefunden:</strong> <code class="text-danger notranslate">${escapeHtml(
                     errorText
                   )}</code>
                 </p>
@@ -2198,7 +2301,7 @@
                     ? `
                   <div class="mb-2">
                     <strong>Vorschläge:</strong>
-                    <div class="d-flex flex-wrap gap-2 mt-2">
+                    <div class="d-flex flex-wrap gap-2 mt-2 notranslate">
                       ${suggestions
                         .map(
                           (suggestion) => `
@@ -2232,10 +2335,59 @@
         const newText = before + suggestion + after;
         textarea.value = newText;
         updateTextStats();
-        showAlert(
-          "Vorschlag angewendet! Bitte prüfen Sie den Text erneut.",
-          "success"
+
+        // Find and remove the error that was applied
+        const errorIndex = grammarErrors.findIndex(
+          (error) => error.offset === offset && error.length === length
         );
+
+        if (errorIndex !== -1) {
+          // Calculate offset adjustment for subsequent errors
+          const offsetDiff = suggestion.length - length;
+
+          // Remove the applied error
+          grammarErrors.splice(errorIndex, 1);
+
+          // Adjust offsets of all errors that come after this one
+          for (let i = errorIndex; i < grammarErrors.length; i++) {
+            grammarErrors[i].offset += offsetDiff;
+          }
+
+          // Update originalText to the new text
+          originalText = newText;
+
+          // Re-render the error list
+          displayErrorList(grammarErrors);
+
+          // Re-highlight the text with remaining errors
+          highlightErrors(newText, grammarErrors);
+
+          // Update error count
+          const errorCountDiv = document.getElementById("errorCount");
+          if (errorCountDiv) {
+            const errorCount = grammarErrors.length;
+            errorCountDiv.textContent = `${errorCount} ${
+              errorCount === 1 ? "Fehler gefunden" : "Fehler gefunden"
+            }`;
+          }
+
+          // Hide copy button if no errors remain
+          if (grammarErrors.length === 0) {
+            document.getElementById("copyCorrectedBtn").style.display = "none";
+          }
+        } else {
+          // If error not found (shouldn't happen), just update the text
+          originalText = newText;
+          const highlightedDiv = document.getElementById("highlightedText");
+          if (highlightedDiv) {
+            highlightedDiv.innerHTML = escapeHtml(newText).replace(
+              /\n/g,
+              "<br>"
+            );
+          }
+        }
+
+        showAlert("Vorschlag angewendet!", "success");
       }
 
       function copyCorrectedText() {
@@ -2491,6 +2643,17 @@
           }
         }
         
+        @keyframes slideInDownCentered {
+          from {
+            transform: translateX(-50%) translateY(-100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+          }
+        }
+        
         .is-valid {
           border-color: var(--success) !important;
           box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25) !important;
@@ -2499,6 +2662,15 @@
         .is-invalid {
           border-color: var(--error) !important;
           box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important;
+        }
+        
+        .grammar-error {
+          transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .grammar-error:hover {
+          background-color: rgba(239, 68, 68, 0.3) !important;
+          box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
         }
       `;
       document.head.appendChild(style);
