@@ -53,7 +53,7 @@
               <i
                 class="fas fa-globe me-1"
                 style="
-                  background: url('favicon.ico');
+                  background: url('/favicon.ico');
                   -webkit-background-clip: text;
                   background-clip: text;
                   background-size: 100% 100%;
@@ -62,7 +62,7 @@
               ></i>
               Germanist
             </h1>
-            <small class="text-white-50"
+            <small class="text-white-50 header-description"
               >Professionelle Verbkonjugation und Grammatikprüfung für
               Deutschlernende</small
             >
@@ -128,6 +128,21 @@
                     onclick="switchTab('grammar')"
                   >
                     <i class="fas fa-spell-check"></i>&nbsp;Grammatikprüfung
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation" style="display: none">
+                  <button
+                    class="nav-link"
+                    id="vocabulary-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#vocabulary-pane"
+                    type="button"
+                    role="tab"
+                    aria-controls="vocabulary-pane"
+                    aria-selected="false"
+                    onclick="switchTab('vocabulary')"
+                  >
+                    <i class="fas fa-graduation-cap"></i>&nbsp;Vokabeltrainer
                   </button>
                 </li>
               </ul>
@@ -740,6 +755,276 @@
                           </div>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="tab-pane fade"
+          id="vocabulary-pane"
+          role="tabpanel"
+          aria-labelledby="vocabulary-tab"
+        >
+          <div class="row">
+            <div class="col-lg-4 mb-4">
+              <div class="card mb-4 fade-in-up">
+                <div class="card-header bg-gradient-primary text-white">
+                  <strong><i class="fas fa-list"></i>&nbsp;Vokabelliste</strong>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label for="vocabWordInput" class="form-label"
+                      >Deutsches Wort</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="vocabWordInput"
+                      placeholder="z.B. gehen"
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="vocabTranslationInput" class="form-label"
+                      >Übersetzung (optional)</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="vocabTranslationInput"
+                      placeholder="z.B. to go"
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="vocabNotesInput" class="form-label"
+                      >Notizen (optional)</label
+                    >
+                    <textarea
+                      class="form-control"
+                      id="vocabNotesInput"
+                      rows="2"
+                      placeholder="Zusätzliche Informationen..."
+                    ></textarea>
+                  </div>
+                  <button
+                    class="btn btn-primary-custom w-100 mb-3"
+                    onclick="addVocabularyWord()"
+                  >
+                    <i class="fas fa-plus"></i>&nbsp;Wort hinzufügen
+                  </button>
+                  <button
+                    class="btn btn-outline-info w-100 mb-3"
+                    onclick="importFromGrammarCheck()"
+                  >
+                    <i class="fas fa-download"></i>&nbsp;Aus Textanalyse
+                    importieren
+                  </button>
+
+                  <div class="mb-3">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="vocabSearchInput"
+                      placeholder="Vokabeln durchsuchen..."
+                      oninput="filterVocabularyList()"
+                    />
+                  </div>
+
+                  <div class="card mb-3">
+                    <div class="card-body p-2">
+                      <div class="row text-center">
+                        <div class="col-6 mb-2">
+                          <div class="statistics-card">
+                            <div class="h5 mb-0" id="vocabTotalCount">0</div>
+                            <small class="text-muted">Gesamt</small>
+                          </div>
+                        </div>
+                        <div class="col-6 mb-2">
+                          <div class="statistics-card">
+                            <div class="h5 mb-0" id="vocabDueCount">0</div>
+                            <small class="text-muted">Fällig</small>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="statistics-card">
+                            <div class="h5 mb-0" id="vocabMasteredCount">0</div>
+                            <small class="text-muted">Gelernt</small>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="statistics-card">
+                            <div class="h5 mb-0" id="vocabNewCount">0</div>
+                            <small class="text-muted">Neu</small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    id="vocabularyList"
+                    style="max-height: 400px; overflow-y: auto"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-8 mb-4">
+              <div class="card mb-4 fade-in-up">
+                <div class="card-header bg-gradient-success text-white">
+                  <strong><i class="fas fa-book-reader"></i>&nbsp;Übung</strong>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label class="form-label">Übungsmodus</label>
+                    <select class="form-select" id="practiceModeSelect">
+                      <option value="due">Nur fällige Wörter</option>
+                      <option value="all">Alle Wörter</option>
+                      <option value="new">Nur neue Wörter</option>
+                      <option value="learning">Wörter in Lernphase</option>
+                    </select>
+                  </div>
+
+                  <button
+                    class="btn btn-success-custom w-100 mb-3"
+                    id="startPracticeBtn"
+                    onclick="startPracticeSession()"
+                  >
+                    <i class="fas fa-play"></i>&nbsp;Übung starten
+                  </button>
+
+                  <div id="practiceSession" style="display: none">
+                    <div class="progress-indicator mb-3">
+                      <div class="d-flex justify-content-between mb-2">
+                        <span
+                          >Karte <span id="currentCardNum">1</span> von
+                          <span id="totalCardsNum">0</span></span
+                        >
+                        <button
+                          class="btn btn-sm btn-outline-danger"
+                          onclick="endSession()"
+                        >
+                          <i class="fas fa-stop"></i>&nbsp;Beenden
+                        </button>
+                      </div>
+                      <div class="progress">
+                        <div
+                          class="progress-bar bg-success"
+                          id="practiceProgressBar"
+                          role="progressbar"
+                          style="width: 0%"
+                        ></div>
+                      </div>
+                    </div>
+
+                    <div class="vocabulary-card-container mb-3">
+                      <div
+                        class="vocabulary-card"
+                        id="flashcard"
+                        onclick="flipCard()"
+                      >
+                        <div class="card-front">
+                          <div class="card-content">
+                            <i
+                              class="fas fa-volume-up float-end text-muted"
+                              style="cursor: pointer"
+                              onclick="event.stopPropagation(); speakVocabularyWord()"
+                            ></i>
+                            <h3 class="mb-0" id="flashcardWord">Wort</h3>
+                            <p class="text-muted mt-2">
+                              <small>Klicken zum Umdrehen</small>
+                            </p>
+                          </div>
+                        </div>
+                        <div class="card-back">
+                          <div class="card-content">
+                            <h4 class="mb-2" id="flashcardTranslation">
+                              Übersetzung
+                            </h4>
+                            <p class="text-muted" id="flashcardNotes"></p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="difficulty-buttons">
+                      <div class="row g-2">
+                        <div class="col-6 col-md-3">
+                          <button
+                            class="btn btn-danger w-100"
+                            onclick="handleDifficulty(0)"
+                            title="Wiederholen (Taste: 1)"
+                          >
+                            <i class="fas fa-redo"></i><br />Wiederholen
+                          </button>
+                        </div>
+                        <div class="col-6 col-md-3">
+                          <button
+                            class="btn btn-warning w-100"
+                            onclick="handleDifficulty(1)"
+                            title="Schwer (Taste: 2)"
+                          >
+                            <i class="fas fa-exclamation-triangle"></i
+                            ><br />Schwer
+                          </button>
+                        </div>
+                        <div class="col-6 col-md-3">
+                          <button
+                            class="btn btn-info w-100"
+                            onclick="handleDifficulty(2)"
+                            title="Mittel (Taste: 3)"
+                          >
+                            <i class="fas fa-check"></i><br />Mittel
+                          </button>
+                        </div>
+                        <div class="col-6 col-md-3">
+                          <button
+                            class="btn btn-success w-100"
+                            onclick="handleDifficulty(3)"
+                            title="Einfach (Taste: 4)"
+                          >
+                            <i class="fas fa-check-circle"></i><br />Einfach
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="mt-3">
+                      <div class="card">
+                        <div class="card-body p-2">
+                          <div class="row text-center">
+                            <div class="col-4">
+                              <div class="h6 mb-0" id="sessionCorrect">0</div>
+                              <small class="text-muted">Richtig</small>
+                            </div>
+                            <div class="col-4">
+                              <div class="h6 mb-0" id="sessionIncorrect">0</div>
+                              <small class="text-muted">Falsch</small>
+                            </div>
+                            <div class="col-4">
+                              <div class="h6 mb-0" id="sessionReviewed">0</div>
+                              <small class="text-muted">Wiederholt</small>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card mt-3">
+                    <div class="card-header bg-info text-white">
+                      <strong
+                        ><i class="fas fa-clock"></i>&nbsp;Warteschlange</strong
+                      >
+                    </div>
+                    <div class="card-body">
+                      <div
+                        id="reviewQueue"
+                        style="max-height: 200px; overflow-y: auto"
+                      ></div>
                     </div>
                   </div>
                 </div>
@@ -2267,7 +2552,6 @@
         }
 
         if ("speechSynthesis" in window) {
-          // Cancel any ongoing speech
           speechSynthesis.cancel();
 
           const utterance = new SpeechSynthesisUtterance(text);
@@ -2283,7 +2567,6 @@
         const highlightedDiv = document.getElementById("highlightedText");
         if (!highlightedDiv) return;
 
-        // Check if there are errors - if no errors, read from original textarea instead
         const errorListDiv = document.getElementById("errorList");
         const hasErrors =
           errorListDiv &&
@@ -2293,16 +2576,14 @@
         let textToRead = "";
 
         if (!hasErrors) {
-          // No errors - read from original textarea
           const textarea = document.getElementById("grammarTextInput");
           if (textarea) {
             textToRead = textarea.value.trim();
           }
         } else {
-          // Has errors - read from highlighted text, but filter out HTML and error marks
           const text =
             highlightedDiv.innerText || highlightedDiv.textContent || "";
-          // Remove the "Keine Fehler gefunden" message if present
+
           textToRead = text.replace(/Keine Fehler gefunden!.*$/i, "").trim();
         }
 
@@ -2312,7 +2593,6 @@
         }
 
         if ("speechSynthesis" in window) {
-          // Cancel any ongoing speech
           speechSynthesis.cancel();
 
           const utterance = new SpeechSynthesisUtterance(textToRead);
@@ -2381,6 +2661,16 @@
             const tabInstance = new bootstrap.Tab(tabElement);
             tabInstance.show();
             localStorage.setItem("activeTab", tabName);
+
+            if (tabName === "vocabulary") {
+              setTimeout(() => {
+                switchTab("conjugation");
+                showAlert(
+                  "Vokabeltrainer ist vorübergehend nicht verfügbar.",
+                  "info"
+                );
+              }, 50);
+            }
           }
         }
       }
@@ -2391,6 +2681,10 @@
         if (validTabs.includes(savedTab)) {
           setTimeout(() => {
             switchTab(savedTab);
+          }, 100);
+        } else if (savedTab === "vocabulary") {
+          setTimeout(() => {
+            switchTab("conjugation");
           }, 100);
         }
       }
@@ -2555,15 +2849,14 @@
             typeof error.offset !== "number" ||
             typeof error.length !== "number"
           ) {
-            return; // Skip invalid error objects
+            return;
           }
 
           const start = error.offset;
           const end = start + error.length;
 
-          // Validate bounds
           if (start < 0 || end > highlightedText.length) {
-            return; // Skip errors with invalid offsets
+            return;
           }
 
           const before = highlightedText.substring(0, start);
@@ -2659,7 +2952,7 @@
               typeof error.offset !== "number" ||
               typeof error.length !== "number"
             ) {
-              return ""; // Skip invalid error objects
+              return "";
             }
 
             const context = originalText.substring(
@@ -2730,6 +3023,18 @@
                 `
                     : ""
                 }
+                <div class="mt-2">
+                  <button
+                    class="btn btn-sm btn-outline-success"
+                    onclick="addErrorWordToVocabulary('${errorText.replace(
+                      /'/g,
+                      "\\'"
+                    )}')"
+                    title="Zu Vokabelliste hinzufügen"
+                  >
+                    <i class="fas fa-plus"></i>&nbsp;Zu Vokabelliste hinzufügen
+                  </button>
+                </div>
               </div>
             `;
           })
@@ -2821,12 +3126,9 @@
           return;
         }
 
-        // Split text into words, preserving hyphens in compound words (e.g., "E-Mail")
-        // First, normalize the text and split by whitespace
-        // Then process each word to handle hyphens properly
         const words = text
           .toLowerCase()
-          .replace(/[^\w\säöüß-]/g, " ") // Keep hyphens, remove other punctuation
+          .replace(/[^\w\säöüß-]/g, " ")
           .split(/\s+/)
           .filter((w) => w.length > 0)
           .map((w) => w.trim())
@@ -3139,7 +3441,12 @@
 
         setTimeout(() => {
           const cards = document.querySelectorAll(".card");
-          cards.forEach((card) => observer.observe(card));
+          cards.forEach((card) => {
+            const tabNavigation = card.closest(".tab-navigation");
+            if (!tabNavigation) {
+              observer.observe(card);
+            }
+          });
         }, 500);
 
         setTimeout(() => {
@@ -3210,6 +3517,587 @@
         }
       `;
       document.head.appendChild(style);
+    </script>
+
+    <script>
+      let vocabularyList = [];
+      let currentPracticeSession = null;
+      let currentCardIndex = 0;
+      let isCardFlipped = false;
+      let sessionStats = { correct: 0, incorrect: 0, reviewed: 0 };
+
+      function loadVocabulary() {
+        try {
+          const stored = localStorage.getItem("vocabularyList");
+          if (stored) {
+            vocabularyList = JSON.parse(stored);
+          } else {
+            vocabularyList = [];
+          }
+        } catch (error) {
+          console.error("Error loading vocabulary:", error);
+          vocabularyList = [];
+        }
+        renderVocabularyList();
+        updateStatistics();
+        updateReviewQueue();
+      }
+
+      function saveVocabulary() {
+        try {
+          localStorage.setItem(
+            "vocabularyList",
+            JSON.stringify(vocabularyList)
+          );
+        } catch (error) {
+          console.error("Error saving vocabulary:", error);
+          showAlert("Fehler beim Speichern der Vokabeln", "danger");
+        }
+      }
+
+      function addVocabularyWord() {
+        const wordInput = document.getElementById("vocabWordInput");
+        const translationInput = document.getElementById(
+          "vocabTranslationInput"
+        );
+        const notesInput = document.getElementById("vocabNotesInput");
+
+        if (!wordInput) return;
+
+        const word = wordInput.value.trim().toLowerCase();
+        const translation = translationInput?.value.trim() || "";
+        const notes = notesInput?.value.trim() || "";
+
+        if (!word) {
+          showAlert("Bitte geben Sie ein deutsches Wort ein!", "warning");
+          return;
+        }
+
+        if (vocabularyList.some((v) => v.word === word)) {
+          showAlert("Dieses Wort existiert bereits in der Liste!", "warning");
+          return;
+        }
+
+        const newWord = {
+          id: Date.now().toString(),
+          word: word,
+          translation: translation,
+          notes: notes,
+          difficulty: 0,
+          lastReviewed: null,
+          nextReview: Date.now(),
+          reviewCount: 0,
+          correctCount: 0,
+          incorrectCount: 0,
+          easeFactor: 2.5,
+          interval: 1,
+        };
+
+        vocabularyList.push(newWord);
+        saveVocabulary();
+        renderVocabularyList();
+        updateStatistics();
+        updateReviewQueue();
+
+        wordInput.value = "";
+        if (translationInput) translationInput.value = "";
+        if (notesInput) notesInput.value = "";
+
+        showAlert("Wort zur Vokabelliste hinzugefügt!", "success");
+      }
+
+      function deleteVocabulary(wordId) {
+        vocabularyList = vocabularyList.filter((v) => v.id !== wordId);
+        saveVocabulary();
+        renderVocabularyList();
+        updateStatistics();
+        updateReviewQueue();
+        showAlert("Wort gelöscht!", "success");
+      }
+
+      function updateVocabulary(wordId, data) {
+        const index = vocabularyList.findIndex((v) => v.id === wordId);
+        if (index !== -1) {
+          vocabularyList[index] = { ...vocabularyList[index], ...data };
+          saveVocabulary();
+          renderVocabularyList();
+          updateStatistics();
+        }
+      }
+
+      function renderVocabularyList() {
+        const container = document.getElementById("vocabularyList");
+        if (!container) return;
+
+        const searchTerm =
+          document.getElementById("vocabSearchInput")?.value.toLowerCase() ||
+          "";
+        const filtered = vocabularyList.filter(
+          (v) =>
+            v.word.toLowerCase().includes(searchTerm) ||
+            v.translation.toLowerCase().includes(searchTerm)
+        );
+
+        if (filtered.length === 0) {
+          container.innerHTML =
+            '<p class="text-muted text-center">Keine Vokabeln gefunden.</p>';
+          return;
+        }
+
+        container.innerHTML = filtered
+          .map((vocab) => {
+            const dueDate = new Date(vocab.nextReview);
+            const isDue = dueDate <= new Date();
+            const dueBadge = isDue
+              ? '<span class="badge bg-danger">Fällig</span>'
+              : "";
+
+            return `
+              <div class="vocabulary-list-item card mb-2">
+                <div class="card-body p-2">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                      <strong>${escapeHtml(vocab.word)}</strong>
+                      ${
+                        vocab.translation
+                          ? `<br><small class="text-muted">${escapeHtml(
+                              vocab.translation
+                            )}</small>`
+                          : ""
+                      }
+                      ${
+                        vocab.notes
+                          ? `<br><small class="text-muted">${escapeHtml(
+                              vocab.notes
+                            )}</small>`
+                          : ""
+                      }
+                      ${dueBadge}
+                    </div>
+                    <div class="btn-group btn-group-sm">
+                      <button class="btn btn-outline-primary" onclick="editVocabulary('${
+                        vocab.id
+                      }')" title="Bearbeiten">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="btn btn-outline-danger" onclick="deleteVocabulary('${
+                        vocab.id
+                      }')" title="Löschen">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+          })
+          .join("");
+      }
+
+      function editVocabulary(wordId) {
+        const vocab = vocabularyList.find((v) => v.id === wordId);
+        if (!vocab) return;
+
+        const wordInput = document.getElementById("vocabWordInput");
+        const translationInput = document.getElementById(
+          "vocabTranslationInput"
+        );
+        const notesInput = document.getElementById("vocabNotesInput");
+
+        if (wordInput) wordInput.value = vocab.word;
+        if (translationInput) translationInput.value = vocab.translation || "";
+        if (notesInput) notesInput.value = vocab.notes || "";
+
+        deleteVocabulary(wordId);
+        showAlert(
+          "Wort geladen. Bitte bearbeiten und erneut hinzufügen.",
+          "info"
+        );
+      }
+
+      function filterVocabularyList() {
+        renderVocabularyList();
+      }
+
+      function updateStatistics() {
+        const total = vocabularyList.length;
+        const due = getWordsDueForReview().length;
+        const mastered = vocabularyList.filter(
+          (v) => v.reviewCount >= 5 && v.correctCount > v.incorrectCount
+        ).length;
+        const newWords = vocabularyList.filter(
+          (v) => v.reviewCount === 0
+        ).length;
+
+        const totalEl = document.getElementById("vocabTotalCount");
+        const dueEl = document.getElementById("vocabDueCount");
+        const masteredEl = document.getElementById("vocabMasteredCount");
+        const newEl = document.getElementById("vocabNewCount");
+
+        if (totalEl) totalEl.textContent = total;
+        if (dueEl) dueEl.textContent = due;
+        if (masteredEl) masteredEl.textContent = mastered;
+        if (newEl) newEl.textContent = newWords;
+      }
+
+      function calculateNextReview(word, difficulty) {
+        const now = Date.now();
+        const oneDay = 24 * 60 * 60 * 1000;
+
+        if (difficulty === 0) {
+          word.interval = 1;
+          word.easeFactor = Math.max(1.3, word.easeFactor - 0.2);
+          word.incorrectCount++;
+        } else if (difficulty === 1) {
+          word.interval = Math.max(1, word.interval * 1.2);
+          word.easeFactor = Math.max(1.3, word.easeFactor - 0.15);
+          word.correctCount++;
+        } else if (difficulty === 2) {
+          word.interval = word.interval * word.easeFactor;
+          word.correctCount++;
+        } else if (difficulty === 3) {
+          word.interval = word.interval * word.easeFactor * 1.3;
+          word.easeFactor = Math.min(2.5, word.easeFactor + 0.15);
+          word.correctCount++;
+        }
+
+        word.lastReviewed = now;
+        word.nextReview = now + word.interval * oneDay;
+        word.reviewCount++;
+
+        return word;
+      }
+
+      function getWordsDueForReview() {
+        const now = Date.now();
+        return vocabularyList.filter((v) => v.nextReview <= now);
+      }
+
+      function updateWordProgress(wordId, difficulty) {
+        const word = vocabularyList.find((v) => v.id === wordId);
+        if (!word) return;
+
+        const updated = calculateNextReview(word, difficulty);
+        const index = vocabularyList.findIndex((v) => v.id === wordId);
+        if (index !== -1) {
+          vocabularyList[index] = updated;
+          saveVocabulary();
+        }
+      }
+
+      function startPracticeSession() {
+        const modeSelect = document.getElementById("practiceModeSelect");
+        const mode = modeSelect?.value || "due";
+
+        let wordsToPractice = [];
+        if (mode === "due") {
+          wordsToPractice = getWordsDueForReview();
+        } else if (mode === "all") {
+          wordsToPractice = [...vocabularyList];
+        } else if (mode === "new") {
+          wordsToPractice = vocabularyList.filter((v) => v.reviewCount === 0);
+        } else if (mode === "learning") {
+          wordsToPractice = vocabularyList.filter(
+            (v) => v.reviewCount > 0 && v.reviewCount < 5
+          );
+        }
+
+        if (wordsToPractice.length === 0) {
+          showAlert("Keine Wörter zum Üben gefunden!", "warning");
+          return;
+        }
+
+        wordsToPractice = wordsToPractice.sort(() => Math.random() - 0.5);
+
+        currentPracticeSession = wordsToPractice;
+        currentCardIndex = 0;
+        isCardFlipped = false;
+        sessionStats = { correct: 0, incorrect: 0, reviewed: 0 };
+
+        const sessionDiv = document.getElementById("practiceSession");
+        const startBtn = document.getElementById("startPracticeBtn");
+
+        if (sessionDiv) sessionDiv.style.display = "block";
+        if (startBtn) startBtn.style.display = "none";
+
+        showNextCard();
+        updateSessionStats();
+      }
+
+      function showNextCard() {
+        if (
+          !currentPracticeSession ||
+          currentCardIndex >= currentPracticeSession.length
+        ) {
+          endSession();
+          return;
+        }
+
+        const word = currentPracticeSession[currentCardIndex];
+        isCardFlipped = false;
+
+        const flashcard = document.getElementById("flashcard");
+        const wordEl = document.getElementById("flashcardWord");
+        const translationEl = document.getElementById("flashcardTranslation");
+        const notesEl = document.getElementById("flashcardNotes");
+        const currentNumEl = document.getElementById("currentCardNum");
+        const totalNumEl = document.getElementById("totalCardsNum");
+        const progressBar = document.getElementById("practiceProgressBar");
+
+        if (flashcard) {
+          flashcard.classList.remove("flipped");
+        }
+        if (wordEl) wordEl.textContent = word.word;
+        if (translationEl)
+          translationEl.textContent = word.translation || "Keine Übersetzung";
+        if (notesEl) {
+          notesEl.textContent = word.notes || "";
+          notesEl.style.display = word.notes ? "block" : "none";
+        }
+        if (currentNumEl) currentNumEl.textContent = currentCardIndex + 1;
+        if (totalNumEl) totalNumEl.textContent = currentPracticeSession.length;
+        if (progressBar) {
+          const progress =
+            ((currentCardIndex + 1) / currentPracticeSession.length) * 100;
+          progressBar.style.width = progress + "%";
+        }
+      }
+
+      function flipCard() {
+        if (!currentPracticeSession) return;
+        const flashcard = document.getElementById("flashcard");
+        if (flashcard) {
+          isCardFlipped = !isCardFlipped;
+          flashcard.classList.toggle("flipped", isCardFlipped);
+        }
+      }
+
+      function handleDifficulty(difficulty) {
+        if (
+          !currentPracticeSession ||
+          currentCardIndex >= currentPracticeSession.length
+        )
+          return;
+
+        const word = currentPracticeSession[currentCardIndex];
+        updateWordProgress(word.id, difficulty);
+
+        if (difficulty === 0) {
+          sessionStats.incorrect++;
+        } else {
+          sessionStats.correct++;
+        }
+        sessionStats.reviewed++;
+
+        updateSessionStats();
+        updateStatistics();
+        updateReviewQueue();
+
+        currentCardIndex++;
+        showNextCard();
+      }
+
+      function updateSessionStats() {
+        const correctEl = document.getElementById("sessionCorrect");
+        const incorrectEl = document.getElementById("sessionIncorrect");
+        const reviewedEl = document.getElementById("sessionReviewed");
+
+        if (correctEl) correctEl.textContent = sessionStats.correct;
+        if (incorrectEl) incorrectEl.textContent = sessionStats.incorrect;
+        if (reviewedEl) reviewedEl.textContent = sessionStats.reviewed;
+      }
+
+      function endSession() {
+        currentPracticeSession = null;
+        currentCardIndex = 0;
+        isCardFlipped = false;
+
+        const sessionDiv = document.getElementById("practiceSession");
+        const startBtn = document.getElementById("startPracticeBtn");
+
+        if (sessionDiv) sessionDiv.style.display = "none";
+        if (startBtn) startBtn.style.display = "block";
+
+        showAlert(
+          `Übung beendet! ${sessionStats.reviewed} Wörter wiederholt, ${sessionStats.correct} richtig, ${sessionStats.incorrect} falsch.`,
+          "success"
+        );
+      }
+
+      function updateReviewQueue() {
+        const queueDiv = document.getElementById("reviewQueue");
+        if (!queueDiv) return;
+
+        const dueWords = getWordsDueForReview();
+        if (dueWords.length === 0) {
+          queueDiv.innerHTML =
+            '<p class="text-muted text-center mb-0">Keine Wörter fällig für Wiederholung.</p>';
+          return;
+        }
+
+        queueDiv.innerHTML = dueWords
+          .slice(0, 10)
+          .map((v) => {
+            const daysOverdue = Math.floor(
+              (Date.now() - v.nextReview) / (24 * 60 * 60 * 1000)
+            );
+            return `
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span><strong>${escapeHtml(v.word)}</strong></span>
+                <span class="badge bg-warning">${
+                  daysOverdue > 0
+                    ? `${daysOverdue} Tag${
+                        daysOverdue > 1 ? "e" : ""
+                      } überfällig`
+                    : "Heute"
+                }</span>
+              </div>
+            `;
+          })
+          .join("");
+      }
+
+      function importFromGrammarCheck() {
+        const textarea = document.getElementById("grammarTextInput");
+        if (!textarea) {
+          showAlert(
+            "Bitte geben Sie zuerst einen Text in der Grammatikprüfung ein!",
+            "warning"
+          );
+          return;
+        }
+
+        const text = textarea.value.trim();
+        if (!text) {
+          showAlert(
+            "Bitte geben Sie zuerst einen Text in der Grammatikprüfung ein!",
+            "warning"
+          );
+          return;
+        }
+
+        const words = text
+          .toLowerCase()
+          .replace(/[^\w\säöüß-]/g, " ")
+          .split(/\s+/)
+          .filter((w) => w.length > 2)
+          .filter((w, i, a) => a.indexOf(w) === i);
+
+        if (words.length === 0) {
+          showAlert("Keine Wörter zum Importieren gefunden!", "warning");
+          return;
+        }
+
+        let imported = 0;
+        words.forEach((word) => {
+          if (!vocabularyList.some((v) => v.word === word)) {
+            const newWord = {
+              id:
+                Date.now().toString() + Math.random().toString(36).substr(2, 9),
+              word: word,
+              translation: "",
+              notes: "",
+              difficulty: 0,
+              lastReviewed: null,
+              nextReview: Date.now(),
+              reviewCount: 0,
+              correctCount: 0,
+              incorrectCount: 0,
+              easeFactor: 2.5,
+              interval: 1,
+            };
+            vocabularyList.push(newWord);
+            imported++;
+          }
+        });
+
+        if (imported > 0) {
+          saveVocabulary();
+          renderVocabularyList();
+          updateStatistics();
+          updateReviewQueue();
+          showAlert(`${imported} neue Wörter importiert!`, "success");
+        } else {
+          showAlert("Alle Wörter sind bereits in der Liste!", "info");
+        }
+      }
+
+      function speakVocabularyWord() {
+        if (
+          !currentPracticeSession ||
+          currentCardIndex >= currentPracticeSession.length
+        )
+          return;
+        const word = currentPracticeSession[currentCardIndex];
+        if (word && word.word) {
+          speakVerb(word.word);
+        }
+      }
+
+      function addErrorWordToVocabulary(wordText) {
+        if (!wordText || !wordText.trim()) return;
+
+        const word = wordText.trim().toLowerCase();
+
+        if (vocabularyList.some((v) => v.word === word)) {
+          showAlert(
+            "Dieses Wort existiert bereits in der Vokabelliste!",
+            "info"
+          );
+          return;
+        }
+
+        const newWord = {
+          id: Date.now().toString(),
+          word: word,
+          translation: "",
+          notes: `Aus Grammatikprüfung hinzugefügt`,
+          difficulty: 0,
+          lastReviewed: null,
+          nextReview: Date.now(),
+          reviewCount: 0,
+          correctCount: 0,
+          incorrectCount: 0,
+          easeFactor: 2.5,
+          interval: 1,
+        };
+
+        vocabularyList.push(newWord);
+        saveVocabulary();
+        renderVocabularyList();
+        updateStatistics();
+        updateReviewQueue();
+
+        showAlert(`"${word}" zur Vokabelliste hinzugefügt!`, "success");
+      }
+
+      document.addEventListener("keydown", function (e) {
+        const vocabularyPane = document.getElementById("vocabulary-pane");
+        if (!vocabularyPane || !vocabularyPane.classList.contains("active"))
+          return;
+        if (!currentPracticeSession) return;
+
+        if (e.code === "Space" && !isCardFlipped) {
+          e.preventDefault();
+          flipCard();
+        } else if (e.key === "1") {
+          e.preventDefault();
+          handleDifficulty(0);
+        } else if (e.key === "2") {
+          e.preventDefault();
+          handleDifficulty(1);
+        } else if (e.key === "3") {
+          e.preventDefault();
+          handleDifficulty(2);
+        } else if (e.key === "4") {
+          e.preventDefault();
+          handleDifficulty(3);
+        }
+      });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        loadVocabulary();
+      });
     </script>
 
     <footer class="footer mt-5 py-4 bg-light border-top">
