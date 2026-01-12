@@ -26,7 +26,7 @@
     />
     <meta name="theme-color" content="#3b82f6" />
 
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -2011,11 +2011,9 @@
         }
       }
 
-      // Restore active tab on page load
       function restoreActiveTab() {
         const savedTab = localStorage.getItem("activeTab");
         if (savedTab === "grammar" || savedTab === "conjugation") {
-          // Wait for DOM to be ready
           setTimeout(() => {
             switchTab(savedTab);
           }, 100);
@@ -2142,20 +2140,17 @@
           return;
         }
 
-        // Sort errors by offset in reverse order to avoid position shifts when inserting marks
         const sortedErrors = [...errors].sort((a, b) => b.offset - a.offset);
 
-        // Start with the original text (not escaped yet)
         let highlightedText = text;
 
-        // Insert error marks in the original text first (before escaping)
         sortedErrors.forEach((error) => {
           const start = error.offset;
           const end = start + error.length;
           const before = highlightedText.substring(0, start);
           const errorText = highlightedText.substring(start, end);
           const after = highlightedText.substring(end);
-          // Insert mark tags in the original text with click handler
+
           highlightedText = `${before}<mark class="grammar-error" data-error-id="${
             error.offset
           }" data-error-offset="${error.offset}" title="${error.message.replace(
@@ -2164,31 +2159,25 @@
           )} (Klicken für Details)">${errorText}</mark>${after}`;
         });
 
-        // Now escape the HTML (this will escape everything except the mark tags we just inserted)
-        // We need to escape the text parts but preserve the mark tags
-        // Split by mark tags, escape each part, then rejoin
         const parts = highlightedText.split(/(<mark[^>]*>.*?<\/mark>)/g);
         let escapedText = parts
           .map((part) => {
-            // If it's a mark tag, don't escape it (but escape the content inside)
             if (part.startsWith("<mark")) {
-              // Extract the tag attributes and content
               const tagMatch = part.match(/^(<mark[^>]*>)(.*?)(<\/mark>)$/);
               if (tagMatch) {
                 const [, openTag, content, closeTag] = tagMatch;
-                // Escape only the content inside the mark tag
+
                 return openTag + escapeHtml(content) + closeTag;
               }
               return part;
             }
-            // Regular text - escape it
+
             return escapeHtml(part);
           })
           .join("");
 
         highlightedDiv.innerHTML = escapedText.replace(/\n/g, "<br>");
 
-        // Add click event listeners to error marks
         highlightedDiv.querySelectorAll(".grammar-error").forEach((mark) => {
           mark.style.cursor = "pointer";
           mark.addEventListener("click", function () {
@@ -2201,25 +2190,19 @@
       }
 
       function scrollToError(errorOffset) {
-        // Find the error item in the error list (not the mark element)
-        // Use the error-item class to ensure we get the list item, not the mark
         const errorItem = document.querySelector(
           `.error-item[data-error-offset="${errorOffset}"]`
         );
 
         if (errorItem) {
-          // Ensure the grammar results section is visible
           const resultsDiv = document.getElementById("grammarResults");
           if (resultsDiv && resultsDiv.style.display === "none") {
             resultsDiv.style.display = "block";
           }
 
-          // Small delay to ensure DOM is ready
           setTimeout(() => {
-            // Scroll to the error item
             errorItem.scrollIntoView({ behavior: "smooth", block: "center" });
 
-            // Add a temporary highlight effect
             errorItem.style.transition = "background-color 0.3s ease";
             const originalBg =
               errorItem.style.backgroundColor ||
@@ -2336,33 +2319,25 @@
         textarea.value = newText;
         updateTextStats();
 
-        // Find and remove the error that was applied
         const errorIndex = grammarErrors.findIndex(
           (error) => error.offset === offset && error.length === length
         );
 
         if (errorIndex !== -1) {
-          // Calculate offset adjustment for subsequent errors
           const offsetDiff = suggestion.length - length;
 
-          // Remove the applied error
           grammarErrors.splice(errorIndex, 1);
 
-          // Adjust offsets of all errors that come after this one
           for (let i = errorIndex; i < grammarErrors.length; i++) {
             grammarErrors[i].offset += offsetDiff;
           }
 
-          // Update originalText to the new text
           originalText = newText;
 
-          // Re-render the error list
           displayErrorList(grammarErrors);
 
-          // Re-highlight the text with remaining errors
           highlightErrors(newText, grammarErrors);
 
-          // Update error count
           const errorCountDiv = document.getElementById("errorCount");
           if (errorCountDiv) {
             const errorCount = grammarErrors.length;
@@ -2371,12 +2346,10 @@
             }`;
           }
 
-          // Hide copy button if no errors remain
           if (grammarErrors.length === 0) {
             document.getElementById("copyCorrectedBtn").style.display = "none";
           }
         } else {
-          // If error not found (shouldn't happen), just update the text
           originalText = newText;
           const highlightedDiv = document.getElementById("highlightedText");
           if (highlightedDiv) {
