@@ -3900,6 +3900,37 @@ html.dark #bulkTextInput:focus {
 }
 
 @media (max-width: 768px) {
+  .header-description {
+    display: none !important;
+  }
+
+  .dark-mode-toggle-final-final-enhanced {
+    width: 50px;
+    height: 25px;
+  }
+
+  .dark-mode-slider-final-final-enhanced {
+    width: 19px;
+    height: 19px;
+    top: 3px;
+    left: 3px;
+    font-size: 10px;
+  }
+
+  .dark-mode-toggle-final-final-enhanced
+    input:checked
+    + .dark-mode-slider-final-final-enhanced {
+    transform: translateX(25px);
+  }
+
+  .toggle-icons-final-final-enhanced {
+    padding: 0 6px;
+  }
+
+  .toggle-icons-final-final-enhanced i {
+    font-size: 10px;
+  }
+
   .nav-tabs-custom .nav-link {
     padding: var(--spacing-2) var(--spacing-3);
     font-size: var(--font-size-sm);
@@ -3985,7 +4016,6 @@ html.dark .coming-soon-text i {
   color: var(--primary-400);
 }
 
-/* Dark mode fixes for Textanalyse section */
 html.dark #analysisResults .text-muted {
   color: var(--text-secondary) !important;
 }
@@ -4003,7 +4033,6 @@ html.dark #readabilityScore .text-muted {
   color: var(--text-secondary) !important;
 }
 
-/* Make readability progress bar taller */
 #readabilityScore .progress {
   height: 1rem;
 }
@@ -4061,4 +4090,198 @@ html.dark #learningSuggestions li {
 .dark .favorite-star-btn:hover i {
   color: #fcd34d !important;
   filter: drop-shadow(0 0 6px rgba(252, 211, 77, 0.8));
+}
+
+.vocabulary-list-item {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vocabulary-list-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.statistics-card {
+  padding: 8px;
+}
+
+.statistics-card .h5 {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.statistics-card small {
+  font-size: 0.75rem;
+}
+
+.vocabulary-card-container {
+  perspective: 1000px;
+  min-height: 300px;
+}
+
+.vocabulary-card {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+  cursor: pointer;
+}
+
+.vocabulary-card.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(
+    135deg,
+    var(--primary-400) 0%,
+    var(--primary-600) 100%
+  );
+  color: white;
+}
+
+.card-content {
+  padding: 2rem;
+  text-align: center;
+  width: 100%;
+}
+
+.card-front .card-content h3 {
+  color: var(--text-primary);
+  font-size: 2.5rem;
+  font-weight: 600;
+}
+
+.card-back .card-content h4 {
+  color: white;
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.card-back .card-content p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+}
+
+.card-front .card-content .text-muted {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
+
+.difficulty-buttons .btn {
+  padding: 1rem 0.5rem;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  border-width: 2px;
+  font-weight: 500;
+}
+
+.difficulty-buttons .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.difficulty-buttons .btn i {
+  font-size: 1.2rem;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.progress-indicator {
+  margin-bottom: 1.5rem;
+}
+
+.progress-indicator .progress {
+  height: 8px;
+  border-radius: 4px;
+  background-color: var(--bg-tertiary);
+}
+
+.progress-indicator .progress-bar {
+  transition: width 0.3s ease;
+}
+
+#reviewQueue {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+#reviewQueue .badge {
+  font-size: 0.75rem;
+}
+
+html.dark .vocabulary-list-item {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+html.dark .vocabulary-list-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+html.dark .statistics-card .h5 {
+  color: var(--text-primary);
+}
+
+html.dark .statistics-card small {
+  color: var(--text-secondary);
+}
+
+html.dark .card-front {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+html.dark .card-front .card-content h3 {
+  color: var(--text-primary);
+}
+
+html.dark .card-front .card-content .text-muted {
+  color: var(--text-secondary);
+}
+
+html.dark .difficulty-buttons .btn {
+  border-color: var(--border-color);
+}
+
+@media (max-width: 768px) {
+  .vocabulary-card {
+    height: 250px;
+  }
+
+  .card-front .card-content h3 {
+    font-size: 2rem;
+  }
+
+  .card-back .card-content h4 {
+    font-size: 1.5rem;
+  }
+
+  .difficulty-buttons .btn {
+    padding: 0.75rem 0.25rem;
+    font-size: 0.8rem;
+  }
+
+  .difficulty-buttons .btn i {
+    font-size: 1rem;
+  }
 }
