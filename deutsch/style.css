@@ -3904,6 +3904,32 @@ html.dark #bulkTextInput:focus {
     display: none !important;
   }
 
+  .header h1 {
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    font-size: var(--font-size-2xl);
+  }
+
+  .header h1 i {
+    flex-shrink: 0;
+  }
+
+  .header .btn {
+    white-space: nowrap;
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-2) var(--spacing-3);
+  }
+
+  .header .btn i {
+    flex-shrink: 0;
+  }
+
+  .header .d-flex.gap-3 {
+    flex-shrink: 0;
+    gap: var(--spacing-2) !important;
+  }
+
   .dark-mode-toggle-final-final-enhanced {
     width: 50px;
     height: 25px;
@@ -4057,6 +4083,34 @@ html.dark #learningSuggestions li {
 @media (max-width: 576px) {
   .coming-soon-text {
     display: none;
+  }
+
+  .header h1 {
+    font-size: var(--font-size-xl);
+    padding: 0 var(--spacing-2);
+  }
+
+  .header .btn {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-1) var(--spacing-2);
+  }
+
+  .header .container-final-final-enhanced {
+    padding-left: var(--spacing-3);
+    padding-right: var(--spacing-3);
+  }
+
+  .header .d-flex.justify-content-between {
+    flex-wrap: nowrap;
+  }
+
+  .header > div > div:first-child {
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
+  .header > div > div:last-child {
+    flex-shrink: 0;
   }
 }
 
