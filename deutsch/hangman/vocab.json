@@ -8936,8 +8936,16 @@
     "level": "A2"
   },
   {
-    "article": "der/die",
+    "article": "der",
     "word": "Leser",
+    "plural": "",
+    "translation": "okuyucu",
+    "example": "",
+    "level": "A2"
+  },
+  {
+    "article": "die",
+    "word": "Leserin",
     "plural": "",
     "translation": "okuyucu",
     "example": "",
@@ -10208,8 +10216,16 @@
     "level": "A2"
   },
   {
-    "article": "der/die",
+    "article": "der",
     "word": "Hausmeister",
+    "plural": "",
+    "translation": "bina sorumlusu",
+    "example": "",
+    "level": "A2"
+  },
+  {
+    "article": "die",
+    "word": "Hausmeisterin",
     "plural": "",
     "translation": "bina sorumlusu",
     "example": "",
@@ -11073,7 +11089,7 @@
   },
   {
     "article": "die",
-    "word": "Eheschlie",
+    "word": "Eheschließung",
     "plural": "Eheschließungen",
     "translation": "evlilik",
     "example": "",
@@ -12088,8 +12104,16 @@
     "level": "A2"
   },
   {
-    "article": "der/die",
+    "article": "der",
     "word": "Ansprechpartner",
+    "plural": "",
+    "translation": "muhatap",
+    "example": "",
+    "level": "A2"
+  },
+  {
+    "article": "die",
+    "word": "Ansprechpartnerin",
     "plural": "",
     "translation": "muhatap",
     "example": "",
@@ -12480,7 +12504,7 @@
     "level": "A2"
   },
   {
-    "article": "der/die",
+    "article": "der",
     "word": "Tischler",
     "plural": "",
     "translation": "marangoz",
@@ -12488,8 +12512,8 @@
     "level": "A2"
   },
   {
-    "article": "der/die",
-    "word": "Tischler",
+    "article": "die",
+    "word": "Tischlerin",
     "plural": "",
     "translation": "marangoz",
     "example": "",
@@ -16016,7 +16040,7 @@
     "level": "B1"
   },
   {
-    "article": "der/die",
+    "article": "die",
     "word": "Kommissarin",
     "plural": "Kommissarinnen",
     "translation": "komiser",
@@ -17235,7 +17259,7 @@
     "article": "der/die",
     "word": "Russlanddeutsche",
     "plural": "Russlanddeutschen",
-    "translation": "rusya Almanları",
+    "translation": "Rusya Almanları",
     "example": "",
     "level": "B1"
   },
