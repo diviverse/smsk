@@ -1331,13 +1331,9 @@
                 <span>Zaman bonusu:</span>
                 <span class="chalk-green" id="scoreTime">+0</span>
               </div>
-              <div class="score-info d-none" id="scoreHintRow">
-                <span>İpucu kullanımı:</span>
-                <span class="chalk-red">-50</span>
-              </div>
               <div class="score-info d-none" id="scoreMultiplierRow">
                 <span>Seri çarpanı:</span>
-                <span class="chalk-yellow" id="scoreMultiplier">x1.0</span>
+                <span class="chalk-blue" id="scoreMultiplier">x1.0</span>
               </div>
               <div class="chalk-white total-score">
                 <span>Toplam:</span>
@@ -1533,10 +1529,6 @@
             w.word.length < 20,
         );
 
-        console.log(
-          allWords.filter((w) => w.article === "der/die").map((w) => w.word),
-        );
-
         return { easy, medium, hard };
       }
 
@@ -1715,8 +1707,10 @@
         if (gameState.hintUsed) {
           return;
         }
+
+        const hintBtn = document.getElementById("hintBtn");
+
         if (gameState.score < 50) {
-          hintBtn = document.getElementById("hintBtn");
           hintBtn.style.animation = "shake 0.4s ease";
           setTimeout(() => {
             hintBtn.style.animation = "";
@@ -1740,7 +1734,6 @@
           wordContainer.nextSibling,
         );
 
-        const hintBtn = document.getElementById("hintBtn");
         hintBtn.disabled = true;
         hintBtn.style.opacity = "0.5";
         hintBtn.textContent = "💡 İpucu Kullanıldı";
@@ -2128,16 +2121,12 @@
           gameState.streak >= 2 ? Math.min(2, 1 + gameState.streak / 10) : 1;
 
         const timeBonus = gameState.timerValue
-          ? Math.max(
-              0,
-              gameState.timeRemaining - Math.floor(gameState.timerValue / 2),
-            )
+          ? gameState.timeRemaining - Math.floor(gameState.timerValue / 2)
           : 0;
         const heartBonus = gameState.remainingLives * 10;
         const baseScore = 40;
-        const hintPenalty = gameState.hintUsed ? 50 : 0;
 
-        const rawRoundScore = baseScore + heartBonus + timeBonus - hintPenalty;
+        const rawRoundScore = baseScore + heartBonus + timeBonus;
         const roundScore = Math.floor(rawRoundScore * streakMultiplier);
 
         gameState.score += roundScore;
@@ -2177,22 +2166,24 @@
           document.getElementById("scoreCorrectGuess").textContent = "+40";
 
           document.getElementById("scoreHearts").textContent = "+" + heartBonus;
-          document.getElementById("scoreTime").textContent = "+" + timeBonus;
-
-          const hintRow = document.getElementById("scoreHintRow");
-          if (gameState.hintUsed) {
-            hintRow.style.display = "flex";
+          const scoreTime = document.getElementById("scoreTime");
+          if (timeBonus >= 0) {
+            scoreTime.textContent = "+" + timeBonus;
+            multiplierRow.style.class.add("chalk-green");
+            multiplierRow.style.class.remove("chalk-red");
           } else {
-            hintRow.style.display = "none";
+            scoreTime.textContent = "-" + Math.abs(timeBonus);
+            multiplierRow.style.class.add("chalk-red");
+            multiplierRow.style.class.remove("chalk-green");
           }
 
           const multiplierRow = document.getElementById("scoreMultiplierRow");
           const multiplierValue = document.getElementById("scoreMultiplier");
           if (gameState.streak >= 2) {
-            multiplierRow.style.display = "flex";
+            multiplierRow.style.class.remove("d-none");
             multiplierValue.textContent = "x" + streakMultiplier.toFixed(1);
           } else {
-            multiplierRow.style.display = "none";
+            multiplierRow.style.class.add("d-none");
           }
 
           document.getElementById("scoreTotalRound").textContent =
@@ -2222,7 +2213,8 @@
             gameState.currentWord.translation;
           const pluralDiv = document.getElementById("revealPlural");
           if (gameState.currentWord.plural) {
-            pluralDiv.textContent = "Çoğul: die" + gameState.currentWord.plural;
+            pluralDiv.textContent =
+              "Çoğul: die " + gameState.currentWord.plural;
           } else {
             pluralDiv.textContent = "";
           }
