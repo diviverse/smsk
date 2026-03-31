@@ -412,6 +412,34 @@
         overflow-x: hidden;
       }
 
+      .menu-content::-webkit-scrollbar,
+      .options-panel::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .menu-content::-webkit-scrollbar-track,
+      .options-panel::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .menu-content::-webkit-scrollbar-thumb,
+      .options-panel::-webkit-scrollbar-thumb {
+        background: rgba(240, 240, 240, 0.25);
+        border-radius: 4px;
+        border: 1px solid rgba(240, 240, 240, 0.1);
+      }
+
+      .menu-content::-webkit-scrollbar-thumb:hover,
+      .options-panel::-webkit-scrollbar-thumb:hover {
+        background: rgba(240, 240, 240, 0.45);
+      }
+
+      .menu-content,
+      .options-panel {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(240, 240, 240, 0.25) transparent;
+      }
+
       h1 {
         font-family: "Gochi Hand", cursive;
         font-size: clamp(2rem, 7vw, 3rem);
@@ -774,6 +802,21 @@
         padding: 20px;
       }
 
+      .onboarding-section {
+        margin-bottom: 15px;
+        text-align: left;
+      }
+
+      .onboarding-label {
+        color: var(--chalk-yellow);
+        font-size: 1rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
       .onboarding-content {
         background: var(--board-dark);
         border: 2px solid var(--chalk-white);
@@ -794,14 +837,19 @@
 
       .onboarding-content p {
         color: var(--chalk-gray);
-        font-size: 1.1rem;
-        line-height: 1.6;
-        margin-bottom: 20px;
+        font-size: 1rem;
+        line-height: 1.5;
+        margin-bottom: 0;
       }
 
       .onboarding-content .highlight {
         color: var(--chalk-white);
         font-weight: bold;
+      }
+
+      .dismiss-btn {
+        margin-top: 20px;
+        width: 100%;
       }
 
       .dismiss-btn {
@@ -1092,31 +1140,51 @@
       .chalk-yellow {
         color: var(--chalk-yellow);
       }
-
-      .d-none {
-        display: none !important;
-      }
     </style>
   </head>
   <body>
     <div class="main">
       <div class="onboarding-overlay hidden" id="onboarding">
         <div class="onboarding-content">
-          <h2>Deutsch Hangman'e Hoş Geldiniz! 🇩🇪</h2>
-          <p>
-            Klavyedeki harflere tıklayarak
-            <span class="highlight">Almanca kelimeyi</span> tahmin edin.
-          </p>
-          <p>
-            <span class="highlight">6 canınız</span> var. Her yanlış tahmin bir
-            can kaybettirir ve asılmaya bir adım daha yaklaşırsınız.
-          </p>
-          <p>
-            <span class="highlight">Seriyi</span> artırmak ve yeni kelimeler
-            öğrenmek için kelimeleri tamamlayın!
-          </p>
+          <h2>Deutsch Hangman 🇩🇪</h2>
+
+          <div class="onboarding-section">
+            <p>
+              <span class="highlight">Almanca kelimeleri</span> tahmin ederek
+              öğrenin!
+            </p>
+          </div>
+
+          <div class="onboarding-section">
+            <div class="onboarding-label">🎮 Nasıl Oynanır?</div>
+            <p>
+              Klavyedeki harflere tıklayarak gizli kelimeyi bulun. Her
+              <span class="highlight">doğru tahmin</span> o harfi açığa çıkarır,
+              her <span class="highlight">yanlış tahmin</span> ise bir can
+              kaybettirir ve asılmaya bir adım daha yaklaştırır.
+            </p>
+          </div>
+
+          <div class="onboarding-section">
+            <div class="onboarding-label">❤️ Can Sistemi</div>
+            <p>
+              Toplam <span class="highlight">6 canınız</span> var. Tüm canlar
+              bittiğinde o tur biter. Kalan her can tur sonunda
+              <span class="highlight">+10 puan</span> kazandırır.
+            </p>
+          </div>
+
+          <div class="onboarding-section">
+            <div class="onboarding-label">💡 İpucu Sistemi</div>
+            <p>
+              Takıldınız mı? <span class="highlight">İpucu butonu</span> ile
+              kelimenin Türkçe anlamını görebilirsiniz. Her ipucu
+              <span class="highlight">50 puan</span> kaybettirir.
+            </p>
+          </div>
+
           <button class="btn primary dismiss-btn" onclick="dismissOnboarding()">
-            Anladım!
+            Anladım, Başlayalım!
           </button>
         </div>
       </div>
@@ -1327,11 +1395,11 @@
                 <span>Kalan can (×10):</span>
                 <span class="chalk-green" id="scoreHearts">+0</span>
               </div>
-              <div class="score-info">
+              <div class="score-info hidden">
                 <span>Zaman bonusu:</span>
                 <span class="chalk-green" id="scoreTime">+0</span>
               </div>
-              <div class="score-info d-none" id="scoreMultiplierRow">
+              <div class="score-info hidden" id="scoreMultiplierRow">
                 <span>Seri çarpanı:</span>
                 <span class="chalk-blue" id="scoreMultiplier">x1.0</span>
               </div>
@@ -1388,7 +1456,7 @@
       <div class="screen hidden" id="creditsScreen">
         <div class="credits-content">
           <h2 class="credits-title">Deutsch Hangman</h2>
-          <div class="credits-note">v1.3, 31.03.2026</div>
+          <div class="credits-note">v1.3, 01.04.2026</div>
           <br />
 
           <div class="credits-section">
@@ -2166,24 +2234,31 @@
           document.getElementById("scoreCorrectGuess").textContent = "+40";
 
           document.getElementById("scoreHearts").textContent = "+" + heartBonus;
+
           const scoreTime = document.getElementById("scoreTime");
-          if (timeBonus >= 0) {
-            scoreTime.textContent = "+" + timeBonus;
-            multiplierRow.style.class.add("chalk-green");
-            multiplierRow.style.class.remove("chalk-red");
+          if (gameState.timerValue) {
+            scoreTime.classList.remove("hidden");
+            if (timeBonus >= 0) {
+              scoreTime.textContent = "+" + timeBonus;
+              scoreTime.classList.add("chalk-green");
+              scoreTime.classList.remove("chalk-red");
+            } else {
+              scoreTime.textContent = "-" + Math.abs(timeBonus);
+              scoreTime.classList.add("chalk-red");
+              scoreTime.classList.remove("chalk-green");
+            }
           } else {
-            scoreTime.textContent = "-" + Math.abs(timeBonus);
-            multiplierRow.style.class.add("chalk-red");
-            multiplierRow.style.class.remove("chalk-green");
+            scoreTime.classList.add("hidden");
           }
 
           const multiplierRow = document.getElementById("scoreMultiplierRow");
           const multiplierValue = document.getElementById("scoreMultiplier");
+          console.log(gameState.streak);
           if (gameState.streak >= 2) {
-            multiplierRow.style.class.remove("d-none");
+            multiplierRow.classList.remove("hidden");
             multiplierValue.textContent = "x" + streakMultiplier.toFixed(1);
           } else {
-            multiplierRow.style.class.add("d-none");
+            multiplierRow.classList.add("hidden");
           }
 
           document.getElementById("scoreTotalRound").textContent =
@@ -2230,8 +2305,7 @@
           document.getElementById("scoreCorrectGuess").textContent = "+0";
           document.getElementById("scoreHearts").textContent = "+0";
           document.getElementById("scoreTime").textContent = "+0";
-          document.getElementById("scoreHintRow").style.display = "none";
-          document.getElementById("scoreMultiplierRow").style.display = "none";
+          document.getElementById("scoreMultiplierRow").classList.add("hidden");
           document.getElementById("scoreTotalRound").textContent = "+0";
         }, 500);
       }
