@@ -1320,8 +1320,8 @@
             <div class="scores-container">
               <div class="chalk-yellow score-title">Puan Detayı:</div>
               <div class="score-info">
-                <span>Doğru tahmin:</span>
-                <span class="chalk-green">+40</span>
+                <span id="scoreCorrectGuessLabel">Doğru tahmin:</span>
+                <span class="chalk-green" id="scoreCorrectGuess">+40</span>
               </div>
               <div class="score-info">
                 <span>Kalan can (×10):</span>
@@ -2172,6 +2172,10 @@
           document.getElementById("statMistakes").textContent =
             gameState.lives - gameState.remainingLives;
 
+          document.getElementById("scoreCorrectGuessLabel").textContent =
+            "Doğru tahmin:";
+          document.getElementById("scoreCorrectGuess").textContent = "+40";
+
           document.getElementById("scoreHearts").textContent = "+" + heartBonus;
           document.getElementById("scoreTime").textContent = "+" + timeBonus;
 
@@ -2229,6 +2233,9 @@
           document.getElementById("statTime").textContent = "-";
           document.getElementById("statMistakes").textContent = gameState.lives;
 
+          document.getElementById("scoreCorrectGuessLabel").textContent =
+            "Yanlış tahmin:";
+          document.getElementById("scoreCorrectGuess").textContent = "+0";
           document.getElementById("scoreHearts").textContent = "+0";
           document.getElementById("scoreTime").textContent = "+0";
           document.getElementById("scoreHintRow").style.display = "none";
