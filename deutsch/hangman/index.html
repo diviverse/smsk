@@ -126,6 +126,20 @@
         transform: scale(0.8);
       }
 
+      .hint-section {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .hintBtn {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+        background: rgba(245, 245, 168, 0.2);
+        border-color: var(--chalk-yellow);
+        color: var(--chalk-yellow);
+      }
+
       .timer-display {
         font-size: 1.3rem;
         color: var(--chalk-blue);
@@ -222,7 +236,6 @@
         color: var(--chalk-white);
         text-transform: uppercase;
         position: relative;
-        /* animation: drawLine 0.5s ease forwards; */
       }
 
       .word-container.small-word .letter-slot {
@@ -654,6 +667,14 @@
         justify-content: space-around;
         margin: 20px 0;
         color: var(--chalk-yellow);
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .stats-container {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
       }
 
       .stat {
@@ -668,6 +689,40 @@
       .stat-label {
         font-size: 0.9rem;
         color: var(--chalk-gray);
+      }
+
+      .scores-container {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        padding: 12px;
+        margin-top: 8px;
+        text-align: left;
+        width: 100%;
+      }
+
+      .score-title {
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        padding-bottom: 4px;
+      }
+
+      .score-info {
+        display: flex;
+        justify-content: space-between;
+        color: var(--chalk-gray);
+        font-size: 0.9rem;
+        margin-bottom: 4px;
+      }
+
+      .total-score {
+        display: flex;
+        justify-content: space-between;
+        font-size: 1rem;
+        margin-top: 8px;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        padding-top: 4px;
+        font-weight: bold;
       }
 
       .game-over-label {
@@ -904,6 +959,143 @@
           opacity: 0.6;
         }
       }
+
+      .credits-content {
+        position: relative;
+        z-index: 2;
+        max-width: 400px;
+        width: 100%;
+        text-align: center;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 2px solid rgba(240, 240, 240, 0.2);
+        border-radius: 16px;
+        margin: auto;
+      }
+
+      .credits-title {
+        font-family: "Gochi Hand", cursive;
+        font-size: 2.2rem;
+        color: var(--chalk-white);
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      }
+
+      .credits-note {
+        color: var(--chalk-gray);
+        font-size: 0.9rem;
+        margin-top: 5px;
+        font-style: italic;
+      }
+
+      .credits-section {
+        margin-bottom: 20px;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .credits-label {
+        color: var(--chalk-yellow);
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+        margin-bottom: 6px;
+      }
+
+      .credits-text {
+        color: var(--chalk-white);
+        font-size: 1.1rem;
+        margin-top: 2px;
+      }
+
+      .credits-link {
+        display: inline-block;
+        color: var(--chalk-blue);
+        font-size: 1.1rem;
+        margin-top: 2px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .credits-link::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--chalk-blue);
+        transition: width 0.3s ease;
+      }
+
+      .credits-link:hover {
+        color: var(--chalk-white);
+      }
+
+      .credits-link:hover::after {
+        width: 100%;
+      }
+
+      .credits-close {
+        margin-top: 20px;
+        padding: 12px 30px;
+      }
+
+      .credits-btn {
+        font-size: 1.1rem;
+        margin-top: 15px;
+        cursor: pointer;
+      }
+
+      #creditsScreen {
+        background: var(--board-dark);
+      }
+
+      #creditsScreen::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(255, 255, 255, 0.03) 2px,
+          rgba(255, 255, 255, 0.03) 4px
+        );
+        pointer-events: none;
+      }
+
+      .chalk-white {
+        color: var(--chalk-white);
+      }
+
+      .chalk-gray {
+        color: var(--chalk-gray);
+      }
+
+      .chalk-red {
+        color: var(--chalk-red);
+      }
+
+      .chalk-green {
+        color: var(--chalk-green);
+      }
+
+      .chalk-blue {
+        color: var(--chalk-blue);
+      }
+
+      .chalk-yellow {
+        color: var(--chalk-yellow);
+      }
+
+      .d-none {
+        display: none !important;
+      }
     </style>
   </head>
   <body>
@@ -1026,6 +1218,11 @@
           <button class="btn primary" onclick="startGame()">
             ▶ Oyunu Başlat
           </button>
+
+          <br />
+          <div class="credits-btn credits-link" onclick="showCredits()">
+            Bu Proje Hakkında
+          </div>
         </div>
       </div>
 
@@ -1038,6 +1235,11 @@
             <div class="round-display" id="roundDisplay">Tur: 1/5</div>
             <div class="timer-display hidden" id="timerDisplay">60</div>
             <div class="hearts-container" id="heartsContainer"></div>
+            <div class="hint-section">
+              <button class="btn hintBtn" id="hintBtn" onclick="useHint()">
+                💡 İpucu (50)
+              </button>
+            </div>
             <button class="btn showOnboardingBtn" onclick="showOnboarding()">
               ?
             </button>
@@ -1099,19 +1301,48 @@
       <div class="screen hidden" id="endRoundScreen">
         <div class="end-round-content">
           <h2 class="result-title" id="resultTitle">Aferin!</h2>
-
           <div class="round-stats">
-            <div class="stat">
-              <div class="stat-value" id="statStreak">0</div>
-              <div class="stat-label">Seri</div>
+            <div class="stats-container">
+              <div class="stat">
+                <div class="stat-value" id="statStreak">0</div>
+                <div class="stat-label">Seri</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value" id="statTime">0s</div>
+                <div class="stat-label">Süre</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value" id="statMistakes">0</div>
+                <div class="stat-label">Hata</div>
+              </div>
             </div>
-            <div class="stat">
-              <div class="stat-value" id="statTime">0s</div>
-              <div class="stat-label">Süre</div>
-            </div>
-            <div class="stat">
-              <div class="stat-value" id="statMistakes">0</div>
-              <div class="stat-label">Hata</div>
+
+            <div class="scores-container">
+              <div class="chalk-yellow score-title">Puan Detayı:</div>
+              <div class="score-info">
+                <span>Doğru tahmin:</span>
+                <span class="chalk-green">+40</span>
+              </div>
+              <div class="score-info">
+                <span>Kalan can (×10):</span>
+                <span class="chalk-green" id="scoreHearts">+0</span>
+              </div>
+              <div class="score-info">
+                <span>Zaman bonusu:</span>
+                <span class="chalk-green" id="scoreTime">+0</span>
+              </div>
+              <div class="score-info d-none" id="scoreHintRow">
+                <span>İpucu kullanımı:</span>
+                <span class="chalk-red">-50</span>
+              </div>
+              <div class="score-info d-none" id="scoreMultiplierRow">
+                <span>Seri çarpanı:</span>
+                <span class="chalk-yellow" id="scoreMultiplier">x1.0</span>
+              </div>
+              <div class="chalk-white total-score">
+                <span>Toplam:</span>
+                <span class="chalk-yellow" id="scoreTotalRound">+0</span>
+              </div>
             </div>
           </div>
 
@@ -1157,6 +1388,69 @@
           </div>
         </div>
       </div>
+
+      <div class="screen hidden" id="creditsScreen">
+        <div class="credits-content">
+          <h2 class="credits-title">Deutsch Hangman</h2>
+          <div class="credits-note">v1.3, 31.03.2026</div>
+          <br />
+
+          <div class="credits-section">
+            <div class="credits-label">İLETİŞİM</div>
+            <div class="credits-text">Ege Eren Şimşek</div>
+            <a
+              href="https://www.smsk.one"
+              class="credits-link"
+              target="_blank"
+              rel="noopener"
+            >
+              www.smsk.one
+            </a>
+            <br />
+            <a href="mailto:ege@smsk.one" class="credits-link">
+              ege@smsk.one
+            </a>
+          </div>
+
+          <div class="credits-section">
+            <div class="credits-label">KAYNAKLAR</div>
+            <a
+              href="https://github.com/diviverse/smsk/tree/main/deutsch/hangman"
+              class="credits-link"
+              target="_blank"
+              rel="noopener"
+            >
+              Github Repository
+            </a>
+            <br />
+            <a
+              href="https://deutsch.smsk.one/"
+              class="credits-link"
+              target="_blank"
+              rel="noopener"
+            >
+              Germanist (deutsch.smsk.one)
+            </a>
+            <br />
+            <a
+              href="https://deutsch.smsk.one/vocab.xlsx"
+              class="credits-link"
+              target="_blank"
+              rel="noopener"
+            >
+              Kelime Veritabanı
+            </a>
+            <div class="credits-note">
+              Not: Kelime veritabanı hazırlanırken Telc Einfach Gut A1.1, A1.2,
+              A2.1, B1.1, B1.2 Türkçe çevirili versiyonları kullanılmıştır.
+            </div>
+          </div>
+
+          <button class="btn primary credits-close" onclick="hideCredits()">
+            Kapat
+          </button>
+        </div>
+      </div>
     </div>
 
     <script>
@@ -1200,6 +1494,7 @@
         timerValue: false,
         showArticle: true,
         soundEnabled: true,
+        hintUsed: false,
         currentWord: null,
         usedLetters: new Set(),
         usedWords: new Set(),
@@ -1236,6 +1531,10 @@
             ((["A2", "B1", "B1+"].includes(w.level) && w.word.length >= 8) ||
               (["A1", "A1+"].includes(w.level) && w.word.length >= 12)) &&
             w.word.length < 20,
+        );
+
+        console.log(
+          allWords.filter((w) => w.article === "der/die").map((w) => w.word),
         );
 
         return { easy, medium, hard };
@@ -1411,6 +1710,42 @@
         }
       }
 
+      function useHint() {
+        if (!gameState.gameActive) return;
+        if (gameState.hintUsed) {
+          return;
+        }
+        if (gameState.score < 50) {
+          hintBtn = document.getElementById("hintBtn");
+          hintBtn.style.animation = "shake 0.4s ease";
+          setTimeout(() => {
+            hintBtn.style.animation = "";
+          }, 400);
+          return;
+        }
+
+        gameState.score -= 50;
+        gameState.hintUsed = true;
+        updateScore();
+
+        const hintDisplay = document.createElement("div");
+        hintDisplay.id = "hintDisplay";
+        hintDisplay.style.cssText =
+          "color: var(--chalk-yellow); font-size: 1.1rem; margin-top: 10px; font-style: italic;";
+        hintDisplay.textContent = "İpucu: " + gameState.currentWord.translation;
+
+        const wordContainer = document.getElementById("wordContainer");
+        wordContainer.parentNode.insertBefore(
+          hintDisplay,
+          wordContainer.nextSibling,
+        );
+
+        const hintBtn = document.getElementById("hintBtn");
+        hintBtn.disabled = true;
+        hintBtn.style.opacity = "0.5";
+        hintBtn.textContent = "💡 İpucu Kullanıldı";
+      }
+
       function startGame() {
         gameState.remainingLives = gameState.lives;
         gameState.score = 0;
@@ -1462,6 +1797,20 @@
         gameState.remainingLives = gameState.lives;
         gameState.gameActive = true;
 
+        gameState.hintUsed = false;
+
+        const existingHint = document.getElementById("hintDisplay");
+        if (existingHint) {
+          existingHint.remove();
+        }
+
+        const hintBtn = document.getElementById("hintBtn");
+        if (hintBtn) {
+          hintBtn.disabled = false;
+          hintBtn.style.opacity = "1";
+          hintBtn.textContent = "💡 İpucu (-50)";
+        }
+
         document.querySelectorAll(".hangman-hidden").forEach((el) => {
           el.style.opacity = "0";
           el.style.animation = "none";
@@ -1507,7 +1856,6 @@
         for (let char of word) {
           const slot = document.createElement("div");
           slot.className = "letter-slot";
-          // slot.style.animationDelay = slotIndex * 0.08 + "s";
 
           if (char === " ") {
             slot.classList.add("space");
@@ -1560,21 +1908,42 @@
 
         keys.forEach((char) => {
           const key = document.createElement("button");
-          key.className =
-            "key" + (["Ä", "Ö", "Ü", "ß"].includes(char) ? " special" : "");
+          key.className = "key";
           key.textContent = char;
           key.onclick = () => handleGuess(char);
           keyboard.appendChild(key);
         });
       }
 
+      function matchesWithAccent(wordChar, guessedChar) {
+        const lowerWordChar = wordChar.toLowerCase();
+        const lowerGuessedChar = guessedChar.toLowerCase();
+
+        if (lowerWordChar === "é" && lowerGuessedChar === "e") {
+          return true;
+        }
+
+        if (lowerWordChar === lowerGuessedChar) {
+          return true;
+        }
+
+        return false;
+      }
+
       function handleGuess(char) {
         if (!gameState.gameActive) return;
 
         const lowerChar = char.toLowerCase();
-        const word = gameState.currentWord.word.toLowerCase();
 
-        if (gameState.usedLetters.has(lowerChar)) return;
+        for (let usedChar of gameState.usedLetters) {
+          if (
+            usedChar === lowerChar ||
+            (lowerChar === "e" && usedChar === "é") ||
+            (lowerChar === "é" && usedChar === "e")
+          ) {
+            return;
+          }
+        }
 
         gameState.usedLetters.add(lowerChar);
 
@@ -1585,7 +1954,17 @@
           }
         });
 
-        if (word.includes(lowerChar)) {
+        const word = gameState.currentWord.word;
+        let foundMatch = false;
+
+        for (let i = 0; i < word.length; i++) {
+          if (matchesWithAccent(word[i], char)) {
+            foundMatch = true;
+            break;
+          }
+        }
+
+        if (foundMatch) {
           handleCorrectGuess(char);
         } else {
           handleWrongGuess(char);
@@ -1595,20 +1974,28 @@
       function handleCorrectGuess(char) {
         playSound("correct");
 
+        const word = gameState.currentWord.word;
+        const hasAccentE = word.toLowerCase().includes("é");
+
         const keys = document.querySelectorAll(".key");
         keys.forEach((key) => {
-          if (key.textContent.toLowerCase() === char.toLowerCase()) {
+          const keyChar = key.textContent.toLowerCase();
+          if (
+            keyChar === char.toLowerCase() ||
+            (char.toLowerCase() === "e" && hasAccentE && keyChar === "e")
+          ) {
             key.classList.add("correct");
+            key.disabled = true;
           }
         });
 
         const slots = document.querySelectorAll(".letter-slot:not(.space)");
-        const word = gameState.currentWord.word;
         let allRevealed = true;
 
         slots.forEach((slot, index) => {
-          if (word[index].toLowerCase() === char.toLowerCase()) {
-            slot.textContent = word[index];
+          const wordChar = word[index];
+          if (matchesWithAccent(wordChar, char)) {
+            slot.textContent = wordChar;
             slot.classList.add("revealed");
             createChalkParticles(slot);
           }
@@ -1737,13 +2124,23 @@
         gameState.streak++;
         gameState.wordsCompleted++;
 
-        const timeBonus = gameState.timerValue
-          ? gameState.timeRemaining - gameState.timerValue / 2
-          : 0;
-        const mistakeBonus = gameState.remainingLives * 10;
-        const roundScore = 40 + timeBonus + mistakeBonus;
-        gameState.score += roundScore;
+        const streakMultiplier =
+          gameState.streak >= 2 ? Math.min(2, 1 + gameState.streak / 10) : 1;
 
+        const timeBonus = gameState.timerValue
+          ? Math.max(
+              0,
+              gameState.timeRemaining - Math.floor(gameState.timerValue / 2),
+            )
+          : 0;
+        const heartBonus = gameState.remainingLives * 10;
+        const baseScore = 40;
+        const hintPenalty = gameState.hintUsed ? 50 : 0;
+
+        const rawRoundScore = baseScore + heartBonus + timeBonus - hintPenalty;
+        const roundScore = Math.floor(rawRoundScore * streakMultiplier);
+
+        gameState.score += roundScore;
         updateScore();
 
         setTimeout(() => {
@@ -1774,6 +2171,28 @@
             : "-";
           document.getElementById("statMistakes").textContent =
             gameState.lives - gameState.remainingLives;
+
+          document.getElementById("scoreHearts").textContent = "+" + heartBonus;
+          document.getElementById("scoreTime").textContent = "+" + timeBonus;
+
+          const hintRow = document.getElementById("scoreHintRow");
+          if (gameState.hintUsed) {
+            hintRow.style.display = "flex";
+          } else {
+            hintRow.style.display = "none";
+          }
+
+          const multiplierRow = document.getElementById("scoreMultiplierRow");
+          const multiplierValue = document.getElementById("scoreMultiplier");
+          if (gameState.streak >= 2) {
+            multiplierRow.style.display = "flex";
+            multiplierValue.textContent = "x" + streakMultiplier.toFixed(1);
+          } else {
+            multiplierRow.style.display = "none";
+          }
+
+          document.getElementById("scoreTotalRound").textContent =
+            (roundScore >= 0 ? "+" : "") + roundScore;
         }, 500);
       }
 
@@ -1809,6 +2228,12 @@
           document.getElementById("statStreak").textContent = 0;
           document.getElementById("statTime").textContent = "-";
           document.getElementById("statMistakes").textContent = gameState.lives;
+
+          document.getElementById("scoreHearts").textContent = "+0";
+          document.getElementById("scoreTime").textContent = "+0";
+          document.getElementById("scoreHintRow").style.display = "none";
+          document.getElementById("scoreMultiplierRow").style.display = "none";
+          document.getElementById("scoreTotalRound").textContent = "+0";
         }, 500);
       }
 
@@ -1858,6 +2283,16 @@
           e.preventDefault();
         }
       });
+
+      function showCredits() {
+        document.getElementById("creditsScreen").classList.remove("hidden");
+        document.getElementById("startScreen").classList.add("hidden");
+      }
+
+      function hideCredits() {
+        document.getElementById("creditsScreen").classList.add("hidden");
+        document.getElementById("startScreen").classList.remove("hidden");
+      }
     </script>
   </body>
 </html>
