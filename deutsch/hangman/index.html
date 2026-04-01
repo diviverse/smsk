@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Deutsch Hangman</title>
+    <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Gochi+Hand&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Patrick+Hand&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -19,14 +19,53 @@
       }
 
       :root {
+        --title-font: "Caveat Brush", cursive;
+        --content-font: "Patrick Hand", cursive;
+
+        --board-dark: #1a1a1a;
+        --board-texture: #2d2d2d;
+
         --chalk-white: #f0f0f0;
         --chalk-gray: #c0c0c0;
         --chalk-blue: #a8d5e5;
         --chalk-red: #e8a5a5;
         --chalk-green: #a8e5c8;
         --chalk-yellow: #f5f5a8;
-        --board-dark: #1a1a1a;
-        --board-texture: #2d2d2d;
+
+        --white-1: rgba(255, 255, 255, 0.1);
+        --white-2: rgba(255, 255, 255, 0.2);
+        --white-3: rgba(255, 255, 255, 0.3);
+        --gray-1: rgba(240, 240, 240, 0.1);
+        --gray-2: rgba(240, 240, 240, 0.2);
+        --gray-3: rgba(240, 240, 240, 0.3);
+        --gray-4: rgba(240, 240, 240, 0.4);
+        --gray-7: rgba(240, 240, 240, 0.7);
+
+
+        --white-1-strict: rgba(255, 255, 255, 0.1);
+        --white-2-strict: rgba(255, 255, 255, 0.2);
+        --white-3-strict: rgba(255, 255, 255, 0.3);
+      }
+
+      :root[data-theme="light"] {
+        --board-dark: #f5f5f5;
+        --board-texture: #e8e8e8;
+
+        --chalk-white: #2a2a2a;
+        --chalk-gray: #555555;
+        --chalk-blue: #0066cc;
+        --chalk-red: #cc0000;
+        --chalk-green: #009900;
+        --chalk-yellow: #cc9900;
+
+        --white-1: rgba(0, 0, 0, 0.1);
+        --white-2: rgba(0, 0, 0, 0.2);
+        --white-3: rgba(0, 0, 0, 0.3);
+        --gray-1: rgba(15, 15, 15, 0.1);
+        --gray-2: rgba(15, 15, 15, 0.2);
+        --gray-3: rgba(15, 15, 15, 0.3);
+        --gray-4: rgba(15, 15, 15, 0.4);
+        --gray-7: rgba(15, 15, 15, 0.7);
       }
 
       html, body {
@@ -37,7 +76,7 @@
       }
 
       .main {
-        font-family: "Patrick Hand", cursive;
+        font-family: var(--content-font);
         width: 100%;
         height: 100%;
         position: relative;
@@ -97,7 +136,7 @@
         align-items: center;
         margin-bottom: clamp(8px, 1.5vh, 20px);
         padding: clamp(6px, 1.2vh, 10px);
-        border-bottom: 2px solid rgba(240, 240, 240, 0.3);
+        border-bottom: 2px solid var(--gray-3);
         flex-shrink: 0;
       }
 
@@ -284,7 +323,6 @@
         font-size: 1.5rem;
         color: var(--chalk-blue);
         margin-right: 10px;
-        font-family: "Gochi Hand", cursive;
       }
 
       .keyboard {
@@ -302,7 +340,7 @@
         aspect-ratio: 1;
         min-height: 0;
         background: transparent;
-        border: 2px solid rgba(240,240,240,0.4);
+        border: 2px solid var(--gray-4);
         border-radius: 6px;
         color: var(--chalk-white);
         font-family: 'Patrick Hand', cursive;
@@ -317,7 +355,7 @@
       }
 
       .key:hover:not(:disabled) {
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--white-1);
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
       }
@@ -353,7 +391,7 @@
         width: 100%;
         height: 100%;
         background: var(--board-dark);
-        z-index: 100;
+        z-index: 3;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -426,7 +464,7 @@
       .options-panel::-webkit-scrollbar-thumb {
         background: rgba(240, 240, 240, 0.25);
         border-radius: 4px;
-        border: 1px solid rgba(240, 240, 240, 0.1);
+        border: 1px solid var(--gray-1);
       }
 
       .menu-content::-webkit-scrollbar-thumb:hover,
@@ -441,7 +479,7 @@
       }
 
       h1 {
-        font-family: "Gochi Hand", cursive;
+        font-family: var(--title-font);
         font-size: clamp(2rem, 7vw, 3rem);
         color: var(--chalk-white);
         margin-bottom: 8px;
@@ -481,7 +519,7 @@
         background: rgba(255, 255, 255, 0.05);
         padding: clamp(12px, 2.5vh, 20px);
         border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--white-1);
       }
 
       .menu-title {
@@ -506,7 +544,7 @@
         border: 2px solid var(--chalk-white);
         color: var(--chalk-white);
         padding: 12px 24px;
-        font-family: "Patrick Hand", cursive;
+        font-family: var(--content-font);
         font-size: 1.1rem;
         border-radius: 8px;
         cursor: pointer;
@@ -516,7 +554,7 @@
       }
 
       .btn:hover {
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--white-1);
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
       }
@@ -576,8 +614,8 @@
       }
 
       #categorySelect {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: var(--white-1);
+        border: 1px solid var(--white-3);
         color: white;
         padding: 5px 10px;
         font-family: &quot;Patrick Hand&quot;;
@@ -585,11 +623,11 @@
       }
 
       .toggle-btn {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: var(--white-1-strict);
+        border: 1px solid var(--white-3);
         color: var(--chalk-white);
         padding: 6px 12px;
-        font-family: "Patrick Hand", cursive;
+        font-family: var(--content-font);
         font-size: 0.9rem;
         border-radius: 6px;
         cursor: pointer;
@@ -605,7 +643,7 @@
       .toggle-switch {
         width: 50px;
         height: 26px;
-        background: rgba(255, 255, 255, 0.2);
+        background: var(--white-2-strict);
         border-radius: 13px;
         position: relative;
         cursor: pointer;
@@ -642,7 +680,7 @@
       .result-title {
         font-size: clamp(1.8rem, 6vw, 2.5rem);
         margin-bottom: clamp(10px, 2.5vh, 20px);
-        font-family: "Gochi Hand", cursive;
+        font-family: var(--title-font);
       }
 
       .result-title.win {
@@ -654,29 +692,27 @@
       }
 
       .word-reveal {
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--white-1);
         padding: 20px;
         border-radius: 12px;
         margin: 20px 0;
-        border: 2px solid rgba(255, 255, 255, 0.2);
+        border: 2px solid var(--white-2);
       }
 
       .reveal-word {
         font-size: 2rem;
         color: var(--chalk-white);
-        margin-bottom: 10px;
-        font-family: "Gochi Hand", cursive;
+        margin-bottom: 5px;
       }
 
       .reveal-translation {
         color: var(--chalk-blue);
         font-size: 1.2rem;
-        margin-bottom: 10px;
       }
 
       .reveal-plural {
         font-size: 0.9em;
-        color: rgba(240, 240, 240, 0.7);
+        color: var(--gray-7);
         margin-top: 4px;
       }
 
@@ -731,7 +767,7 @@
       .score-title {
         font-size: 0.9rem;
         margin-bottom: 8px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        border-bottom: 1px solid var(--white-2);
         padding-bottom: 4px;
       }
 
@@ -748,7 +784,7 @@
         justify-content: space-between;
         font-size: 1rem;
         margin-top: 8px;
-        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        border-top: 1px solid var(--white-2);
         padding-top: 4px;
         font-weight: bold;
       }
@@ -795,7 +831,7 @@
         width: 100%;
         height: 100%;
         background: rgba(0, 0, 0, 0.85);
-        z-index: 200;
+        z-index: 5;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -832,7 +868,7 @@
         color: var(--chalk-yellow);
         font-size: 1.8rem;
         margin-bottom: 15px;
-        font-family: "Gochi Hand", cursive;
+        font-family: var(--title-font);
       }
 
       .onboarding-content p {
@@ -902,9 +938,8 @@
         position: fixed;
         top: 20px;
         right: 20px;
-        z-index: 50;
-        background: rgba(255, 255, 255, 0.1);
-        border: 2px solid rgba(255, 255, 255, 0.3);
+        z-index: 4;
+        background: var(--white-1-strict);
         border-radius: 50%;
         width: 45px;
         height: 45px;
@@ -912,11 +947,20 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: all 0.3s;
+        transition: transform 0.2s, background 0.3s;
       }
 
       .sound-toggle:hover {
-        background: rgba(255, 255, 255, 0.2);
+        background: var(--white-2);
+        border: 2px solid var(--white-3-strict);
+      }
+
+      .sound-toggle:active {
+        transform: scale(0.9);
+      }
+
+      .sound-toggle.clicked {
+        animation: soundPulse 0.3s ease;
       }
 
       .sound-toggle.muted {
@@ -927,6 +971,46 @@
         width: 24px;
         height: 24px;
         fill: var(--chalk-white);
+      }
+
+      @keyframes soundPulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+      }
+
+      .theme-toggle {
+        position: fixed;
+        top: 20px;
+        right: 75px;
+        z-index: 4;
+        background: var(--white-1-strict);
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform 0.2s, background 0.3s;
+      }
+
+      .theme-toggle:hover {
+        background: var(--white-2);
+        border: 2px solid var(--white-3-strict);
+      }
+
+      .theme-icon {
+        width: 21px;
+        height: 21px;
+        stroke: var(--chalk-white);
+        fill: none;
+        stroke-width: 2;
+      }
+
+      :root[data-theme="light"] .theme-icon {
+        fill: black;
+        stroke: black;
       }
 
       @media (max-width: 600px) {
@@ -988,7 +1072,7 @@
         height: 100px;
         background: radial-gradient(
           circle,
-          rgba(255, 255, 255, 0.1) 0%,
+          var(--white-1) 0%,
           transparent 70%
         );
         pointer-events: none;
@@ -1016,13 +1100,13 @@
         text-align: center;
         padding: 30px;
         background: rgba(255, 255, 255, 0.03);
-        border: 2px solid rgba(240, 240, 240, 0.2);
+        border: 2px solid var(--gray-2);
         border-radius: 16px;
         margin: auto;
       }
 
       .credits-title {
-        font-family: "Gochi Hand", cursive;
+        font-family: var(--title-font);
         font-size: 2.2rem;
         color: var(--chalk-white);
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -1040,7 +1124,7 @@
         padding: 15px;
         background: rgba(255, 255, 255, 0.05);
         border-radius: 10px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--white-1);
       }
 
       .credits-label {
@@ -1170,16 +1254,16 @@
             <p>
               Toplam <span class="highlight">6 canınız</span> var. Tüm canlar
               bittiğinde o tur biter. Kalan her can tur sonunda
-              <span class="highlight">+10 puan</span> kazandırır.
+              <span class="highlight">+5 puan</span> kazandırır.
             </p>
           </div>
 
           <div class="onboarding-section">
             <div class="onboarding-label">💡 İpucu Sistemi</div>
             <p>
-              Takıldınız mı? <span class="highlight">İpucu butonu</span> ile
-              kelimenin Türkçe anlamını görebilirsiniz. Her ipucu
-              <span class="highlight">50 puan</span> kaybettirir.
+              Takıldıysaniz <span class="highlight">İpucu butonu</span> ile
+              <span class="highlight">50 puan</span> karşılığında kelimenin
+              Türkçe anlamını görebilirsiniz.
             </p>
           </div>
 
@@ -1193,6 +1277,20 @@
         <svg class="sound-icon" id="soundIcon" viewBox="0 0 24 24">
           <path
             d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"
+          />
+        </svg>
+      </div>
+
+      <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+        <svg
+          class="theme-icon"
+          id="themeIcon"
+          viewBox="0 0 24 24"
+          width="21"
+          height="21"
+        >
+          <path
+            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
           />
         </svg>
       </div>
@@ -1456,7 +1554,7 @@
       <div class="screen hidden" id="creditsScreen">
         <div class="credits-content">
           <h2 class="credits-title">Deutsch Hangman</h2>
-          <div class="credits-note">v1.3, 01.04.2026</div>
+          <div class="credits-note">v1.4, 01.04.2026</div>
           <br />
 
           <div class="credits-section">
@@ -1497,7 +1595,7 @@
             </a>
             <br />
             <a
-              href="https://deutsch.smsk.one/vocab.xlsx"
+              href="https://deutsch.smsk.one/hangman/vocab.xlsx"
               class="credits-link"
               target="_blank"
               rel="noopener"
@@ -1571,6 +1669,7 @@
         gameActive: false,
         wordsCompleted: 0,
         totalMistakes: 0,
+        highScore: parseInt(localStorage.getItem("hangmanHighScore")) || 0,
       };
 
       let audioContext = null;
@@ -1601,6 +1700,10 @@
       }
 
       document.addEventListener("DOMContentLoaded", async () => {
+        const savedTheme = localStorage.getItem("hangmanTheme") || "dark";
+        document.documentElement.setAttribute("data-theme", savedTheme);
+        updateThemeIcon(savedTheme);
+
         try {
           const response = await fetch("vocab.json");
           const allVocab = await response.json();
@@ -1691,6 +1794,9 @@
         const toggle = document.getElementById("soundToggle");
         const icon = document.getElementById("soundIcon");
 
+        toggle.classList.add("clicked");
+        setTimeout(() => toggle.classList.remove("clicked"), 300);
+
         if (gameState.soundEnabled) {
           toggle.classList.remove("muted");
           icon.innerHTML =
@@ -1770,25 +1876,36 @@
         }
       }
 
+      function toggleTheme() {
+        const currentTheme =
+          document.documentElement.getAttribute("data-theme");
+        const newTheme = currentTheme === "light" ? "dark" : "light";
+        document.documentElement.setAttribute("data-theme", newTheme);
+        localStorage.setItem("hangmanTheme", newTheme);
+        updateThemeIcon(newTheme);
+      }
+
+      function updateThemeIcon(theme) {
+        const icon = document.getElementById("themeIcon");
+        if (theme === "light") {
+          icon.innerHTML =
+            '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+        } else {
+          icon.innerHTML =
+            '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>';
+        }
+      }
+
       function useHint() {
         if (!gameState.gameActive) return;
-        if (gameState.hintUsed) {
-          return;
-        }
+        if (gameState.hintUsed) return;
 
-        const hintBtn = document.getElementById("hintBtn");
-
-        if (gameState.score < 50) {
-          hintBtn.style.animation = "shake 0.4s ease";
-          setTimeout(() => {
-            hintBtn.style.animation = "";
-          }, 400);
-          return;
-        }
+        if (gameState.score < 50) return;
 
         gameState.score -= 50;
         gameState.hintUsed = true;
         updateScore();
+        updateHintButton();
 
         const hintDisplay = document.createElement("div");
         hintDisplay.id = "hintDisplay";
@@ -1801,10 +1918,35 @@
           hintDisplay,
           wordContainer.nextSibling,
         );
+      }
 
-        hintBtn.disabled = true;
-        hintBtn.style.opacity = "0.5";
-        hintBtn.textContent = "💡 İpucu Kullanıldı";
+      function updateHintButton() {
+        const hintBtn = document.getElementById("hintBtn");
+        if (!hintBtn) return;
+
+        if (gameState.hintUsed) {
+          hintBtn.disabled = true;
+          hintBtn.style.opacity = "0.5";
+          hintBtn.textContent = "💡 İpucu Kullanıldı";
+          hintBtn.style.cursor = "not-allowed";
+          hintBtn.style.background = "rgba(245, 245, 168, 0.1)";
+        } else if (gameState.score < 50) {
+          hintBtn.disabled = true;
+          hintBtn.style.opacity = "0.4";
+          hintBtn.textContent = "💡 Puan Yetersiz (50)";
+          hintBtn.style.cursor = "not-allowed";
+          hintBtn.style.background = "rgba(128, 128, 128, 0.1)";
+          hintBtn.style.borderColor = "var(--chalk-gray)";
+          hintBtn.style.color = "var(--chalk-gray)";
+        } else {
+          hintBtn.disabled = false;
+          hintBtn.style.opacity = "1";
+          hintBtn.textContent = "💡 İpucu (-50)";
+          hintBtn.style.cursor = "pointer";
+          hintBtn.style.background = "rgba(245, 245, 168, 0.2)";
+          hintBtn.style.borderColor = "var(--chalk-yellow)";
+          hintBtn.style.color = "var(--chalk-yellow)";
+        }
       }
 
       function startGame() {
@@ -1823,6 +1965,7 @@
 
         updateHearts();
         updateScore();
+        updateHintButton();
         loadNewWord();
       }
 
@@ -1859,6 +2002,7 @@
         gameState.gameActive = true;
 
         gameState.hintUsed = false;
+        updateHintButton();
 
         const existingHint = document.getElementById("hintDisplay");
         if (existingHint) {
@@ -1918,59 +2062,62 @@
           const slot = document.createElement("div");
           slot.className = "letter-slot";
 
-          if (char === " ") {
-            slot.classList.add("space");
-          } else if (gameState.usedLetters.has(char.toLowerCase())) {
+          const lowerChar = char.toLowerCase();
+
+          if (!alphabet.has(lowerChar)) {
+            slot.textContent = char;
+            slot.classList.add("revealed");
+            slot.style.borderBottom = "none";
+          } else if (gameState.usedLetters.has(lowerChar)) {
             slot.textContent = char;
             slot.classList.add("revealed");
           }
 
           container.appendChild(slot);
-          slotIndex++;
         }
       }
+
+      const alphabet = new Set([
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+        "ä",
+        "ö",
+        "ü",
+        "ß",
+      ]);
 
       function initKeyboard() {
         const keyboard = document.getElementById("keyboard");
         keyboard.innerHTML = "";
 
-        const keys = [
-          "A",
-          "B",
-          "C",
-          "D",
-          "E",
-          "F",
-          "G",
-          "H",
-          "I",
-          "J",
-          "K",
-          "L",
-          "M",
-          "N",
-          "O",
-          "P",
-          "Q",
-          "R",
-          "S",
-          "T",
-          "U",
-          "V",
-          "W",
-          "X",
-          "Y",
-          "Z",
-          "Ä",
-          "Ö",
-          "Ü",
-          "ß",
-        ];
-
-        keys.forEach((char) => {
+        alphabet.forEach((char) => {
           const key = document.createElement("button");
           key.className = "key";
-          key.textContent = char;
+          key.textContent = char.toUpperCase();
           key.onclick = () => handleGuess(char);
           keyboard.appendChild(key);
         });
@@ -1995,6 +2142,7 @@
         if (!gameState.gameActive) return;
 
         const lowerChar = char.toLowerCase();
+        if (!alphabet.has(lowerChar)) return;
 
         for (let usedChar of gameState.usedLetters) {
           if (
@@ -2050,19 +2198,25 @@
           }
         });
 
-        const slots = document.querySelectorAll(".letter-slot:not(.space)");
+        const slots = document.querySelectorAll(".letter-slot");
         let allRevealed = true;
 
         slots.forEach((slot, index) => {
-          const wordChar = word[index];
-          if (matchesWithAccent(wordChar, char)) {
-            slot.textContent = wordChar;
-            slot.classList.add("revealed");
-            createChalkParticles(slot);
-          }
-          if (!slot.textContent) allRevealed = false;
-        });
+          const charInWord = word[index];
+          const lowerChar = charInWord.toLowerCase();
 
+          if (alphabet.has(lowerChar)) {
+            if (lowerChar === char.toLowerCase()) {
+              slot.textContent = charInWord;
+              slot.classList.add("revealed");
+              createChalkParticles(slot);
+            }
+
+            if (!slot.textContent) {
+              allRevealed = false;
+            }
+          }
+        });
         if (allRevealed) {
           handleWin();
         }
@@ -2145,6 +2299,7 @@
 
       function updateScore() {
         document.getElementById("scoreValue").textContent = gameState.score;
+        updateHintButton();
       }
 
       function startTimer() {
@@ -2188,17 +2343,25 @@
         const streakMultiplier =
           gameState.streak >= 2 ? Math.min(2, 1 + gameState.streak / 10) : 1;
 
-        const timeBonus = gameState.timerValue
-          ? gameState.timeRemaining - Math.floor(gameState.timerValue / 2)
+        const baseScore = 20;
+        const heartBonus = gameState.remainingLives * 5;
+        const timePercent = gameState.timerValue
+          ? (gameState.timeRemaining / gameState.timerValue) * 100
           : 0;
-        const heartBonus = gameState.remainingLives * 10;
-        const baseScore = 40;
+        const timeBonus = gameState.timerValue
+          ? Math.floor(timePercent / 10)
+          : 0;
 
         const rawRoundScore = baseScore + heartBonus + timeBonus;
         const roundScore = Math.floor(rawRoundScore * streakMultiplier);
 
         gameState.score += roundScore;
         updateScore();
+
+        if (gameState.score > gameState.highScore) {
+          gameState.highScore = gameState.score;
+          localStorage.setItem("hangmanHighScore", gameState.highScore);
+        }
 
         setTimeout(() => {
           document.getElementById("gameScreen").classList.add("hidden");
@@ -2229,31 +2392,39 @@
           document.getElementById("statMistakes").textContent =
             gameState.lives - gameState.remainingLives;
 
-          document.getElementById("scoreCorrectGuessLabel").textContent =
-            "Doğru tahmin:";
-          document.getElementById("scoreCorrectGuess").textContent = "+40";
+          const baseScoreEl = document.getElementById("scoreCorrectGuess");
+          baseScoreEl.textContent = "+" + baseScore;
+          baseScoreEl.className = "chalk-green";
 
-          document.getElementById("scoreHearts").textContent = "+" + heartBonus;
+          const heartBonusEl = document.getElementById("scoreHearts");
+          if (heartBonus > 0) {
+            heartBonusEl.textContent = "+" + heartBonus;
+            heartBonusEl.className = "chalk-green";
+          } else if (heartBonus === 0) {
+            heartBonusEl.textContent = "0";
+            heartBonusEl.className = "chalk-gray";
+          }
 
-          const scoreTime = document.getElementById("scoreTime");
+          const timeBonusEl = document.getElementById("scoreTime");
           if (gameState.timerValue) {
-            scoreTime.classList.remove("hidden");
-            if (timeBonus >= 0) {
-              scoreTime.textContent = "+" + timeBonus;
-              scoreTime.classList.add("chalk-green");
-              scoreTime.classList.remove("chalk-red");
-            } else {
-              scoreTime.textContent = "-" + Math.abs(timeBonus);
-              scoreTime.classList.add("chalk-red");
-              scoreTime.classList.remove("chalk-green");
+            timeBonusEl.classList.remove("hidden");
+            if (timeBonus > 0) {
+              timeBonusEl.textContent = "+" + timeBonus;
+              timeBonusEl.className = "chalk-green";
+            } else if (timeBonus === 0) {
+              timeBonusEl.textContent = "0";
+              timeBonusEl.className = "chalk-gray";
             }
           } else {
-            scoreTime.classList.add("hidden");
+            timeBonusEl.classList.add("hidden");
           }
+
+          document.getElementById("scoreCorrectGuessLabel").textContent =
+            "Doğru tahmin:";
+          document.getElementById("scoreCorrectGuess").textContent = "+20";
 
           const multiplierRow = document.getElementById("scoreMultiplierRow");
           const multiplierValue = document.getElementById("scoreMultiplier");
-          console.log(gameState.streak);
           if (gameState.streak >= 2) {
             multiplierRow.classList.remove("hidden");
             multiplierValue.textContent = "x" + streakMultiplier.toFixed(1);
@@ -2333,6 +2504,20 @@
           gameState.wordsCompleted;
         document.getElementById("totalMistakes").textContent =
           gameState.totalMistakes;
+
+        const highScoreEl =
+          document.getElementById("highScore") || document.createElement("p");
+        if (!document.getElementById("highScore")) {
+          highScoreEl.id = "highScore";
+          highScoreEl.className = "game-over-words";
+          document
+            .querySelector("#gameOverScreen .end-round-content")
+            .insertBefore(highScoreEl, document.querySelector(".button-group"));
+        }
+        highScoreEl.innerHTML =
+          'En Yüksek Puan: <span class="game-over-count">' +
+          gameState.highScore +
+          "</span>";
       }
 
       function playAgain() {
@@ -2341,6 +2526,19 @@
       }
 
       function backToMenu() {
+        if (
+          gameState.gameActive &&
+          (gameState.usedLetters.size > 0 || gameState.remainingLives < 6)
+        ) {
+          if (
+            !confirm(
+              "Oyundan çıkmak istediğinize emin misiniz? İlerlemeniz kaybolacak!",
+            )
+          ) {
+            return;
+          }
+        }
+
         if (gameState.timer) clearInterval(gameState.timer);
 
         document.getElementById("gameScreen").classList.add("hidden");
@@ -2349,13 +2547,72 @@
         document.getElementById("startScreen").classList.remove("hidden");
       }
 
+      let lastPressedKey = null;
+      let keyWarningTimeout = null;
+
       document.addEventListener("keydown", (e) => {
         if (
           !document.getElementById("gameScreen").classList.contains("hidden")
         ) {
           e.preventDefault();
+
+          const key = e.key.toLowerCase();
+
+          if (!alphabet.has(key)) return;
+
+          if (key === lastPressedKey) {
+            handleGuess(key);
+            lastPressedKey = null;
+            clearTimeout(keyWarningTimeout);
+            hideKeyWarning();
+          } else {
+            lastPressedKey = key;
+            showKeyWarning(key);
+
+            clearTimeout(keyWarningTimeout);
+            keyWarningTimeout = setTimeout(() => {
+              lastPressedKey = null;
+              hideKeyWarning();
+            }, 2000);
+          }
         }
       });
+
+      function showKeyWarning(key) {
+        let warningEl = document.getElementById("keyWarning");
+        if (!warningEl) {
+          warningEl = document.createElement("div");
+          warningEl.id = "keyWarning";
+          warningEl.style.cssText = `
+            position: fixed;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(245, 245, 168, 0.2);
+            border: 2px solid var(--chalk-yellow);
+            color: var(--chalk-yellow);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: var(--content-font);
+            font-size: 1rem;
+            z-index: 3;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+          `;
+          document.body.appendChild(warningEl);
+        }
+
+        warningEl.textContent = `"${key}" tuşuna tekrar basın`;
+        warningEl.style.opacity = "1";
+      }
+
+      function hideKeyWarning() {
+        const warningEl = document.getElementById("keyWarning");
+        if (warningEl) {
+          warningEl.style.opacity = "0";
+        }
+      }
 
       function showCredits() {
         document.getElementById("creditsScreen").classList.remove("hidden");
