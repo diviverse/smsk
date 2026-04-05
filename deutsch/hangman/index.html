@@ -5,13 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Deutsch Hangman</title>
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Patrick+Hand&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preload" href="vocab.json" as="fetch" crossorigin="anonymous" />
     <style>
+      @font-face {
+        font-family: "Caveat Brush";
+        src: url("CaveatBrush.ttf") format("truetype");
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Patrick Hand";
+        src: url("PatrickHand.ttf") format("truetype");
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+
       * {
         margin: 0;
         padding: 0;
@@ -19,8 +30,8 @@
       }
 
       :root {
-        --title-font: "Caveat Brush", cursive;
-        --content-font: "Patrick Hand", cursive;
+        --title-font: "Caveat Brush", system-ui, sans-serif;
+        --content-font: "Patrick Hand", system-ui, sans-serif;
 
         --board-dark: #1a1a1a;
         --board-texture: #2d2d2d;
@@ -35,12 +46,12 @@
         --white-1: rgba(255, 255, 255, 0.1);
         --white-2: rgba(255, 255, 255, 0.2);
         --white-3: rgba(255, 255, 255, 0.3);
+        --white-7: rgba(255, 255, 255, 0.7);
         --gray-1: rgba(240, 240, 240, 0.1);
         --gray-2: rgba(240, 240, 240, 0.2);
         --gray-3: rgba(240, 240, 240, 0.3);
         --gray-4: rgba(240, 240, 240, 0.4);
         --gray-7: rgba(240, 240, 240, 0.7);
-
 
         --white-1-strict: rgba(255, 255, 255, 0.1);
         --white-2-strict: rgba(255, 255, 255, 0.2);
@@ -61,18 +72,67 @@
         --white-1: rgba(0, 0, 0, 0.1);
         --white-2: rgba(0, 0, 0, 0.2);
         --white-3: rgba(0, 0, 0, 0.3);
+        --white-7: rgba(0, 0, 0, 0.5);
         --gray-1: rgba(15, 15, 15, 0.1);
         --gray-2: rgba(15, 15, 15, 0.2);
         --gray-3: rgba(15, 15, 15, 0.3);
         --gray-4: rgba(15, 15, 15, 0.4);
         --gray-7: rgba(15, 15, 15, 0.7);
+
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+        --shadow-lg: 0 6px 12px rgba(0, 0, 0, 0.2);
+        --text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        --drop-shadow: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.2));
       }
 
-      html, body {
+      :root[data-theme="light"] .hangman-svg {
+        filter: var(--drop-shadow);
+      }
+
+      :root[data-theme="light"] .heart {
+        filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.2));
+      }
+
+      :root[data-theme="light"] h1 {
+        text-shadow: var(--text-shadow);
+      }
+
+      :root[data-theme="light"] .score-display {
+        text-shadow: var(--text-shadow);
+      }
+
+      :root[data-theme="light"] .key:hover:not(:disabled) {
+        box-shadow: var(--shadow-sm);
+      }
+
+      :root[data-theme="light"] .btn:hover {
+        box-shadow: var(--shadow-md);
+      }
+
+      :root[data-theme="light"] .btn.primary:hover {
+        box-shadow: 0 4px 12px rgba(0, 128, 0, 0.2);
+      }
+
+      :root[data-theme="light"] .flashcard:hover {
+        box-shadow: var(--shadow-md);
+      }
+
+      :root[data-theme="light"] .credits-title {
+        text-shadow: var(--text-shadow);
+      }
+
+      html,
+      body {
         width: 100%;
         height: 100%;
         background: var(--board-dark);
         overflow: hidden;
+        font-family: var(--content-font);
+      }
+
+      body.loading {
+        visibility: hidden;
       }
 
       .main {
@@ -140,10 +200,43 @@
         flex-shrink: 0;
       }
 
+      .odometer {
+        display: inline-flex;
+        font-family: var(--title-font);
+        font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+        color: var(--chalk-yellow);
+        height: 1.5em;
+        overflow: hidden;
+        vertical-align: middle;
+      }
+
+      .odometer-digit {
+        display: inline-flex;
+        flex-direction: column;
+        transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        position: relative;
+      }
+
+      .odometer-digit-inner {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .odometer-number {
+        height: 1.5em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+      }
+
       .score-display {
         font-size: clamp(1.1rem, 3.5vw, 1.5rem);
         color: var(--chalk-yellow);
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
 
       .hearts-container {
@@ -218,6 +311,7 @@
         gap: clamp(8px, 2vh, 30px);
         overflow: hidden;
         min-height: 0;
+        position: relative;
       }
 
       .hangman-container {
@@ -241,17 +335,30 @@
         stroke-linejoin: round;
         stroke-dasharray: 1000;
         stroke-dashoffset: 1000;
-        animation: draw 0.8s ease forwards;
+        animation: none;
+        will-change: stroke-dashoffset;
       }
 
-      @keyframes draw {
+      @keyframes draw-chalk {
+        from {
+          stroke-dashoffset: 1000;
+        }
         to {
           stroke-dashoffset: 0;
         }
       }
 
+      .hangman-path.drawing {
+        animation: draw-chalk 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
       .hangman-hidden {
         opacity: 0;
+        stroke-dashoffset: 1000;
+      }
+
+      .hangman-hidden.drawing {
+        opacity: 1;
       }
 
       .word-container {
@@ -263,6 +370,7 @@
         align-items: center;
         width: 100%;
         padding: 0 8px;
+        position: relative;
       }
 
       .letter-slot {
@@ -273,8 +381,37 @@
         justify-content: center;
         font-size: clamp(1.3rem, 3.5vw, 2rem);
         color: var(--chalk-white);
-        text-transform: uppercase;
         position: relative;
+        transition: all 0.3s ease;
+      }
+
+      @keyframes chalk-smear {
+        0% {
+          filter: blur(8px) opacity(0);
+          transform: scale(1.2) rotate(-5deg);
+        }
+        30% {
+          filter: blur(4px) opacity(0.7);
+        }
+        60% {
+          filter: blur(2px) opacity(0.9);
+        }
+        100% {
+          filter: blur(0) opacity(1);
+          transform: scale(1) rotate(0deg);
+        }
+      }
+
+      .letter-slot.revealed {
+        animation: chalk-smear 0.6s ease-out forwards;
+      }
+
+      .uppercase {
+        text-transform: uppercase !important;
+      }
+
+      .lowercase {
+        text-transform: lowercase !important;
       }
 
       .word-container.small-word .letter-slot {
@@ -296,24 +433,6 @@
         }
       }
 
-      .letter-slot.revealed {
-        animation: revealLetter 0.4s ease forwards;
-      }
-
-      @keyframes revealLetter {
-        0% {
-          transform: scale(0) rotate(-10deg);
-          opacity: 0;
-        }
-        50% {
-          transform: scale(1.2) rotate(5deg);
-        }
-        100% {
-          transform: scale(1) rotate(0deg);
-          opacity: 1;
-        }
-      }
-
       .letter-slot.space {
         border-bottom: none;
         width: 20px;
@@ -323,6 +442,11 @@
         font-size: 1.5rem;
         color: var(--chalk-blue);
         margin-right: 10px;
+      }
+
+      .word-progress {
+        font-size: 1.1rem;
+        color: var(--chalk-white);
       }
 
       .keyboard {
@@ -343,7 +467,7 @@
         border: 2px solid var(--gray-4);
         border-radius: 6px;
         color: var(--chalk-white);
-        font-family: 'Patrick Hand', cursive;
+        font-family: var(--content-font);
         font-size: clamp(0.75rem, 2.5vw, 1.1rem);
         cursor: pointer;
         transition: all 0.2s ease;
@@ -399,9 +523,12 @@
         padding: 20px;
         overflow-y: auto;
         overflow-x: hidden;
+        transition: opacity 0.3s ease;
       }
 
-      #startScreen, #endRoundScreen, #gameOverScreen {
+      #startScreen,
+      #endRoundScreen,
+      #gameOverScreen {
         justify-content: flex-start;
       }
 
@@ -448,6 +575,42 @@
         max-height: calc(100vh - 40px);
         overflow-y: auto;
         overflow-x: hidden;
+      }
+
+      .title-letter {
+        display: inline-block;
+        opacity: 0;
+        transform: translateY(20px) rotate(-5deg);
+        animation: chalk-write 0.15s ease forwards;
+      }
+
+      @keyframes chalk-write {
+        0% {
+          opacity: 0;
+          transform: translateY(20px) rotate(-5deg) scale(0.8);
+          filter: blur(4px);
+        }
+        50% {
+          opacity: 0.8;
+          filter: blur(2px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0) rotate(0deg) scale(1);
+          filter: blur(0);
+        }
+      }
+
+      .gallows-intro .hangman-path {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        animation: draw-gallows 0.8s ease forwards;
+      }
+
+      @keyframes draw-gallows {
+        to {
+          stroke-dashoffset: 0;
+        }
       }
 
       .menu-content::-webkit-scrollbar,
@@ -539,6 +702,12 @@
         flex-wrap: wrap;
       }
 
+      .summary-line {
+        margin-top: 15px;
+        font-size: 1.1rem;
+        color: var(--chalk-white);
+      }
+
       .btn {
         background: transparent;
         border: 2px solid var(--chalk-white);
@@ -613,15 +782,6 @@
         align-items: center;
       }
 
-      #categorySelect {
-        background: var(--white-1);
-        border: 1px solid var(--white-3);
-        color: white;
-        padding: 5px 10px;
-        font-family: &quot;Patrick Hand&quot;;
-        border-radius: 6px;
-      }
-
       .toggle-btn {
         background: var(--white-1-strict);
         border: 1px solid var(--white-3);
@@ -672,14 +832,14 @@
 
       .end-round-content {
         text-align: center;
-        max-width: 400px;
+        max-width: 500px;
         width: 100%;
         padding: 10px 0;
       }
 
       .result-title {
         font-size: clamp(1.8rem, 6vw, 2.5rem);
-        margin-bottom: clamp(10px, 2.5vh, 20px);
+        margin-bottom: clamp(5px, 1.25vh, 10px);
         font-family: var(--title-font);
       }
 
@@ -697,12 +857,43 @@
         border-radius: 12px;
         margin: 20px 0;
         border: 2px solid var(--white-2);
+        position: relative;
       }
 
       .reveal-word {
         font-size: 2rem;
         color: var(--chalk-white);
         margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .audio-btn {
+        background: transparent;
+        border: 2px solid var(--chalk-blue);
+        color: var(--chalk-blue);
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 1rem;
+        padding: 0;
+      }
+
+      .audio-btn:hover {
+        background: var(--chalk-blue);
+        color: var(--board-dark);
+        transform: scale(1.1);
+      }
+
+      .audio-btn:active {
+        transform: scale(0.95);
       }
 
       .reveal-translation {
@@ -729,15 +920,16 @@
       .round-stats {
         display: flex;
         justify-content: space-around;
-        margin: 20px 0;
+        margin: 0 0 20px;
         color: var(--chalk-yellow);
         flex-direction: column;
-        gap: 8px;
+        gap: 12px;
       }
 
       .stats-container {
         display: flex;
         justify-content: space-around;
+        align-items: flex-end;
         width: 100%;
       }
 
@@ -753,6 +945,18 @@
       .stat-label {
         font-size: 0.9rem;
         color: var(--chalk-gray);
+      }
+
+      .round-score {
+        margin-top: 15px;
+        color: var(--chalk-blue);
+        font-size: 1.1rem;
+      }
+
+      .score-total {
+        margin-top: 8px;
+        font-size: 1.6rem;
+        color: var(--chalk-green);
       }
 
       .scores-container {
@@ -789,6 +993,89 @@
         font-weight: bold;
       }
 
+      .flashcards-section {
+        margin: 30px 0;
+        width: 100%;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      .flashcards-title {
+        color: var(--chalk-yellow);
+        font-size: 1.4rem;
+        margin-bottom: 15px;
+        font-family: var(--title-font);
+      }
+
+      .flashcards-grid {
+        column-count: 2;
+        column-gap: 12px;
+        width: 100%;
+      }
+
+      .flashcard {
+        background: var(--white-1);
+        border: 2px solid var(--gray-2);
+        border-radius: 10px;
+        padding: 15px;
+        text-align: left;
+        transition: all 0.3s ease;
+        position: relative;
+        animation: card-appear 0.5s ease backwards;
+        break-inside: avoid;
+        margin-bottom: 12px;
+        width: 100%;
+        display: inline-block;
+      }
+
+      @media (max-width: 600px) {
+        .flashcards-grid {
+          column-count: 1;
+        }
+        .theme-toggle {
+          right: 185px;
+        }
+      }
+
+      @keyframes card-appear {
+        from {
+          opacity: 0;
+          transform: translateY(20px) scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .flashcard:hover {
+        transform: translateY(-5px);
+        border-color: var(--chalk-blue);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .flashcard-word {
+        font-size: 1.3rem;
+        color: var(--chalk-white);
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .flashcard-translation {
+        font-size: 1rem;
+        color: var(--chalk-blue);
+      }
+
+      .flashcard-meta {
+        font-size: 0.85rem;
+        color: var(--chalk-gray);
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid var(--gray-2);
+      }
+
       .game-over-label {
         color: var(--chalk-gray);
         margin-bottom: 20px;
@@ -802,7 +1089,7 @@
 
       .game-over-words {
         color: var(--chalk-gray);
-        margin-bottom: 30px;
+        margin-bottom: 10px;
       }
 
       .game-over-count {
@@ -913,27 +1200,6 @@
         animation: shake 0.4s ease;
       }
 
-      @keyframes chalkBurst {
-        0% {
-          transform: scale(0);
-          opacity: 1;
-        }
-        100% {
-          transform: scale(2);
-          opacity: 0;
-        }
-      }
-
-      .chalk-particle {
-        position: absolute;
-        width: 4px;
-        height: 4px;
-        background: var(--chalk-white);
-        border-radius: 50%;
-        pointer-events: none;
-        animation: chalkBurst 0.6s ease forwards;
-      }
-
       .sound-toggle {
         position: fixed;
         top: 20px;
@@ -947,7 +1213,9 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: transform 0.2s, background 0.3s;
+        transition:
+          transform 0.2s,
+          background 0.3s;
       }
 
       .sound-toggle:hover {
@@ -957,10 +1225,6 @@
 
       .sound-toggle:active {
         transform: scale(0.9);
-      }
-
-      .sound-toggle.clicked {
-        animation: soundPulse 0.3s ease;
       }
 
       .sound-toggle.muted {
@@ -974,9 +1238,15 @@
       }
 
       @keyframes soundPulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
       }
 
       .theme-toggle {
@@ -992,7 +1262,9 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: transform 0.2s, background 0.3s;
+        transition:
+          transform 0.2s,
+          background 0.3s;
       }
 
       .theme-toggle:hover {
@@ -1037,6 +1309,12 @@
           margin-top: 16px;
           gap: 10px;
         }
+        .flashcards-grid {
+          grid-template-columns: 1fr;
+        }
+        .theme-toggle {
+          right: 185px;
+        }
       }
 
       @media (max-height: 700px) {
@@ -1070,11 +1348,7 @@
         position: fixed;
         width: 100px;
         height: 100px;
-        background: radial-gradient(
-          circle,
-          var(--white-1) 0%,
-          transparent 70%
-        );
+        background: radial-gradient(circle, var(--white-1) 0%, transparent 70%);
         pointer-events: none;
         opacity: 0;
         animation: dustFloat 3s ease-in-out infinite;
@@ -1089,6 +1363,43 @@
         50% {
           transform: translateY(-20px) rotate(180deg);
           opacity: 0.6;
+        }
+      }
+
+      .eraser-wipe {
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.1) 30%,
+          rgba(255, 255, 255, 0.4) 50%,
+          rgba(255, 255, 255, 0.1) 70%,
+          transparent 100%
+        );
+        backdrop-filter: blur(4px);
+        pointer-events: none;
+        z-index: 5;
+        animation: wipe-across 1.2s ease-in-out forwards;
+      }
+
+      @keyframes wipe-across {
+        0% {
+          left: -100%;
+          opacity: 0;
+        }
+        20% {
+          opacity: 1;
+        }
+        80% {
+          opacity: 1;
+        }
+        100% {
+          left: 200%;
+          opacity: 0;
         }
       }
 
@@ -1151,7 +1462,7 @@
       }
 
       .credits-link::after {
-        content: '';
+        content: "";
         position: absolute;
         bottom: -2px;
         left: 0;
@@ -1226,7 +1537,7 @@
       }
     </style>
   </head>
-  <body>
+  <body class="loading">
     <div class="main">
       <div class="onboarding-overlay hidden" id="onboarding">
         <div class="onboarding-content">
@@ -1261,9 +1572,10 @@
           <div class="onboarding-section">
             <div class="onboarding-label">💡 İpucu Sistemi</div>
             <p>
-              Takıldıysaniz <span class="highlight">İpucu butonu</span> ile
+              Takıldıysanız <span class="highlight">İpucu butonu</span> ile
               <span class="highlight">50 puan</span> karşılığında kelimenin
-              Türkçe anlamını görebilirsiniz.
+              Türkçe anlamını görebilirsiniz. Dikkat edin, art arda ipucu
+              kullanamazsınız!
             </p>
           </div>
 
@@ -1273,7 +1585,7 @@
         </div>
       </div>
 
-      <div class="sound-toggle" id="soundToggle" onclick="toggleSound()">
+      <div class="sound-toggle toggle" id="soundToggle" onclick="toggleSound()">
         <svg class="sound-icon" id="soundIcon" viewBox="0 0 24 24">
           <path
             d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"
@@ -1281,7 +1593,7 @@
         </svg>
       </div>
 
-      <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+      <div class="theme-toggle toggle" id="themeToggle" onclick="toggleTheme()">
         <svg
           class="theme-icon"
           id="themeIcon"
@@ -1297,7 +1609,7 @@
 
       <div class="screen" id="startScreen">
         <div class="menu-content">
-          <h1>Deutsch Hangman</h1>
+          <h1 id="mainTitle">Deutsch Hangman</h1>
           <p class="subtitle">Almanca kelimeleri eğlenceli şekilde öğren!</p>
 
           <div class="showOnboardingContainer">
@@ -1321,6 +1633,9 @@
               <button class="btn" onclick="selectDifficulty('hard', this)">
                 Zor (B1-B2)
               </button>
+            </div>
+            <div class="summary-line" id="summaryLine">
+              Kolay • 5 Tur • Zamanlayıcı Kapalı • Artikel ✓
             </div>
           </div>
 
@@ -1396,7 +1711,14 @@
         <div class="container">
           <div class="header">
             <div class="score-display">
-              Puan: <span id="scoreValue">0</span>
+              Puan:
+              <div class="odometer">
+                <div class="odometer-digit">
+                  <div class="odometer-digit-inner">
+                    <span class="odometer-number">0</span>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="round-display" id="roundDisplay">Tur: 1/5</div>
             <div class="timer-display hidden" id="timerDisplay">60</div>
@@ -1409,13 +1731,29 @@
             <button class="btn showOnboardingBtn" onclick="showOnboarding()">
               ?
             </button>
+
+            <div class="round-progress-container">
+              <div
+                class="round-progress-bar"
+                id="roundProgressBar"
+                style="width: 0%"
+              ></div>
+            </div>
           </div>
 
-          <div class="game-area">
+          <div class="game-area" id="gameArea">
             <div class="hangman-container">
               <svg class="hangman-svg" viewBox="0 0 200 250">
-                <path class="hangman-path" d="M20 230 L180 230" />
-                <path class="hangman-path" d="M40 230 L40 20 L140 20 L140 50" />
+                <path
+                  class="hangman-path"
+                  id="gallows-base"
+                  d="M20 230 L180 230"
+                />
+                <path
+                  class="hangman-path"
+                  id="gallows-pole"
+                  d="M40 230 L40 20 L140 20 L140 50"
+                />
 
                 <circle
                   class="hangman-path hangman-hidden"
@@ -1458,6 +1796,7 @@
             </div>
 
             <div class="word-container" id="wordContainer"></div>
+            <div class="word-progress" id="wordProgress"></div>
 
             <div class="keyboard" id="keyboard"></div>
           </div>
@@ -1469,6 +1808,18 @@
           <h2 class="result-title" id="resultTitle">Aferin!</h2>
           <div class="round-stats">
             <div class="stats-container">
+              <div class="stat">
+                <div class="stat-value" id="statScore">
+                  <div class="odometer">
+                    <div class="odometer-digit">
+                      <div class="odometer-digit-inner">
+                        <span class="odometer-number">0</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="stat-label">Puan</div>
+              </div>
               <div class="stat">
                 <div class="stat-value" id="statStreak">0</div>
                 <div class="stat-label">Seri</div>
@@ -1490,7 +1841,7 @@
                 <span class="chalk-green" id="scoreCorrectGuess">+40</span>
               </div>
               <div class="score-info">
-                <span>Kalan can (×10):</span>
+                <span>Kalan can (×5):</span>
                 <span class="chalk-green" id="scoreHearts">+0</span>
               </div>
               <div class="score-info hidden">
@@ -1509,7 +1860,16 @@
           </div>
 
           <div class="word-reveal">
-            <div class="reveal-word" id="revealWord">Apfel</div>
+            <div class="reveal-word">
+              <span id="revealWord">Apfel</span>
+              <button
+                class="audio-btn"
+                onclick="speakCurrentWord()"
+                title="Dinle"
+              >
+                🔊
+              </button>
+            </div>
             <div class="reveal-translation" id="revealTranslation">elma</div>
             <div class="reveal-plural" id="revealPlural"></div>
             <div class="reveal-example" id="revealExample">
@@ -1542,6 +1902,11 @@
             <span id="totalMistakes" class="game-over-count">0</span>
           </p>
 
+          <div class="flashcards-section" id="flashcardsSection">
+            <div class="flashcards-title">📚 Bu Oyundaki Kelimeler</div>
+            <div class="flashcards-grid" id="flashcardsGrid"></div>
+          </div>
+
           <div class="button-group">
             <button class="btn primary" onclick="playAgain()">
               Tekrar Oyna
@@ -1554,7 +1919,7 @@
       <div class="screen hidden" id="creditsScreen">
         <div class="credits-content">
           <h2 class="credits-title">Deutsch Hangman</h2>
-          <div class="credits-note">v1.4, 01.04.2026</div>
+          <div class="credits-note">v1.5, 05.04.2026</div>
           <br />
 
           <div class="credits-section">
@@ -1614,7 +1979,6 @@
         </div>
       </div>
     </div>
-
     <script>
       let wordData = null;
 
@@ -1644,6 +2008,39 @@
         "Gelişim gösteriyorsun! 📈",
       ];
 
+      const letterFrequency = {
+        e: 17.4,
+        n: 10.0,
+        i: 8.5,
+        s: 7.3,
+        r: 7.0,
+        a: 6.5,
+        t: 5.5,
+        d: 5.0,
+        h: 4.5,
+        u: 3.5,
+        l: 3.0,
+        c: 2.5,
+        g: 3.0,
+        m: 2.5,
+        o: 2.5,
+        b: 2.0,
+        w: 2.0,
+        f: 2.0,
+        k: 2.0,
+        z: 1.5,
+        p: 1.0,
+        v: 1.0,
+        j: 0.5,
+        y: 0.5,
+        x: 0.5,
+        q: 0.3,
+        ä: 0.5,
+        ö: 0.5,
+        ü: 0.5,
+        ß: 0.3,
+      };
+
       function getRandomPhrase(phrases) {
         return phrases[Math.floor(Math.random() * phrases.length)];
       }
@@ -1651,12 +2048,12 @@
       let gameState = {
         difficulty: "easy",
         lives: 6,
-        category: "all",
         mode: 5,
         timerValue: false,
         showArticle: true,
         soundEnabled: true,
         hintUsed: false,
+        hintUsedLastRound: false,
         currentWord: null,
         usedLetters: new Set(),
         usedWords: new Set(),
@@ -1669,10 +2066,89 @@
         gameActive: false,
         wordsCompleted: 0,
         totalMistakes: 0,
-        highScore: parseInt(localStorage.getItem("hangmanHighScore")) || 0,
+        highScore: 0,
+        currentSessionWords: [],
       };
 
       let audioContext = null;
+      let audioContextInitialized = false;
+      let timerTickInterval = null;
+
+      function initHighScore() {
+        try {
+          const stored = localStorage.getItem("hangmanHighScore");
+          if (stored !== null && !isNaN(parseInt(stored))) {
+            gameState.highScore = parseInt(stored);
+          } else {
+            gameState.highScore = 0;
+          }
+        } catch (e) {
+          console.warn("localStorage not available");
+          gameState.highScore = 0;
+        }
+      }
+
+      function initAudioContext() {
+        if (!audioContextInitialized && audioContext) {
+          if (audioContext.state === "suspended") {
+            audioContext.resume();
+          }
+          audioContextInitialized = true;
+        }
+      }
+
+      function preloadSpeechVoices() {
+        if ("speechSynthesis" in window) {
+          const voices = window.speechSynthesis.getVoices();
+          if (voices.length === 0) {
+            window.speechSynthesis.onvoiceschanged = () => {
+              window.speechSynthesis.getVoices();
+            };
+          }
+          const warmup = new SpeechSynthesisUtterance("");
+          warmup.volume = 0;
+          window.speechSynthesis.speak(warmup);
+          window.speechSynthesis.cancel();
+        }
+      }
+
+      function calculateWordDifficulty(word, level) {
+        const lowerWord = word.toLowerCase();
+        let letterScore = 0;
+        let uniqueLetters = new Set();
+
+        for (let char of lowerWord) {
+          if (alphabet.has(char)) {
+            uniqueLetters.add(char);
+            const freq = letterFrequency[char] || 1.0;
+
+            letterScore += (20 - freq) / 2;
+          }
+        }
+
+        const avgLetterDifficulty = letterScore / lowerWord.length;
+
+        const lengthFactor = Math.min(lowerWord.length / 8, 1.5);
+
+        const levelMultipliers = {
+          A1: 1.0,
+          "A1+": 1.2,
+          A2: 1.4,
+          B1: 1.7,
+          "B1+": 2.0,
+        };
+        const levelMultiplier = levelMultipliers[level] || 1.0;
+
+        const varietyBonus = (uniqueLetters.size / lowerWord.length) * 0.5;
+
+        const finalScore =
+          (avgLetterDifficulty * 0.4 +
+            lengthFactor * 0.3 +
+            varietyBonus * 0.3) *
+          levelMultiplier;
+
+        return Math.min(Math.max(finalScore, 1), 10).toFixed(1);
+      }
 
       function categorizeVocab(allWords) {
         const easy = allWords.filter(
@@ -1693,7 +2169,7 @@
           (w) =>
             ((["A2", "B1", "B1+"].includes(w.level) && w.word.length >= 8) ||
               (["A1", "A1+"].includes(w.level) && w.word.length >= 12)) &&
-            w.word.length < 20,
+            w.word.length <= 18,
         );
 
         return { easy, medium, hard };
@@ -1704,6 +2180,10 @@
         document.documentElement.setAttribute("data-theme", savedTheme);
         updateThemeIcon(savedTheme);
 
+        initHighScore();
+        loadSettings();
+        updateSummaryLine();
+
         try {
           const response = await fetch("vocab.json");
           const allVocab = await response.json();
@@ -1713,12 +2193,161 @@
         }
         checkFirstTime();
         initKeyboard();
+
+        animateTitle();
+        preloadSpeechVoices();
+
+        setTimeout(() => {
+          document.body.classList.remove("loading");
+        }, 100);
       });
 
-      function checkFirstTime() {
-        if (!localStorage.getItem("hangmanOnboarding")) {
-          showOnboarding();
+      function saveSettings() {
+        try {
+          const settings = {
+            difficulty: gameState.difficulty,
+            mode: gameState.mode,
+            showArticle: gameState.showArticle,
+            soundEnabled: gameState.soundEnabled,
+            timerValue: gameState.timerValue,
+          };
+          localStorage.setItem("hangmanSettings", JSON.stringify(settings));
+        } catch (e) {
+          console.warn("Could not save settings");
         }
+      }
+
+      function loadSettings() {
+        try {
+          const saved = localStorage.getItem("hangmanSettings");
+          if (!saved) return;
+
+          const s = JSON.parse(saved);
+
+          if (
+            s.difficulty &&
+            ["easy", "medium", "hard"].includes(s.difficulty)
+          ) {
+            gameState.difficulty = s.difficulty;
+          }
+          if (s.mode !== undefined) {
+            gameState.mode = s.mode;
+          }
+          if (s.showArticle !== undefined) {
+            gameState.showArticle = s.showArticle;
+          }
+          if (s.soundEnabled !== undefined) {
+            gameState.soundEnabled = s.soundEnabled;
+          }
+          if (s.timerValue !== undefined) {
+            gameState.timerValue = s.timerValue;
+          }
+
+          applySettingsToUI(s);
+        } catch (e) {
+          console.error("Settings load failed", e);
+        }
+      }
+
+      function applySettingsToUI(s) {
+        document.querySelectorAll(".difficulty-buttons .btn").forEach((btn) => {
+          btn.classList.remove("selected");
+          const diffMap = {
+            easy: "kolay",
+            medium: "orta",
+            hard: "zor",
+          };
+          if (
+            btn.textContent
+              .toLowerCase()
+              .includes(diffMap[gameState.difficulty])
+          ) {
+            btn.classList.add("selected");
+          }
+        });
+
+        document
+          .querySelectorAll(".option-control .toggle-btn")
+          .forEach((btn) => {
+            btn.classList.remove("active");
+            const text = btn.textContent.trim();
+
+            if (gameState.mode === "infinite" && text.includes("Sonsuz")) {
+              btn.classList.add("active");
+            } else if (gameState.mode == text.match(/\d+/)) {
+              btn.classList.add("active");
+            }
+          });
+
+        const articleToggle = document.getElementById("articleToggle");
+        if (articleToggle) {
+          articleToggle.classList.toggle("active", gameState.showArticle);
+        }
+
+        const soundToggle = document.getElementById("soundToggle");
+        if (soundToggle && !gameState.soundEnabled) {
+          soundToggle.classList.add("muted");
+        }
+        updateSoundIcon();
+
+        document.querySelectorAll(".option-row").forEach((row) => {
+          if (row.textContent.includes("Zamanlayıcı")) {
+            row.querySelectorAll(".toggle-btn").forEach((btn) => {
+              btn.classList.remove("active");
+              const text = btn.textContent.trim();
+              if (gameState.timerValue === false && text === "Kapalı") {
+                btn.classList.add("active");
+              } else if (gameState.timerValue == parseInt(text)) {
+                btn.classList.add("active");
+              }
+            });
+          }
+        });
+      }
+
+      function updateSummaryLine() {
+        const summaryEl = document.getElementById("summaryLine");
+        if (!summaryEl) return;
+
+        const diffMap = {
+          easy: "Kolay",
+          medium: "Orta",
+          hard: "Zor",
+        };
+
+        const modeText =
+          gameState.mode === "infinite"
+            ? "Sonsuz Tur"
+            : `${gameState.mode} Tur`;
+        const timerText =
+          gameState.timerValue === false
+            ? "Zamanlayıcı Kapalı"
+            : `${gameState.timerValue}s`;
+        const articleText = gameState.showArticle ? "Artikel ✓" : "Artikel ✗";
+
+        summaryEl.textContent = `${diffMap[gameState.difficulty]} • ${modeText} • ${timerText} • ${articleText}`;
+      }
+
+      function animateTitle() {
+        const title = document.getElementById("mainTitle");
+        const text = title.textContent;
+        title.innerHTML = "";
+
+        text.split("").forEach((char, index) => {
+          const span = document.createElement("span");
+          span.className = "title-letter";
+          span.textContent = char === " " ? "\u00A0" : char;
+          span.style.animationDelay = index * 0.08 + "s";
+          title.appendChild(span);
+        });
+      }
+
+      function checkFirstTime() {
+        try {
+          if (!localStorage.getItem("hangmanOnboarding")) {
+            showOnboarding();
+          }
+        } catch (e) {}
       }
 
       function showOnboarding() {
@@ -1727,13 +2356,18 @@
 
       function dismissOnboarding() {
         document.getElementById("onboarding").classList.add("hidden");
-        if (!localStorage.getItem("hangmanOnboarding")) {
-          localStorage.setItem("hangmanOnboarding", "true");
-        }
+        try {
+          if (!localStorage.getItem("hangmanOnboarding")) {
+            localStorage.setItem("hangmanOnboarding", "true");
+          }
+        } catch (e) {}
       }
 
       function selectDifficulty(diff, btn) {
         gameState.difficulty = diff;
+        saveSettings();
+        updateSummaryLine();
+
         document
           .querySelectorAll(".difficulty-buttons .btn")
           .forEach((b) => b.classList.remove("selected"));
@@ -1744,16 +2378,11 @@
         document.getElementById("optionsPanel").classList.toggle("open");
       }
 
-      function selectLives(num, btn) {
-        gameState.lives = num;
-        btn.parentElement
-          .querySelectorAll(".toggle-btn")
-          .forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-      }
-
       function selectMode(mode, btn) {
         gameState.mode = mode;
+        saveSettings();
+        updateSummaryLine();
+
         const buttons = btn.parentElement.querySelectorAll(".toggle-btn");
         buttons.forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
@@ -1778,6 +2407,9 @@
 
       function selectTimer(value, btn) {
         gameState.timerValue = value;
+        saveSettings();
+        updateSummaryLine();
+
         btn.parentElement
           .querySelectorAll(".toggle-btn")
           .forEach((b) => b.classList.remove("active"));
@@ -1787,15 +2419,25 @@
       function toggleArticle() {
         gameState.showArticle = !gameState.showArticle;
         document.getElementById("articleToggle").classList.toggle("active");
+        saveSettings();
+        updateSummaryLine();
       }
 
       function toggleSound() {
         gameState.soundEnabled = !gameState.soundEnabled;
+        saveSettings();
+
         const toggle = document.getElementById("soundToggle");
-        const icon = document.getElementById("soundIcon");
 
         toggle.classList.add("clicked");
         setTimeout(() => toggle.classList.remove("clicked"), 300);
+
+        updateSoundIcon();
+      }
+
+      function updateSoundIcon() {
+        const toggle = document.getElementById("soundToggle");
+        const icon = document.getElementById("soundIcon");
 
         if (gameState.soundEnabled) {
           toggle.classList.remove("muted");
@@ -1808,6 +2450,38 @@
         }
       }
 
+      function playTickSound(speedFactor = 1) {
+        if (!gameState.soundEnabled) return;
+
+        if (!audioContext) {
+          audioContext = new (
+            window.AudioContext || window.webkitAudioContext
+          )();
+        }
+
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+
+        const baseFreq = 600 + speedFactor * 200;
+
+        osc.frequency.setValueAtTime(baseFreq, audioContext.currentTime);
+
+        gain.gain.setValueAtTime(
+          0.1 + speedFactor * 0.1,
+          audioContext.currentTime,
+        );
+        gain.gain.exponentialRampToValueAtTime(
+          0.001,
+          audioContext.currentTime + 0.05,
+        );
+
+        osc.start();
+        osc.stop(audioContext.currentTime + 0.05);
+      }
+
       function playSound(type) {
         if (!gameState.soundEnabled) return;
 
@@ -1815,6 +2489,10 @@
           audioContext = new (
             window.AudioContext || window.webkitAudioContext
           )();
+        }
+
+        if (audioContext.state === "suspended") {
+          audioContext.resume();
         }
 
         const oscillator = audioContext.createOscillator();
@@ -1853,25 +2531,96 @@
             oscillator.stop(audioContext.currentTime + 0.2);
             break;
           case "win":
+            const osc2 = audioContext.createOscillator();
+            const gain2 = audioContext.createGain();
+            osc2.connect(gain2);
+            gain2.connect(audioContext.destination);
+
+            oscillator.type = "sine";
             oscillator.frequency.setValueAtTime(
-              523.25,
+              261.63,
               audioContext.currentTime,
             );
-            oscillator.frequency.setValueAtTime(
-              659.25,
-              audioContext.currentTime + 0.1,
+            osc2.type = "sine";
+            osc2.frequency.setValueAtTime(329.63, audioContext.currentTime);
+
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(
+              0.01,
+              audioContext.currentTime + 0.5,
             );
-            oscillator.frequency.setValueAtTime(
-              783.99,
-              audioContext.currentTime + 0.2,
+            gain2.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gain2.gain.exponentialRampToValueAtTime(
+              0.01,
+              audioContext.currentTime + 0.5,
             );
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.linearRampToValueAtTime(
-              0,
-              audioContext.currentTime + 0.4,
+
+            oscillator.start(audioContext.currentTime);
+            osc2.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+            osc2.stop(audioContext.currentTime + 0.5);
+            break;
+          case "tick":
+            oscillator.frequency.setValueAtTime(1200, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(
+              0.01,
+              audioContext.currentTime + 0.05,
             );
             oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.4);
+            oscillator.stop(audioContext.currentTime + 0.05);
+            break;
+          case "start":
+            const now = audioContext.currentTime;
+            oscillator.type = "sine";
+            oscillator.frequency.setValueAtTime(440, now);
+            oscillator.frequency.setValueAtTime(554, now + 0.1);
+            oscillator.frequency.setValueAtTime(659, now + 0.2);
+            gainNode.gain.setValueAtTime(0.2, now);
+            gainNode.gain.linearRampToValueAtTime(0, now + 0.4);
+            oscillator.start(now);
+            oscillator.stop(now + 0.4);
+            break;
+          case "next":
+            oscillator.type = "sine";
+            oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(
+              800,
+              audioContext.currentTime + 0.1,
+            );
+            gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(
+              0.01,
+              audioContext.currentTime + 0.15,
+            );
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.15);
+            break;
+          case "gameover":
+            oscillator.type = "sawtooth";
+            oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(
+              100,
+              audioContext.currentTime + 0.5,
+            );
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(
+              0,
+              audioContext.currentTime + 0.5,
+            );
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+            break;
+          case "click":
+            oscillator.type = "triangle";
+            oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(
+              0.01,
+              audioContext.currentTime + 0.03,
+            );
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.03);
             break;
         }
       }
@@ -1904,7 +2653,7 @@
 
         gameState.score -= 50;
         gameState.hintUsed = true;
-        updateScore();
+        updateScore(50, -50);
         updateHintButton();
 
         const hintDisplay = document.createElement("div");
@@ -1930,6 +2679,12 @@
           hintBtn.textContent = "💡 İpucu Kullanıldı";
           hintBtn.style.cursor = "not-allowed";
           hintBtn.style.background = "rgba(245, 245, 168, 0.1)";
+        } else if (gameState.hintUsedLastRound) {
+          hintBtn.disabled = true;
+          hintBtn.style.opacity = "0.5";
+          hintBtn.textContent = "💡 İpucu Bitti";
+          hintBtn.style.cursor = "not-allowed";
+          hintBtn.style.background = "rgba(245, 245, 168, 0.1)";
         } else if (gameState.score < 50) {
           hintBtn.disabled = true;
           hintBtn.style.opacity = "0.4";
@@ -1949,6 +2704,115 @@
         }
       }
 
+      function updateScore(fromValue = null, increment = 0) {
+        const targetValue = gameState.score;
+        const startValue =
+          fromValue !== null ? fromValue : targetValue - increment;
+
+        document.querySelectorAll(".odometer").forEach((odm) => {
+          animateOdometer(odm, startValue, targetValue, 800);
+        });
+      }
+
+      function animateOdometer(element, startValue, endValue, duration) {
+        const startTime = performance.now();
+        const diff = endValue - startValue;
+        const steps = Math.abs(diff);
+        const stepDuration = duration / Math.max(steps, 1);
+
+        let currentValue = startValue;
+
+        function update(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const easeProgress = 1 - Math.pow(1 - progress, 3);
+
+          const newValue = Math.round(startValue + diff * easeProgress);
+
+          if (newValue !== currentValue) {
+            currentValue = newValue;
+            renderOdometer(currentValue, element);
+            if (Math.abs(newValue - endValue) > 0) {
+              playSound("tick");
+            }
+          }
+
+          if (progress < 1) {
+            requestAnimationFrame(update);
+          } else {
+            renderOdometer(endValue, element);
+          }
+        }
+
+        requestAnimationFrame(update);
+      }
+
+      function renderOdometer(value, specificElement = null) {
+        const strValue = value.toString();
+        let html = "";
+
+        for (let digit of strValue) {
+          html += `
+            <div class="odometer-digit">
+              <div class="odometer-digit-inner">
+                <span class="odometer-number">${digit}</span>
+              </div>
+            </div>
+          `;
+        }
+
+        if (specificElement) {
+          specificElement.innerHTML = html;
+        } else {
+          document.querySelectorAll(".odometer").forEach((odm) => {
+            odm.innerHTML = html;
+          });
+        }
+      }
+
+      function speakWord(text) {
+        if ("speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+          if (audioContext && audioContext.state === "suspended") {
+            audioContext.resume();
+          }
+          const utterance = new SpeechSynthesisUtterance(text);
+
+          utterance.lang = "de-DE";
+          utterance.rate = 0.8;
+          const voices = window.speechSynthesis.getVoices();
+          if (voices.length > 0) {
+            const germanVoice =
+              voices.find((v) => v.lang.includes("de")) || voices[0];
+            utterance.voice = germanVoice;
+          }
+          window.speechSynthesis.speak(utterance);
+        }
+      }
+
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.onvoiceschanged = () => {};
+      }
+
+      document.addEventListener(
+        "click",
+        function initOnFirstClick() {
+          initAudioContext();
+          document.removeEventListener("click", initOnFirstClick);
+        },
+        { once: true },
+      );
+
+      function speakCurrentWord() {
+        if (gameState.currentWord) {
+          const text =
+            (gameState.currentWord.article
+              ? gameState.currentWord.article + " "
+              : "") + gameState.currentWord.word;
+          speakWord(text);
+        }
+      }
+
       function startGame() {
         gameState.remainingLives = gameState.lives;
         gameState.score = 0;
@@ -1958,15 +2822,34 @@
         gameState.totalMistakes = 0;
         gameState.usedLetters.clear();
         gameState.usedWords.clear();
+        gameState.currentSessionWords = [];
 
         document.getElementById("startScreen").classList.add("hidden");
         document.getElementById("gameScreen").classList.remove("hidden");
         document.getElementById("gameOverScreen").classList.add("hidden");
 
+        renderOdometer(0);
         updateHearts();
-        updateScore();
         updateHintButton();
-        loadNewWord();
+        updateRoundProgress();
+
+        playSound("start");
+        setTimeout(() => {
+          loadNewWord();
+        }, 100);
+      }
+
+      function updateRoundProgress() {
+        const progressBar = document.getElementById("roundProgressBar");
+        if (!progressBar) return;
+
+        let progress = 0;
+        if (gameState.mode === "infinite") {
+          progress = (((gameState.round - 1) % 10) / 10) * 100;
+        } else {
+          progress = ((gameState.round - 1) / gameState.mode) * 100;
+        }
+        progressBar.style.width = progress + "%";
       }
 
       function updateRoundDisplay() {
@@ -1985,9 +2868,50 @@
         } else {
           nextWordBtn.textContent = "Sonraki Kelime →";
         }
+
+        updateRoundProgress();
       }
 
       function loadNewWord() {
+        const allParts = [
+          "gallows-base",
+          "gallows-pole",
+          "head",
+          "body",
+          "armLeft",
+          "armRight",
+          "legLeft",
+          "legRight",
+        ];
+
+        allParts.forEach((id) => {
+          const part = document.getElementById(id);
+          if (part) {
+            part.classList.remove("drawing");
+            part.style.strokeDashoffset = "1000";
+            if (part.classList.contains("hangman-hidden")) {
+              part.style.opacity = "0";
+            } else {
+              part.style.opacity = "1";
+            }
+          }
+        });
+
+        document.querySelector(".hangman-svg").getBoundingClientRect();
+
+        const gallowsParts = ["gallows-base", "gallows-pole"];
+        gallowsParts.forEach((id, index) => {
+          const part = document.getElementById(id);
+          if (part) {
+            setTimeout(
+              () => {
+                part.classList.add("drawing");
+              },
+              100 + index * 600,
+            );
+          }
+        });
+
         let wordPool = wordData[gameState.difficulty];
 
         const available = wordPool.filter(
@@ -1997,10 +2921,14 @@
 
         gameState.currentWord = pool[Math.floor(Math.random() * pool.length)];
         gameState.usedWords.add(gameState.currentWord.word);
+
+        gameState.currentSessionWords.push(gameState.currentWord);
+
         gameState.usedLetters.clear();
         gameState.remainingLives = gameState.lives;
         gameState.gameActive = true;
 
+        gameState.hintUsedLastRound = gameState.hintUsed;
         gameState.hintUsed = false;
         updateHintButton();
 
@@ -2018,7 +2946,8 @@
 
         document.querySelectorAll(".hangman-hidden").forEach((el) => {
           el.style.opacity = "0";
-          el.style.animation = "none";
+          el.classList.remove("drawing");
+          el.style.strokeDashoffset = "1000";
         });
 
         document.querySelectorAll(".key").forEach((key) => {
@@ -2057,12 +2986,13 @@
           container.appendChild(article);
         }
 
-        let slotIndex = 0;
         for (let char of word) {
           const slot = document.createElement("div");
-          slot.className = "letter-slot";
 
           const lowerChar = char.toLowerCase();
+
+          slot.className =
+            "letter-slot " + (char == "ß" ? "lowercase" : "uppercase");
 
           if (!alphabet.has(lowerChar)) {
             slot.textContent = char;
@@ -2075,40 +3005,32 @@
 
           container.appendChild(slot);
         }
+
+        updateWordProgress();
       }
 
-      const alphabet = new Set([
-        "a",
-        "b",
-        "c",
-        "d",
-        "e",
-        "f",
-        "g",
-        "h",
-        "i",
-        "j",
-        "k",
-        "l",
-        "m",
-        "n",
-        "o",
-        "p",
-        "q",
-        "r",
-        "s",
-        "t",
-        "u",
-        "v",
-        "w",
-        "x",
-        "y",
-        "z",
-        "ä",
-        "ö",
-        "ü",
-        "ß",
-      ]);
+      function updateWordProgress() {
+        const word = gameState.currentWord.word;
+        let totalLetters = 0;
+        let revealedLetters = 0;
+
+        for (let char of word) {
+          const lowerChar = char.toLowerCase();
+          if (alphabet.has(lowerChar)) {
+            totalLetters++;
+            if (gameState.usedLetters.has(lowerChar)) {
+              revealedLetters++;
+            }
+          }
+        }
+
+        const progressEl = document.getElementById("wordProgress");
+        if (progressEl) {
+          progressEl.textContent = `${revealedLetters}/${totalLetters} harf`;
+        }
+      }
+
+      const alphabet = new Set("abcdefghijklmnopqrstuvwxyzäöüß".split(""));
 
       function initKeyboard() {
         const keyboard = document.getElementById("keyboard");
@@ -2116,7 +3038,7 @@
 
         alphabet.forEach((char) => {
           const key = document.createElement("button");
-          key.className = "key";
+          key.className = "key uppercase";
           key.textContent = char.toUpperCase();
           key.onclick = () => handleGuess(char);
           keyboard.appendChild(key);
@@ -2160,6 +3082,7 @@
         keys.forEach((key) => {
           if (key.textContent.toLowerCase() === lowerChar) {
             key.disabled = true;
+            key.classList.add("used-label");
           }
         });
 
@@ -2182,6 +3105,11 @@
 
       function handleCorrectGuess(char) {
         playSound("correct");
+
+        const wordContainer = document.getElementById("wordContainer");
+        wordContainer.classList.remove("correct-glow");
+        void wordContainer.offsetWidth;
+        wordContainer.classList.add("correct-glow");
 
         const word = gameState.currentWord.word;
         const hasAccentE = word.toLowerCase().includes("é");
@@ -2209,7 +3137,6 @@
             if (lowerChar === char.toLowerCase()) {
               slot.textContent = charInWord;
               slot.classList.add("revealed");
-              createChalkParticles(slot);
             }
 
             if (!slot.textContent) {
@@ -2217,6 +3144,9 @@
             }
           }
         });
+
+        updateWordProgress();
+
         if (allRevealed) {
           handleWin();
         }
@@ -2226,6 +3156,16 @@
         playSound("wrong");
         gameState.remainingLives--;
         gameState.totalMistakes++;
+
+        const wordContainer = document.getElementById("wordContainer");
+        wordContainer.classList.remove("wrong-flash");
+        void wordContainer.offsetWidth;
+        wordContainer.classList.add("wrong-flash");
+
+        const gameArea = document.querySelector(".game-area");
+        gameArea.classList.remove("shake");
+        void gameArea.offsetWidth;
+        gameArea.classList.add("shake");
 
         const keys = document.querySelectorAll(".key");
         keys.forEach((key) => {
@@ -2247,15 +3187,21 @@
           const part = document.getElementById(parts[partIndex]);
           if (part) {
             part.style.opacity = "1";
-            part.style.animation = "draw 0.8s ease forwards";
+            part.classList.remove("drawing");
+
+            void part.offsetWidth;
+
+            requestAnimationFrame(() => {
+              part.classList.add("drawing");
+            });
           }
         }
 
         updateHearts();
+        updateLowLivesEffect();
 
-        document.querySelector(".game-area").classList.add("shake");
         setTimeout(() => {
-          document.querySelector(".game-area").classList.remove("shake");
+          gameArea.classList.remove("shake");
         }, 400);
 
         if (gameState.remainingLives <= 0) {
@@ -2263,17 +3209,16 @@
         }
       }
 
-      function createChalkParticles(element) {
-        const rect = element.getBoundingClientRect();
-        for (let i = 0; i < 5; i++) {
-          const particle = document.createElement("div");
-          particle.className = "chalk-particle";
-          particle.style.left = rect.left + rect.width / 2 + "px";
-          particle.style.top = rect.top + rect.height / 2 + "px";
-          particle.style.setProperty("--tx", (Math.random() - 0.5) * 50 + "px");
-          particle.style.setProperty("--ty", (Math.random() - 0.5) * 50 + "px");
-          document.body.appendChild(particle);
-          setTimeout(() => particle.remove(), 600);
+      function updateLowLivesEffect() {
+        const body = document.body;
+        const heartsContainer = document.getElementById("heartsContainer");
+
+        body.classList.remove("low-lives-3", "low-lives-2", "low-lives-1");
+        heartsContainer.classList.remove("danger-3", "danger-2", "danger-1");
+
+        if (gameState.remainingLives <= 3 && gameState.remainingLives > 0) {
+          body.classList.add(`low-lives-${gameState.remainingLives}`);
+          heartsContainer.classList.add(`danger-${gameState.remainingLives}`);
         }
       }
 
@@ -2297,14 +3242,43 @@
         }
       }
 
-      function updateScore() {
-        document.getElementById("scoreValue").textContent = gameState.score;
-        updateHintButton();
+      function startTicking() {
+        if (timerTickInterval) clearInterval(timerTickInterval);
+
+        function updateTick() {
+          if (!gameState.gameActive) return;
+
+          const t = gameState.timeRemaining;
+
+          let interval;
+          let speedFactor;
+
+          if (t > 30) {
+            interval = 1000;
+            speedFactor = 0.2;
+          } else if (t > 15) {
+            interval = 700;
+            speedFactor = 0.5;
+          } else if (t > 5) {
+            interval = 400;
+            speedFactor = 0.8;
+          } else {
+            interval = 200;
+            speedFactor = 1.2;
+          }
+
+          playTickSound(speedFactor);
+
+          timerTickInterval = setTimeout(updateTick, interval);
+        }
+
+        updateTick();
       }
 
       function startTimer() {
         const timerDisplay = document.getElementById("timerDisplay");
         timerDisplay.classList.remove("hidden");
+        timerDisplay.classList.remove("warning");
 
         gameState.timeRemaining = gameState.timerValue;
 
@@ -2320,16 +3294,64 @@
             timerDisplay.classList.add("warning");
           }
 
+          if (gameState.timeRemaining <= 15) {
+            playTickSound(1 + (15 - gameState.timeRemaining) / 10);
+          }
+
           if (gameState.timeRemaining <= 0) {
             clearInterval(gameState.timer);
             handleLoss();
           }
         }, 1000);
+
+        startTicking();
       }
 
       function updateTimerDisplay() {
         document.getElementById("timerDisplay").textContent =
           gameState.timeRemaining;
+      }
+
+      function playEraserWipe(callback) {
+        const gameArea = document.getElementById("gameArea");
+        const wipe = document.createElement("div");
+        wipe.className = "eraser-wipe";
+        gameArea.appendChild(wipe);
+
+        if (gameState.soundEnabled && audioContext) {
+          const oscillator = audioContext.createOscillator();
+          const gain = audioContext.createGain();
+          const filter = audioContext.createBiquadFilter();
+
+          oscillator.type = "sawtooth";
+          oscillator.frequency.setValueAtTime(100, audioContext.currentTime);
+          oscillator.frequency.linearRampToValueAtTime(
+            50,
+            audioContext.currentTime + 0.5,
+          );
+
+          filter.type = "lowpass";
+          filter.frequency.setValueAtTime(2000, audioContext.currentTime);
+          filter.frequency.linearRampToValueAtTime(
+            100,
+            audioContext.currentTime + 0.5,
+          );
+
+          gain.gain.setValueAtTime(0.1, audioContext.currentTime);
+          gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.5);
+
+          oscillator.connect(filter);
+          filter.connect(gain);
+          gain.connect(audioContext.destination);
+
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+        setTimeout(() => {
+          wipe.remove();
+          if (callback) callback();
+        }, 1200);
       }
 
       function handleWin() {
@@ -2343,7 +3365,7 @@
         const streakMultiplier =
           gameState.streak >= 2 ? Math.min(2, 1 + gameState.streak / 10) : 1;
 
-        const baseScore = 20;
+        const baseScore = 30;
         const heartBonus = gameState.remainingLives * 5;
         const timePercent = gameState.timerValue
           ? (gameState.timeRemaining / gameState.timerValue) * 100
@@ -2354,86 +3376,100 @@
 
         const rawRoundScore = baseScore + heartBonus + timeBonus;
         const roundScore = Math.floor(rawRoundScore * streakMultiplier);
-
+        const oldScore = gameState.score;
         gameState.score += roundScore;
-        updateScore();
 
         if (gameState.score > gameState.highScore) {
           gameState.highScore = gameState.score;
-          localStorage.setItem("hangmanHighScore", gameState.highScore);
+          try {
+            localStorage.setItem("hangmanHighScore", gameState.highScore);
+          } catch (e) {}
         }
 
         setTimeout(() => {
-          document.getElementById("gameScreen").classList.add("hidden");
-          document.getElementById("endRoundScreen").classList.remove("hidden");
+          playEraserWipe(() => {
+            document.getElementById("gameScreen").classList.add("hidden");
+            document
+              .getElementById("endRoundScreen")
+              .classList.remove("hidden");
 
-          document.getElementById("resultTitle").textContent =
-            getRandomPhrase(winPhrases);
-          document.getElementById("resultTitle").className = "result-title win";
-          document.getElementById("revealWord").textContent =
-            (gameState.currentWord.article
-              ? gameState.currentWord.article + " "
-              : "") + gameState.currentWord.word;
-          document.getElementById("revealTranslation").textContent =
-            gameState.currentWord.translation;
-          const pluralDiv = document.getElementById("revealPlural");
-          if (gameState.currentWord.plural) {
-            pluralDiv.textContent = "Çoğul: " + gameState.currentWord.plural;
-          } else {
-            pluralDiv.textContent = "";
-          }
-          document.getElementById("revealExample").textContent =
-            gameState.currentWord.example || "(örnek yok)";
-
-          document.getElementById("statStreak").textContent = gameState.streak;
-          document.getElementById("statTime").textContent = gameState.timerValue
-            ? gameState.timerValue - gameState.timeRemaining + "s"
-            : "-";
-          document.getElementById("statMistakes").textContent =
-            gameState.lives - gameState.remainingLives;
-
-          const baseScoreEl = document.getElementById("scoreCorrectGuess");
-          baseScoreEl.textContent = "+" + baseScore;
-          baseScoreEl.className = "chalk-green";
-
-          const heartBonusEl = document.getElementById("scoreHearts");
-          if (heartBonus > 0) {
-            heartBonusEl.textContent = "+" + heartBonus;
-            heartBonusEl.className = "chalk-green";
-          } else if (heartBonus === 0) {
-            heartBonusEl.textContent = "0";
-            heartBonusEl.className = "chalk-gray";
-          }
-
-          const timeBonusEl = document.getElementById("scoreTime");
-          if (gameState.timerValue) {
-            timeBonusEl.classList.remove("hidden");
-            if (timeBonus > 0) {
-              timeBonusEl.textContent = "+" + timeBonus;
-              timeBonusEl.className = "chalk-green";
-            } else if (timeBonus === 0) {
-              timeBonusEl.textContent = "0";
-              timeBonusEl.className = "chalk-gray";
+            document.getElementById("resultTitle").textContent =
+              getRandomPhrase(winPhrases);
+            document.getElementById("resultTitle").className =
+              "result-title win";
+            document.getElementById("revealWord").textContent =
+              (gameState.currentWord.article
+                ? gameState.currentWord.article + " "
+                : "") + gameState.currentWord.word;
+            document.getElementById("revealTranslation").textContent =
+              gameState.currentWord.translation;
+            const pluralDiv = document.getElementById("revealPlural");
+            if (gameState.currentWord.plural) {
+              pluralDiv.textContent = "Çoğul: " + gameState.currentWord.plural;
+            } else {
+              pluralDiv.textContent = "";
             }
-          } else {
-            timeBonusEl.classList.add("hidden");
-          }
+            document.getElementById("revealExample").textContent =
+              gameState.currentWord.example || "(örnek yok)";
 
-          document.getElementById("scoreCorrectGuessLabel").textContent =
-            "Doğru tahmin:";
-          document.getElementById("scoreCorrectGuess").textContent = "+20";
+            setTimeout(() => {
+              renderOdometer(gameState.score);
+            }, 200);
 
-          const multiplierRow = document.getElementById("scoreMultiplierRow");
-          const multiplierValue = document.getElementById("scoreMultiplier");
-          if (gameState.streak >= 2) {
-            multiplierRow.classList.remove("hidden");
-            multiplierValue.textContent = "x" + streakMultiplier.toFixed(1);
-          } else {
-            multiplierRow.classList.add("hidden");
-          }
+            document.getElementById("statStreak").textContent =
+              gameState.streak;
+            document.getElementById("statTime").textContent =
+              gameState.timerValue
+                ? gameState.timerValue - gameState.timeRemaining + "s"
+                : "-";
+            document.getElementById("statMistakes").textContent =
+              gameState.lives - gameState.remainingLives;
 
-          document.getElementById("scoreTotalRound").textContent =
-            (roundScore >= 0 ? "+" : "") + roundScore;
+            const baseScoreEl = document.getElementById("scoreCorrectGuess");
+            baseScoreEl.textContent = "+" + baseScore;
+            baseScoreEl.className = "chalk-green";
+
+            const heartBonusEl = document.getElementById("scoreHearts");
+            if (heartBonus > 0) {
+              heartBonusEl.textContent = "+" + heartBonus;
+              heartBonusEl.className = "chalk-green";
+            } else if (heartBonus === 0) {
+              heartBonusEl.textContent = "0";
+              heartBonusEl.className = "chalk-gray";
+            }
+
+            const timeBonusEl = document.getElementById("scoreTime");
+            if (gameState.timerValue) {
+              timeBonusEl.classList.remove("hidden");
+              if (timeBonus > 0) {
+                timeBonusEl.textContent = "+" + timeBonus;
+                timeBonusEl.className = "chalk-green";
+              } else if (timeBonus === 0) {
+                timeBonusEl.textContent = "0";
+                timeBonusEl.className = "chalk-gray";
+              }
+            } else {
+              timeBonusEl.classList.add("hidden");
+            }
+
+            document.getElementById("scoreCorrectGuessLabel").textContent =
+              "Doğru tahmin:";
+            document.getElementById("scoreCorrectGuess").textContent = "+30";
+
+            const multiplierRow = document.getElementById("scoreMultiplierRow");
+            const multiplierValue = document.getElementById("scoreMultiplier");
+            if (gameState.streak >= 2) {
+              multiplierRow.classList.remove("hidden");
+              multiplierValue.textContent = "x" + streakMultiplier.toFixed(1);
+            } else {
+              multiplierRow.classList.add("hidden");
+            }
+
+            document.getElementById("scoreTotalRound").textContent =
+              (roundScore >= 0 ? "+" : "") + roundScore;
+
+            updateScore(oldScore, roundScore);
+          });
         }, 500);
       }
 
@@ -2444,40 +3480,51 @@
         gameState.streak = 0;
 
         setTimeout(() => {
-          document.getElementById("gameScreen").classList.add("hidden");
-          document.getElementById("endRoundScreen").classList.remove("hidden");
+          playEraserWipe(() => {
+            document.getElementById("gameScreen").classList.add("hidden");
+            document
+              .getElementById("endRoundScreen")
+              .classList.remove("hidden");
 
-          document.getElementById("resultTitle").textContent =
-            getRandomPhrase(lossPhrases);
-          document.getElementById("resultTitle").className =
-            "result-title lose";
-          document.getElementById("revealWord").textContent =
-            (gameState.currentWord.article
-              ? gameState.currentWord.article + " "
-              : "") + gameState.currentWord.word;
-          document.getElementById("revealTranslation").textContent =
-            gameState.currentWord.translation;
-          const pluralDiv = document.getElementById("revealPlural");
-          if (gameState.currentWord.plural) {
-            pluralDiv.textContent =
-              "Çoğul: die " + gameState.currentWord.plural;
-          } else {
-            pluralDiv.textContent = "";
-          }
-          document.getElementById("revealExample").textContent =
-            gameState.currentWord.example || "(örnek yok)";
+            document.getElementById("resultTitle").textContent =
+              getRandomPhrase(lossPhrases);
+            document.getElementById("resultTitle").className =
+              "result-title lose";
+            document.getElementById("revealWord").textContent =
+              (gameState.currentWord.article
+                ? gameState.currentWord.article + " "
+                : "") + gameState.currentWord.word;
+            document.getElementById("revealTranslation").textContent =
+              gameState.currentWord.translation;
+            const pluralDiv = document.getElementById("revealPlural");
+            if (gameState.currentWord.plural) {
+              pluralDiv.textContent =
+                "Çoğul: die " + gameState.currentWord.plural;
+            } else {
+              pluralDiv.textContent = "";
+            }
+            document.getElementById("revealExample").textContent =
+              gameState.currentWord.example || "(örnek yok)";
 
-          document.getElementById("statStreak").textContent = 0;
-          document.getElementById("statTime").textContent = "-";
-          document.getElementById("statMistakes").textContent = gameState.lives;
+            setTimeout(() => {
+              renderOdometer(gameState.score);
+            }, 200);
 
-          document.getElementById("scoreCorrectGuessLabel").textContent =
-            "Yanlış tahmin:";
-          document.getElementById("scoreCorrectGuess").textContent = "+0";
-          document.getElementById("scoreHearts").textContent = "+0";
-          document.getElementById("scoreTime").textContent = "+0";
-          document.getElementById("scoreMultiplierRow").classList.add("hidden");
-          document.getElementById("scoreTotalRound").textContent = "+0";
+            document.getElementById("statStreak").textContent = 0;
+            document.getElementById("statTime").textContent = "-";
+            document.getElementById("statMistakes").textContent =
+              gameState.lives;
+
+            document.getElementById("scoreCorrectGuessLabel").textContent =
+              "Yanlış tahmin:";
+            document.getElementById("scoreCorrectGuess").textContent = "+0";
+            document.getElementById("scoreHearts").textContent = "+0";
+            document.getElementById("scoreTime").textContent = "+0";
+            document
+              .getElementById("scoreMultiplierRow")
+              .classList.add("hidden");
+            document.getElementById("scoreTotalRound").textContent = "+0";
+          });
         }, 500);
       }
 
@@ -2490,10 +3537,44 @@
           return;
         }
 
+        playSound("next");
         gameState.round++;
         document.getElementById("endRoundScreen").classList.add("hidden");
         document.getElementById("gameScreen").classList.remove("hidden");
+
+        document.querySelectorAll(".hangman-path").forEach((path) => {
+          path.classList.remove("drawing");
+          if (path.classList.contains("hangman-hidden")) {
+            path.style.opacity = "0";
+            path.style.strokeDashoffset = "1000";
+          }
+        });
+
         loadNewWord();
+      }
+
+      function createFlashcards() {
+        const grid = document.getElementById("flashcardsGrid");
+        grid.innerHTML = "";
+
+        gameState.currentSessionWords.forEach((word, index) => {
+          const card = document.createElement("div");
+          card.className = "flashcard";
+          card.style.animationDelay = index * 0.05 + "s";
+
+          const wordText = (word.article ? word.article + " " : "") + word.word;
+
+          card.innerHTML = `
+            <div class="flashcard-word">
+              ${wordText}
+              <button class="audio-btn" onclick="event.stopPropagation(); speakWord('${wordText}')" title="Dinle">🔊</button>
+            </div>
+            <div class="flashcard-translation">${word.translation}</div>
+            ${word.plural ? `<div class="flashcard-meta">Çoğul: ${word.plural}</div>` : ""}
+          `;
+
+          grid.appendChild(card);
+        });
       }
 
       function showGameOver() {
@@ -2505,6 +3586,9 @@
         document.getElementById("totalMistakes").textContent =
           gameState.totalMistakes;
 
+        playSound("gameover");
+        createFlashcards();
+
         const highScoreEl =
           document.getElementById("highScore") || document.createElement("p");
         if (!document.getElementById("highScore")) {
@@ -2512,7 +3596,10 @@
           highScoreEl.className = "game-over-words";
           document
             .querySelector("#gameOverScreen .end-round-content")
-            .insertBefore(highScoreEl, document.querySelector(".button-group"));
+            .insertBefore(
+              highScoreEl,
+              document.querySelector(".flashcards-section"),
+            );
         }
         highScoreEl.innerHTML =
           'En Yüksek Puan: <span class="game-over-count">' +
@@ -2541,10 +3628,22 @@
 
         if (gameState.timer) clearInterval(gameState.timer);
 
+        document.body.classList.remove(
+          "low-lives-3",
+          "low-lives-2",
+          "low-lives-1",
+        );
+        const heartsContainer = document.getElementById("heartsContainer");
+        if (heartsContainer) {
+          heartsContainer.classList.remove("danger-3", "danger-2", "danger-1");
+        }
+
         document.getElementById("gameScreen").classList.add("hidden");
         document.getElementById("endRoundScreen").classList.add("hidden");
         document.getElementById("gameOverScreen").classList.add("hidden");
         document.getElementById("startScreen").classList.remove("hidden");
+
+        animateTitle();
       }
 
       let lastPressedKey = null;
@@ -2623,6 +3722,16 @@
         document.getElementById("creditsScreen").classList.add("hidden");
         document.getElementById("startScreen").classList.remove("hidden");
       }
+
+      document
+        .querySelectorAll(
+          ".btn, .key, .audio-btn, .toggle, .toggle-btn, .credits-btn, .credits-link",
+        )
+        .forEach((btn) => {
+          btn.addEventListener("click", () => {
+            playSound("click");
+          });
+        });
     </script>
   </body>
 </html>
