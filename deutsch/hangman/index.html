@@ -445,7 +445,7 @@
       }
 
       .word-progress {
-        font-size: 1.1rem;
+        font-size: 1.3rem;
         color: var(--chalk-white);
       }
 
@@ -1844,7 +1844,7 @@
                 <span>Kalan can (×5):</span>
                 <span class="chalk-green" id="scoreHearts">+0</span>
               </div>
-              <div class="score-info hidden">
+              <div class="score-info hidden" id="scoreTimeRow">
                 <span>Zaman bonusu:</span>
                 <span class="chalk-green" id="scoreTime">+0</span>
               </div>
@@ -2009,10 +2009,10 @@
       ];
 
       const letterFrequency = {
-        e: 17.4,
+        e: 17.5,
         n: 10.0,
         i: 8.5,
-        s: 7.3,
+        s: 7.5,
         r: 7.0,
         a: 6.5,
         t: 5.5,
@@ -2034,11 +2034,11 @@
         j: 0.5,
         y: 0.5,
         x: 0.5,
-        q: 0.3,
         ä: 0.5,
         ö: 0.5,
         ü: 0.5,
-        ß: 0.3,
+        ß: 0.5,
+        q: 0.3,
       };
 
       function getRandomPhrase(phrases) {
@@ -2114,66 +2114,49 @@
 
       function calculateWordDifficulty(word, level) {
         const lowerWord = word.toLowerCase();
-        let letterScore = 0;
+        let totalFrequency = 0;
         let uniqueLetters = new Set();
 
         for (let char of lowerWord) {
-          if (alphabet.has(char)) {
+          if (alphabet.has(char) && !uniqueLetters.has(char)) {
             uniqueLetters.add(char);
-            const freq = letterFrequency[char] || 1.0;
-
-            letterScore += (20 - freq) / 2;
+            totalFrequency += 3 / (2.5 + letterFrequency[char]);
           }
         }
 
-        const avgLetterDifficulty = letterScore / lowerWord.length;
-
-        const lengthFactor = Math.min(lowerWord.length / 8, 1.5);
+        const wordLengthBonus = (1 + lowerWord.length / 10) ** 2;
 
         const levelMultipliers = {
           A1: 1.0,
-          "A1+": 1.2,
-          A2: 1.4,
-          B1: 1.7,
-          "B1+": 2.0,
+          "A1+": 1.1,
+          A2: 1.2,
+          B1: 1.3,
+          "B1+": 1.4,
         };
-        const levelMultiplier = levelMultipliers[level] || 1.0;
 
-        const varietyBonus = (uniqueLetters.size / lowerWord.length) * 0.5;
-
-        const finalScore =
-          (avgLetterDifficulty * 0.4 +
-            lengthFactor * 0.3 +
-            varietyBonus * 0.3) *
-          levelMultiplier;
-
-        return Math.min(Math.max(finalScore, 1), 10).toFixed(1);
+        return (totalFrequency + wordLengthBonus) * levelMultipliers[level];
       }
 
       function categorizeVocab(allWords) {
-        const easy = allWords.filter(
-          (w) =>
-            ["A1", "A1+"].includes(w.level) &&
-            w.word.length >= 3 &&
-            w.word.length <= 7,
-        );
+        const wordsWithDifficulty = allWords
+          .map((w) => ({
+            ...w,
+            difficulty: calculateWordDifficulty(w.word, w.level),
+          }))
+          .sort((w1, w2) => w2.difficulty - w1.difficulty);
 
-        const medium = allWords.filter(
-          (w) =>
-            ((["A1+", "A2", "B1"].includes(w.level) && w.word.length >= 5) ||
-              (w.level == "A1" && w.word.length >= 7)) &&
-            w.word.length <= 11,
-        );
+        console.log(wordsWithDifficulty);
 
-        const hard = allWords.filter(
-          (w) =>
-            ((["A2", "B1", "B1+"].includes(w.level) && w.word.length >= 8) ||
-              (["A1", "A1+"].includes(w.level) && w.word.length >= 12)) &&
-            w.word.length <= 18,
+        const easy = wordsWithDifficulty.filter((w, i) => i >= 1600);
+        const medium = wordsWithDifficulty.filter(
+          (w, i) => 1800 > i && i >= 900,
         );
+        const hard = wordsWithDifficulty.filter((w, i) => 1000 > i);
 
         return { easy, medium, hard };
       }
+
+      let vocabLoaded = false;
 
       document.addEventListener("DOMContentLoaded", async () => {
         const savedTheme = localStorage.getItem("hangmanTheme") || "dark";
@@ -2188,6 +2171,7 @@
           const response = await fetch("vocab.json");
           const allVocab = await response.json();
           wordData = categorizeVocab(allVocab);
+          vocabLoaded = true;
         } catch (error) {
           console.error("Failed to load vocab.json:", error);
         }
@@ -2814,6 +2798,11 @@
       }
 
       function startGame() {
+        if (!vocabLoaded) {
+          alert("Loading words... please wait.");
+          return;
+        }
+
         gameState.remainingLives = gameState.lives;
         gameState.score = 0;
         gameState.streak = 0;
@@ -3254,22 +3243,18 @@
           let speedFactor;
 
           if (t > 30) {
-            interval = 1000;
             speedFactor = 0.2;
           } else if (t > 15) {
-            interval = 700;
-            speedFactor = 0.5;
+            speedFactor = 0.4;
           } else if (t > 5) {
-            interval = 400;
             speedFactor = 0.8;
           } else {
-            interval = 200;
-            speedFactor = 1.2;
+            speedFactor = 2 + t * 0.2;
           }
 
           playTickSound(speedFactor);
 
-          timerTickInterval = setTimeout(updateTick, interval);
+          timerTickInterval = setTimeout(updateTick, 1000);
         }
 
         updateTick();
@@ -3290,12 +3275,8 @@
           gameState.timeRemaining--;
           updateTimerDisplay();
 
-          if (gameState.timeRemaining <= 10) {
-            timerDisplay.classList.add("warning");
-          }
-
           if (gameState.timeRemaining <= 15) {
-            playTickSound(1 + (15 - gameState.timeRemaining) / 10);
+            timerDisplay.classList.add("warning");
           }
 
           if (gameState.timeRemaining <= 0) {
@@ -3371,7 +3352,7 @@
           ? (gameState.timeRemaining / gameState.timerValue) * 100
           : 0;
         const timeBonus = gameState.timerValue
-          ? Math.floor(timePercent / 10)
+          ? Math.max(1, Math.floor(timePercent / 10))
           : 0;
 
         const rawRoundScore = baseScore + heartBonus + timeBonus;
@@ -3438,18 +3419,13 @@
               heartBonusEl.className = "chalk-gray";
             }
 
-            const timeBonusEl = document.getElementById("scoreTime");
+            const timeBonusRow = document.getElementById("scoreTimeRow");
             if (gameState.timerValue) {
-              timeBonusEl.classList.remove("hidden");
-              if (timeBonus > 0) {
-                timeBonusEl.textContent = "+" + timeBonus;
-                timeBonusEl.className = "chalk-green";
-              } else if (timeBonus === 0) {
-                timeBonusEl.textContent = "0";
-                timeBonusEl.className = "chalk-gray";
-              }
+              timeBonusRow.classList.remove("hidden");
+              document.getElementById("scoreTime").textContent =
+                "+" + timeBonus;
             } else {
-              timeBonusEl.classList.add("hidden");
+              timeBonusRow.classList.add("hidden");
             }
 
             document.getElementById("scoreCorrectGuessLabel").textContent =
