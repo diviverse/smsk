@@ -9,7 +9,7 @@
     <style>
       @font-face {
         font-family: "Caveat Brush";
-        src: url("CaveatBrush.ttf") format("truetype");
+        src: url("/hangman/CaveatBrush.ttf") format("truetype");
         font-weight: normal;
         font-style: normal;
         font-display: swap;
@@ -17,7 +17,7 @@
 
       @font-face {
         font-family: "Patrick Hand";
-        src: url("PatrickHand.ttf") format("truetype");
+        src: url("/hangman/PatrickHand.ttf") format("truetype");
         font-weight: normal;
         font-style: normal;
         font-display: swap;
@@ -1635,7 +1635,7 @@
               </button>
             </div>
             <div class="summary-line" id="summaryLine">
-              Kolay • 5 Tur • Zamanlayıcı Kapalı • Artikel ✓
+              5 Tur • Zamanlayıcı Kapalı • Artikel ✓
             </div>
           </div>
 
@@ -1919,7 +1919,7 @@
       <div class="screen hidden" id="creditsScreen">
         <div class="credits-content">
           <h2 class="credits-title">Deutsch Hangman</h2>
-          <div class="credits-note">v1.5, 05.04.2026</div>
+          <div class="credits-note">v1.5, 06.04.2026</div>
           <br />
 
           <div class="credits-section">
@@ -2293,12 +2293,6 @@
         const summaryEl = document.getElementById("summaryLine");
         if (!summaryEl) return;
 
-        const diffMap = {
-          easy: "Kolay",
-          medium: "Orta",
-          hard: "Zor",
-        };
-
         const modeText =
           gameState.mode === "infinite"
             ? "Sonsuz Tur"
@@ -2309,7 +2303,7 @@
             : `${gameState.timerValue}s`;
         const articleText = gameState.showArticle ? "Artikel ✓" : "Artikel ✗";
 
-        summaryEl.textContent = `${diffMap[gameState.difficulty]} • ${modeText} • ${timerText} • ${articleText}`;
+        summaryEl.textContent = `${modeText} • ${timerText} • ${articleText}`;
       }
 
       function animateTitle() {
