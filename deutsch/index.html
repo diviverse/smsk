@@ -53,7 +53,7 @@
               <i
                 class="fas fa-globe me-1"
                 style="
-                  background: url('/favicon.ico');
+                  background: url('favicon.ico');
                   -webkit-background-clip: text;
                   background-clip: text;
                   background-size: 100% 100%;
@@ -682,8 +682,20 @@
                     </div>
 
                     <div class="card">
-                      <div class="card-header bg-info text-white">
+                      <div
+                        class="card-header bg-info text-white d-flex justify-content-between align-items-center"
+                      >
                         <strong>Fehlerdetails und Vorschläge</strong>
+                        <button
+                          class="btn btn-sm btn-outline-light"
+                          onclick="speakErrorMessages()"
+                          id="speakErrorsBtn"
+                          title="Fehlermeldungen vorlesen"
+                          style="display: none"
+                        >
+                          <i class="fas fa-volume-up" id="speakErrorsIcon"></i
+                          >&nbsp;<span id="speakErrorsText">Vorlesen</span>
+                        </button>
                       </div>
                       <div class="card-body">
                         <div id="errorList"></div>
@@ -699,7 +711,7 @@
                       >
                     </div>
                     <div class="card-body">
-                      <div class="mb-3">
+                      <div class="mb-3 d-flex gap-2">
                         <button
                           class="btn btn-primary-custom btn-custom final-final-touch"
                           onclick="analyzeText()"
@@ -2604,6 +2616,162 @@
         }
       }
 
+      let isSpeakingErrors = false;
+      let shouldStopSpeaking = false;
+
+      function speakErrorMessages() {
+        if (!("speechSynthesis" in window)) {
+          showAlert("Sprachsynthese nicht verfügbar", "info");
+          return;
+        }
+
+        if (!grammarErrors || grammarErrors.length === 0) {
+          showAlert("Keine Fehler zum Vorlesen verfügbar", "warning");
+          return;
+        }
+
+        // If already speaking, stop it
+        if (isSpeakingErrors) {
+          shouldStopSpeaking = true;
+          speechSynthesis.cancel();
+          isSpeakingErrors = false;
+          updateSpeakButtonState(false);
+          return;
+        }
+
+        // Warm up speech synthesis if needed
+        if (!window._speechSynthesisWarmedUp) {
+          warmUpSpeechSynthesis();
+        }
+
+        const textarea = document.getElementById("grammarTextInput");
+        if (!textarea) return;
+        const originalText = textarea.value;
+
+        speechSynthesis.cancel();
+        shouldStopSpeaking = false;
+
+        const errorMessages = [];
+        grammarErrors.forEach((error, index) => {
+          if (
+            !error ||
+            typeof error.offset !== "number" ||
+            typeof error.length !== "number"
+          ) {
+            return;
+          }
+
+          const errorText = originalText.substring(
+            error.offset,
+            error.offset + error.length
+          );
+          const errorMessage = error.message || "Unbekannter Fehler";
+          const suggestions = (error.replacements || [])
+            .slice(0, 3)
+            .map((r) => r?.value)
+            .filter((v) => v != null && v.trim() !== "");
+
+          let message = `Fehler ${
+            index + 1
+          }: ${errorMessage}. Gefunden: ${errorText}`;
+          if (suggestions.length > 0) {
+            message += `. Vorschläge: ${suggestions.join(", ")}`;
+          }
+          errorMessages.push(message);
+        });
+
+        if (errorMessages.length === 0) {
+          showAlert("Keine Fehler zum Vorlesen verfügbar", "warning");
+          return;
+        }
+
+        isSpeakingErrors = true;
+        updateSpeakButtonState(true);
+
+        let currentIndex = 0;
+
+        function speakNext() {
+          // Check if we should stop before speaking next
+          if (shouldStopSpeaking || currentIndex >= errorMessages.length) {
+            isSpeakingErrors = false;
+            shouldStopSpeaking = false;
+            updateSpeakButtonState(false);
+            return;
+          }
+
+          const utterance = new SpeechSynthesisUtterance(
+            errorMessages[currentIndex]
+          );
+          utterance.lang = "de-DE";
+          utterance.rate = 0.75;
+          utterance.pitch = 1.0;
+
+          utterance.onend = () => {
+            // Check again if we should stop
+            if (shouldStopSpeaking) {
+              isSpeakingErrors = false;
+              shouldStopSpeaking = false;
+              updateSpeakButtonState(false);
+              return;
+            }
+            currentIndex++;
+            if (currentIndex < errorMessages.length) {
+              setTimeout(() => speakNext(), 300);
+            } else {
+              isSpeakingErrors = false;
+              updateSpeakButtonState(false);
+            }
+          };
+
+          utterance.onerror = (event) => {
+            console.error("Speech synthesis error:", event);
+            // Check if we should stop
+            if (shouldStopSpeaking) {
+              isSpeakingErrors = false;
+              shouldStopSpeaking = false;
+              updateSpeakButtonState(false);
+              return;
+            }
+            currentIndex++;
+            if (currentIndex < errorMessages.length) {
+              setTimeout(() => speakNext(), 300);
+            } else {
+              isSpeakingErrors = false;
+              updateSpeakButtonState(false);
+            }
+          };
+
+          speechSynthesis.speak(utterance);
+        }
+
+        // Small delay to ensure speech synthesis is ready
+        setTimeout(() => {
+          if (!shouldStopSpeaking) {
+            speakNext();
+          }
+        }, 100);
+      }
+
+      function updateSpeakButtonState(speaking) {
+        const icon = document.getElementById("speakErrorsIcon");
+        const text = document.getElementById("speakErrorsText");
+        const btn = document.getElementById("speakErrorsBtn");
+
+        if (!icon || !text || !btn) return;
+
+        if (speaking) {
+          icon.className = "fas fa-stop";
+          text.textContent = "Stoppen";
+          btn.classList.add("btn-danger");
+          btn.classList.remove("btn-outline-light");
+        } else {
+          icon.className = "fas fa-volume-up";
+          text.textContent = "Vorlesen";
+          btn.classList.remove("btn-danger");
+          btn.classList.add("btn-outline-light");
+        }
+      }
+
       function addKeyboardShortcuts() {
         document.addEventListener("keydown", function (e) {
           if (e.ctrlKey && e.key === "Enter") {
@@ -2825,6 +2993,13 @@
 
         displayErrorList(errors);
 
+        // Show/hide the speak errors button
+        const speakErrorsBtn = document.getElementById("speakErrorsBtn");
+        if (speakErrorsBtn) {
+          speakErrorsBtn.style.display =
+            errorCount > 0 ? "inline-block" : "none";
+        }
+
         resultsDiv.style.display = "block";
         document.getElementById("copyCorrectedBtn").style.display =
           "inline-block";
@@ -3023,7 +3198,7 @@
                 `
                     : ""
                 }
-                <div class="mt-2">
+                <div class="mt-2" style="display: none;">
                   <button
                     class="btn btn-sm btn-outline-success"
                     onclick="addErrorWordToVocabulary('${errorText.replace(
@@ -3031,6 +3206,7 @@
                       "\\'"
                     )}')"
                     title="Zu Vokabelliste hinzufügen"
+                    disabled
                   >
                     <i class="fas fa-plus"></i>&nbsp;Zu Vokabelliste hinzufügen
                   </button>
