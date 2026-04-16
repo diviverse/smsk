@@ -12,12 +12,12 @@
   "lang": "tr",
   "icons": [
     {
-      "src": "icon192.png",
+      "src": "x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon512.png",
+      "src": "x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
