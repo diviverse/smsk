@@ -198,6 +198,8 @@
         padding: clamp(6px, 1.2vh, 10px);
         border-bottom: 2px solid var(--gray-3);
         flex-shrink: 0;
+        position: relative;
+        z-index: 5;
       }
 
       .odometer {
@@ -1317,6 +1319,58 @@
         }
       }
 
+      /* MOBILE FIXES */
+      @media (max-width: 600px) {
+        /* Make header slimmer */
+        .header {
+          flex-wrap: wrap;
+          align-items: flex-start;
+          gap: 6px;
+          padding: 4px 6px;
+        }
+
+        /* Reduce sizes */
+        .score-display {
+          font-size: 1rem;
+        }
+
+        .timer-display {
+          font-size: 1rem;
+          min-width: 40px;
+        }
+
+        .hearts-container {
+          gap: 4px;
+        }
+
+        .heart {
+          width: 20px;
+          height: 20px;
+        }
+
+        /* Move toggle buttons into vertical stack */
+        .sound-toggle,
+        .theme-toggle {
+          position: fixed;
+          right: 10px;
+          width: 38px;
+          height: 38px;
+        }
+
+        .sound-toggle {
+          top: 35px;
+        }
+
+        .theme-toggle {
+          top: 85px;
+        }
+
+        /* OPTIONAL: prevent overlap with content */
+        .container {
+          padding-right: 50px; /* creates space for toggles */
+        }
+      }
+
       @media (max-height: 700px) {
         .game-area {
           gap: clamp(4px, 1vh, 16px);
@@ -1341,6 +1395,23 @@
         .hangman-container {
           width: clamp(80px, 15vw, 120px);
           height: clamp(100px, 19vw, 150px);
+        }
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        .key:hover:not(:disabled) {
+          background: rgba(255, 255, 255, 0.1);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:hover {
+          background: rgba(255, 255, 255, 0.1);
+          transform: translateY(-2px);
+        }
+
+        .sound-toggle:hover {
+          background: rgba(255, 255, 255, 0.2);
         }
       }
 
@@ -1919,7 +1990,7 @@
       <div class="screen hidden" id="creditsScreen">
         <div class="credits-content">
           <h2 class="credits-title">Deutsch Hangman</h2>
-          <div class="credits-note">v1.5, 06.04.2026</div>
+          <div class="credits-note">v1.6, 06.04.2026</div>
           <br />
 
           <div class="credits-section">
@@ -2008,39 +2079,6 @@
         "Gelişim gösteriyorsun! 📈",
       ];
 
-      const letterFrequency = {
-        e: 17.5,
-        n: 10.0,
-        i: 8.5,
-        s: 7.5,
-        r: 7.0,
-        a: 6.5,
-        t: 5.5,
-        d: 5.0,
-        h: 4.5,
-        u: 3.5,
-        l: 3.0,
-        c: 2.5,
-        g: 3.0,
-        m: 2.5,
-        o: 2.5,
-        b: 2.0,
-        w: 2.0,
-        f: 2.0,
-        k: 2.0,
-        z: 1.5,
-        p: 1.0,
-        v: 1.0,
-        j: 0.5,
-        y: 0.5,
-        x: 0.5,
-        ä: 0.5,
-        ö: 0.5,
-        ü: 0.5,
-        ß: 0.5,
-        q: 0.3,
-      };
-
       function getRandomPhrase(phrases) {
         return phrases[Math.floor(Math.random() * phrases.length)];
       }
@@ -2112,46 +2150,28 @@
         }
       }
 
-      function calculateWordDifficulty(word, level) {
-        const lowerWord = word.toLowerCase();
-        let totalFrequency = 0;
-        let uniqueLetters = new Set();
-
-        for (let char of lowerWord) {
-          if (alphabet.has(char) && !uniqueLetters.has(char)) {
-            uniqueLetters.add(char);
-            totalFrequency += 3 / (2.5 + letterFrequency[char]);
-          }
+      function categorizeVocab(allWords) {
+        function wl(wobj) {
+          return wobj.word.length + (wobj.article !== "" ? 3 : 0);
         }
 
-        const wordLengthBonus = (1 + lowerWord.length / 10) ** 2;
-
-        const levelMultipliers = {
-          A1: 1.0,
-          "A1+": 1.1,
-          A2: 1.2,
-          B1: 1.3,
-          "B1+": 1.4,
-        };
-
-        return (totalFrequency + wordLengthBonus) * levelMultipliers[level];
-      }
-
-      function categorizeVocab(allWords) {
-        const wordsWithDifficulty = allWords
-          .map((w) => ({
-            ...w,
-            difficulty: calculateWordDifficulty(w.word, w.level),
-          }))
-          .sort((w1, w2) => w2.difficulty - w1.difficulty);
-
-        console.log(wordsWithDifficulty);
-
-        const easy = wordsWithDifficulty.filter((w, i) => i >= 1600);
-        const medium = wordsWithDifficulty.filter(
-          (w, i) => 1800 > i && i >= 900,
+        const easy = allWords.filter(
+          (w) => ["A1", "A1+"].includes(w.level) && wl(w) >= 3 && wl(w) <= 7,
         );
-        const hard = wordsWithDifficulty.filter((w, i) => 1000 > i);
+
+        const medium = allWords.filter(
+          (w) =>
+            ((["A1+", "A2", "B1"].includes(w.level) && wl(w) >= 5) ||
+              (w.level == "A1" && wl(w) >= 7)) &&
+            wl(w) <= 11,
+        );
+
+        const hard = allWords.filter(
+          (w) =>
+            ((["A2", "B1", "B1+"].includes(w.level) && wl(w) >= 8) ||
+              (["A1", "A1+"].includes(w.level) && wl(w) >= 12)) &&
+            wl(w) <= 19,
+        );
 
         return { easy, medium, hard };
       }
