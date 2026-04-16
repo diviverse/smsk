@@ -1,4 +1,4 @@
-const CACHE_NAME = "deutsch-hangman-cache-v1.6.4";
+const CACHE_NAME = "deutsch-hangman-cache-v1.6.5";
 
 const FILES_TO_CACHE = [
   "index.html",
