@@ -26,7 +26,7 @@
     />
     <meta
       property="og:description"
-      content="Almanca kelime öğrenmek için interaktif adam asmaca oyunu. Seviye seç, kategorilerle oyna ve kelime bilginini geliştir."
+      content="Deutsch Hangman ile Almanca kelime öğrenin. A1-B2 seviyelerine uygun bu eğlenceli adam asmaca oyununda artikeller, anlamlar ve örnek cümlelerle kelime bilginizi geliştirin."
     />
     <meta property="og:url" content="https://deutsch.smsk.one/hangman/" />
     <meta property="og:site_name" content="Deutsch Hangman" />
@@ -36,7 +36,7 @@
     />
     <meta
       name="twitter:description"
-      content="Almanca kelime öğrenmek için interaktif adam asmaca oyunu. Seviye seç, kategorilerle oyna ve kelime bilginini geliştir."
+      content="Deutsch Hangman ile Almanca kelime öğrenin. A1-B2 seviyelerine uygun bu eğlenceli adam asmaca oyununda artikeller, anlamlar ve örnek cümlelerle kelime bilginizi geliştirin."
     />
     <meta name="theme-color" content="#1a1a1a" />
     <link rel="canonical" href="https://deutsch.smsk.one/hangman/" />
@@ -2060,17 +2060,9 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <script>
-      self.addEventListener("install", (event) => {
-        self.skipWaiting();
-      });
-
-      self.addEventListener("activate", (event) => {
-        self.clients.claim();
-      });
-
-      self.addEventListener("fetch", (event) => {
-        event.respondWith(fetch(event.request));
-      });
+      if (typeof navigator.serviceWorker !== "undefined") {
+        navigator.serviceWorker.register("sw.js");
+      }
     </script>
     <script>
       let allVocab = null;
