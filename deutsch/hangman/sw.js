@@ -1,14 +1,14 @@
-const CACHE_NAME = "deutsch-hangman-cache-v1.6.2";
+const CACHE_NAME = "deutsch-hangman-cache-v1.6.3";
 
 const FILES_TO_CACHE = [
-  "/index.html",
-  "/offline.html",
-  "/manifest.json",
-  "/vocab.json",
-  "/CaveatBrush.ttf",
-  "/PartickHand.ttf",
-  "/icon-192.png",
-  "/icon-512.png",
+  "index.html",
+  "offline.html",
+  "manifest.json",
+  "vocab.json",
+  "CaveatBrush.ttf",
+  "PartickHand.ttf",
+  "icon-192.png",
+  "icon-512.png",
 ];
 
 self.addEventListener("install", (event) => {
