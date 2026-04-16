@@ -1371,6 +1371,10 @@
           width: 20px;
           height: 20px;
         }
+        .hintBtn {
+          padding: 4px 10px;
+          font-size: 0.9rem;
+        }
         .sound-toggle,
         .theme-toggle {
           position: fixed;
@@ -1606,11 +1610,6 @@
 
       .chalk-yellow {
         color: var(--chalk-yellow);
-      }
-
-      .mobile-active {
-        background: rgba(255, 255, 255, 0.1);
-        transform: translateY(-2px);
       }
 
       .margin-none {
@@ -2818,19 +2817,6 @@
         { once: true },
       );
 
-      document.addEventListener("click", (e) => {
-        if (window.matchMedia("(hover: none)").matches) {
-          const el = e.target.closest(".btn, .key");
-          if (!el) return;
-
-          el.classList.add("mobile-active");
-
-          setTimeout(() => {
-            el.classList.remove("mobile-active");
-          }, 1000);
-        }
-      });
-
       function speakCurrentWord() {
         if (gameState.currentWord) {
           const text =
@@ -3293,7 +3279,7 @@
           } else if (t > 5) {
             speedFactor = 0.8;
           } else {
-            speedFactor = 2 + t * 0.2;
+            speedFactor = 2 - t * 0.2;
           }
 
           playTickSound(speedFactor);
