@@ -650,32 +650,27 @@
         }
       }
 
-      .menu-content::-webkit-scrollbar,
-      .options-panel::-webkit-scrollbar {
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--gray-2) transparent;
+      }
+
+      ::-webkit-scrollbar {
         width: 8px;
       }
 
-      .menu-content::-webkit-scrollbar-track,
-      .options-panel::-webkit-scrollbar-track {
+      ::-webkit-scrollbar-track {
         background: transparent;
       }
 
-      .menu-content::-webkit-scrollbar-thumb,
-      .options-panel::-webkit-scrollbar-thumb {
-        background: rgba(240, 240, 240, 0.25);
+      ::-webkit-scrollbar-thumb {
+        background: var(--gray-2);
         border-radius: 4px;
         border: 1px solid var(--gray-1);
       }
 
-      .menu-content::-webkit-scrollbar-thumb:hover,
-      .options-panel::-webkit-scrollbar-thumb:hover {
-        background: rgba(240, 240, 240, 0.45);
-      }
-
-      .menu-content,
-      .options-panel {
-        scrollbar-width: thin;
-        scrollbar-color: rgba(240, 240, 240, 0.25) transparent;
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--gray-4);
       }
 
       h1 {
