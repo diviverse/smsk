@@ -6,7 +6,7 @@ const FILES_TO_CACHE = [
   "manifest.json",
   "vocab.json",
   "CaveatBrush.ttf",
-  "PartickHand.ttf",
+  "PatrickHand.ttf",
   "x192.png",
   "x512.png",
 ];
