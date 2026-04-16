@@ -2044,7 +2044,7 @@
               class="credits-btn credits-link margin-none"
               onclick="downloadWordList()"
             >
-              Kelimeleri İndir
+              Kelime Listesini İndir
             </div>
             <div class="credits-note">
               Not: Kelime veritabanı hazırlanırken Telc Einfach Gut A1.1, A1.2,
@@ -2063,7 +2063,7 @@
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
           navigator.serviceWorker
-            .register("./sw.js")
+            .register("sw.js")
             .catch((err) => console.error("SW registration failed:", err));
         });
       }
