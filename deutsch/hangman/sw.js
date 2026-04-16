@@ -7,8 +7,8 @@ const FILES_TO_CACHE = [
   "vocab.json",
   "CaveatBrush.ttf",
   "PartickHand.ttf",
-  "icon-192.png",
-  "icon-512.png",
+  "x192.png",
+  "x512.png",
 ];
 
 self.addEventListener("install", (event) => {
