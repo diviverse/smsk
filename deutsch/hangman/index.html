@@ -6,6 +6,7 @@
     <title>Deutsch Hangman</title>
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="preload" href="vocab.json" as="fetch" crossorigin="anonymous" />
+    <link rel="webmanifest" href="manifest.json" />
 
     <meta
       name="description"
@@ -2058,6 +2059,19 @@
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script>
+      self.addEventListener("install", (event) => {
+        self.skipWaiting();
+      });
+
+      self.addEventListener("activate", (event) => {
+        self.clients.claim();
+      });
+
+      self.addEventListener("fetch", (event) => {
+        event.respondWith(fetch(event.request));
+      });
+    </script>
     <script>
       let allVocab = null;
       let wordData = null;
