@@ -1347,43 +1347,6 @@
         .theme-toggle {
           right: 185px;
         }
-        .header {
-          flex-wrap: wrap;
-          align-items: flex-start;
-          gap: 6px;
-          padding: 4px 6px;
-        }
-        .score-display {
-          font-size: 1rem;
-        }
-        .timer-display {
-          font-size: 1rem;
-          min-width: 40px;
-        }
-        .hearts-container {
-          gap: 4px;
-        }
-        .heart {
-          width: 20px;
-          height: 20px;
-        }
-        .hintBtn {
-          padding: 4px 10px;
-          font-size: 0.9rem;
-        }
-        .sound-toggle,
-        .theme-toggle {
-          position: fixed;
-          right: 10px;
-          width: 38px;
-          height: 38px;
-        }
-        .sound-toggle {
-          top: 35px;
-        }
-        .theme-toggle {
-          top: 85px;
-        }
       }
 
       @media (max-height: 700px) {
@@ -1408,7 +1371,41 @@
 
       @media (max-height: 1000px) {
         .header {
-          margin-right: 40px;
+          align-items: center;
+          gap: 6px;
+          padding: 4px 6px;
+          margin-right: 50px;
+        }
+        .score-display {
+          font-size: 1rem;
+        }
+        .timer-display {
+          font-size: 1rem;
+          min-width: 40px;
+        }
+        .hearts-container {
+          gap: 4px;
+        }
+        .heart {
+          width: 20px;
+          height: 20px;
+        }
+        .hintBtn {
+          padding: 4px 10px;
+          font-size: 0.9rem;
+        }
+        .sound-toggle,
+        .theme-toggle {
+          position: fixed;
+          right: 15px;
+          width: 38px;
+          height: 38px;
+        }
+        .sound-toggle {
+          top: 20px;
+        }
+        .theme-toggle {
+          top: 70px;
         }
       }
 
@@ -1810,14 +1807,6 @@
             <button class="btn showOnboardingBtn" onclick="showOnboarding()">
               ?
             </button>
-
-            <div class="round-progress-container">
-              <div
-                class="round-progress-bar"
-                id="roundProgressBar"
-                style="width: 0%"
-              ></div>
-            </div>
           </div>
 
           <div class="game-area" id="gameArea">
@@ -1998,7 +1987,7 @@
       <div class="screen hidden" id="creditsScreen">
         <div class="credits-content">
           <h2 class="credits-title">Deutsch Hangman</h2>
-          <div class="credits-note">v1.6.3, 16.04.2026</div>
+          <div class="credits-note">v1.6.4, 16.04.2026</div>
           <br />
 
           <div class="credits-section">
@@ -2124,9 +2113,13 @@
         currentSessionWords: [],
       };
 
+      let timerTickInterval = null;
+
       let audioContext = null;
       let audioContextInitialized = false;
-      let timerTickInterval = null;
+
+      let speechReady = false;
+      let germanVoice = null;
 
       function initHighScore() {
         try {
@@ -2142,28 +2135,20 @@
         }
       }
 
-      function initAudioContext() {
-        if (!audioContextInitialized && audioContext) {
-          if (audioContext.state === "suspended") {
-            audioContext.resume();
-          }
-          audioContextInitialized = true;
-        }
-      }
+      function loadVoices() {
+        return new Promise((resolve) => {
+          let voices = speechSynthesis.getVoices();
 
-      function preloadSpeechVoices() {
-        if ("speechSynthesis" in window) {
-          const voices = window.speechSynthesis.getVoices();
-          if (voices.length === 0) {
-            window.speechSynthesis.onvoiceschanged = () => {
-              window.speechSynthesis.getVoices();
-            };
+          if (voices.length) {
+            resolve(voices);
+            return;
           }
-          const warmup = new SpeechSynthesisUtterance("");
-          warmup.volume = 0;
-          window.speechSynthesis.speak(warmup);
-          window.speechSynthesis.cancel();
-        }
+
+          speechSynthesis.onvoiceschanged = () => {
+            voices = speechSynthesis.getVoices();
+            resolve(voices);
+          };
+        });
       }
 
       function categorizeVocab(allWords) {
@@ -2215,7 +2200,6 @@
         initKeyboard();
 
         animateTitle();
-        preloadSpeechVoices();
 
         setTimeout(() => {
           document.body.classList.remove("loading");
@@ -2817,21 +2801,45 @@
 
       document.addEventListener(
         "click",
-        function initOnFirstClick() {
-          initAudioContext();
-          document.removeEventListener("click", initOnFirstClick);
+        async function initAudio() {
+          if (speechReady) return;
+
+          if (audioContext && audioContext.state === "suspended") {
+            await audioContext.resume();
+          }
+
+          const voices = await loadVoices();
+
+          germanVoice =
+            voices.find((v) => v.lang.toLowerCase().startsWith("de")) ||
+            voices[0];
+
+          const warmup = new SpeechSynthesisUtterance(" ");
+          warmup.voice = germanVoice;
+          warmup.volume = 0;
+          speechSynthesis.speak(warmup);
+
+          speechReady = true;
         },
         { once: true },
       );
 
-      function speakCurrentWord() {
-        if (gameState.currentWord) {
-          const text =
-            (gameState.currentWord.article
-              ? gameState.currentWord.article + " "
-              : "") + gameState.currentWord.word;
-          speakWord(text);
+      function speakWord(text) {
+        if (!("speechSynthesis" in window)) return;
+
+        if (!speechReady) {
+          console.warn("Speech not initialized yet");
+          return;
         }
+
+        speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = "de-DE";
+        utterance.rate = 0.8;
+        utterance.voice = germanVoice;
+
+        speechSynthesis.speak(utterance);
       }
 
       function startGame() {
@@ -2857,25 +2865,11 @@
         renderOdometer(0);
         updateHearts();
         updateHintButton();
-        updateRoundProgress();
 
         playSound("start");
         setTimeout(() => {
           loadNewWord();
         }, 100);
-      }
-
-      function updateRoundProgress() {
-        const progressBar = document.getElementById("roundProgressBar");
-        if (!progressBar) return;
-
-        let progress = 0;
-        if (gameState.mode === "infinite") {
-          progress = (((gameState.round - 1) % 10) / 10) * 100;
-        } else {
-          progress = ((gameState.round - 1) / gameState.mode) * 100;
-        }
-        progressBar.style.width = progress + "%";
       }
 
       function updateRoundDisplay() {
