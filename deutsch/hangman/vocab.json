@@ -1569,7 +1569,7 @@
   },
   {
     "article": "die",
-    "word": "",
+    "word": "Übung",
     "plural": "Übungen",
     "translation": "alıştırma",
     "example": "",
@@ -3651,7 +3651,7 @@
     "article": "die",
     "word": "Heizung",
     "plural": "",
-    "translation": "isıtma",
+    "translation": "ısıtma",
     "example": "",
     "level": "A1"
   },
@@ -7544,8 +7544,8 @@
     "level": "A1+"
   },
   {
-    "article": "",
-    "word": "klasse",
+    "article": "die",
+    "word": "Klasse",
     "plural": "",
     "translation": "sınıf",
     "example": "",
@@ -9187,7 +9187,7 @@
     "article": "die",
     "word": "Temperatur",
     "plural": "Temperaturen",
-    "translation": "isı",
+    "translation": "ısı",
     "example": "",
     "level": "A2"
   },
@@ -19123,7 +19123,7 @@
     "article": "die",
     "word": "Heizkosten",
     "plural": "",
-    "translation": "isıtma giderleri",
+    "translation": "ısıtma giderleri",
     "example": "",
     "level": "B1+"
   },
@@ -19339,7 +19339,7 @@
     "article": "die",
     "word": "Wärme",
     "plural": "",
-    "translation": "isı",
+    "translation": "ısı",
     "example": "",
     "level": "B1+"
   },
