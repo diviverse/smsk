@@ -1,7 +1,9 @@
 {
   "name": "Deutsch Hangman - Eğlenceli Almanca Adam Asmaca",
   "short_name": "Deutsch Hangman",
+  "id": "deutsch-hangman",
   "start_url": "./index.html",
+  "description": "Deutsch Hangman ile Almanca kelime öğrenin. A1-B2 seviyelerine uygun bu eğlenceli adam asmaca oyununda artikeller, anlamlar ve örnek cümlelerle kelime bilginizi geliştirin.",
   "scope": "./",
   "display": "standalone",
   "background_color": "#1a1a1a",
