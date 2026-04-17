@@ -2775,6 +2775,11 @@
         }
       }
 
+      function speakCurrentWord() {
+        if (!gameState.currentWord) return;
+        speakWord(gameState.currentWord.word);
+      }
+
       function speakWord(text) {
         if ("speechSynthesis" in window) {
           window.speechSynthesis.cancel();
