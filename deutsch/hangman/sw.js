@@ -1,4 +1,4 @@
-const CACHE_NAME = "deutsch-hangman-cache-v1.6.6.2";
+const CACHE_NAME = "deutsch-hangman-cache-v1.6.7";
 
 const FILES_TO_CACHE = [
   "index.html",
@@ -36,6 +36,16 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
+  const url = new URL(event.request.url);
+
+  if (event.request.mode === "navigate") {
+    return;
+  }
+
+  if (url.origin !== self.location.origin) {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((cached) => {
       if (cached) return cached;
@@ -47,9 +57,7 @@ self.addEventListener("fetch", (event) => {
             return response;
           });
         })
-        .catch(() => {
-          return caches.match("/offline.html");
-        });
+        .catch(() => caches.match("/hangman/offline.html"));
     }),
   );
 });
