@@ -41,6 +41,10 @@
     <meta name="theme-color" content="#1a1a1a" />
     <link rel="canonical" href="https://deutsch.smsk.one/hangman/" />
 
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="apple-touch-icon" href="x512.png" />
+
     <style>
       @font-face {
         font-family: "Caveat Brush";
@@ -1349,6 +1353,49 @@
         }
       }
 
+      @media (max-width: 1000px) {
+        .header {
+          align-items: center;
+          gap: 5px;
+          padding: 4px 0;
+          margin-right: 50px;
+        }
+        .score-display {
+          font-size: 1rem;
+        }
+        .timer-display {
+          font-size: 1rem;
+          min-width: 40px;
+        }
+        .hearts-container {
+          gap: 0;
+        }
+        .heart {
+          width: 20px;
+          height: 20px;
+        }
+        .hintBtn {
+          padding: 4px 10px;
+          font-size: 0.9rem;
+        }
+        #gameScreen .showOnboardingBtn {
+          margin-left: 0;
+        }
+        .sound-toggle,
+        .theme-toggle {
+          position: fixed;
+          right: 15px;
+          width: 38px;
+          height: 38px;
+        }
+        .sound-toggle {
+          top: 20px;
+        }
+        .theme-toggle {
+          top: 70px;
+        }
+      }
+
       @media (max-height: 700px) {
         .game-area {
           gap: clamp(4px, 1vh, 16px);
@@ -1366,46 +1413,6 @@
         }
         .keyboard {
           margin-top: 4px;
-        }
-      }
-
-      @media (max-height: 1000px) {
-        .header {
-          align-items: center;
-          gap: 6px;
-          padding: 4px 6px;
-          margin-right: 50px;
-        }
-        .score-display {
-          font-size: 1rem;
-        }
-        .timer-display {
-          font-size: 1rem;
-          min-width: 40px;
-        }
-        .hearts-container {
-          gap: 4px;
-        }
-        .heart {
-          width: 20px;
-          height: 20px;
-        }
-        .hintBtn {
-          padding: 4px 10px;
-          font-size: 0.9rem;
-        }
-        .sound-toggle,
-        .theme-toggle {
-          position: fixed;
-          right: 15px;
-          width: 38px;
-          height: 38px;
-        }
-        .sound-toggle {
-          top: 20px;
-        }
-        .theme-toggle {
-          top: 70px;
         }
       }
 
@@ -1987,7 +1994,7 @@
       <div class="screen hidden" id="creditsScreen">
         <div class="credits-content">
           <h2 class="credits-title">Deutsch Hangman</h2>
-          <div class="credits-note">v1.6.6, 17.04.2026</div>
+          <div class="credits-note">v1.6.7, 17.04.2026</div>
           <br />
 
           <div class="credits-section">
@@ -2009,6 +2016,15 @@
 
           <div class="credits-section">
             <div class="credits-label">KAYNAKLAR</div>
+            <a
+              href="https://deutsch.smsk.one/hangman/app.apk"
+              class="credits-link"
+              target="_blank"
+              rel="noopener"
+            >
+              Uygulamayı indir (Android için)
+            </a>
+            <br />
             <a
               href="https://github.com/diviverse/smsk/tree/main/deutsch/hangman"
               class="credits-link"
@@ -2774,26 +2790,28 @@
           });
         }
       }
-    
+
       function speakWord(text) {
         if (!("speechSynthesis" in window)) return;
 
         window.speechSynthesis.cancel();
         window.speechSynthesis.resume();
-      
+
         setTimeout(() => {
           const utterance = new SpeechSynthesisUtterance(text);
           utterance.lang = "de-DE";
           utterance.rate = 0.8;
-          
+
           const voices = window.speechSynthesis.getVoices();
-          const german = voices.find((v) => v.lang.toLowerCase().startsWith("de"));
+          const german = voices.find((v) =>
+            v.lang.toLowerCase().startsWith("de"),
+          );
           if (german) utterance.voice = german;
-      
+
           window.speechSynthesis.speak(utterance);
         }, 50);
       }
-    
+
       function speakCurrentWord() {
         if (!gameState.currentWord) return;
         const fullWord =
