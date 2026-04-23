@@ -1,4 +1,4 @@
-const CACHE_NAME = "deutsch-hangman-cache-v1.6.7";
+const CACHE_NAME = "deutsch-henker-v1.8";
 
 const FILES_TO_CACHE = [
   "index.html",
@@ -7,7 +7,6 @@ const FILES_TO_CACHE = [
   "vocab.json",
   "CaveatBrush.ttf",
   "PatrickHand.ttf",
-  "x192.png",
   "x512.png",
 ];
 
@@ -38,26 +37,40 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
 
-  if (event.request.mode === "navigate") {
-    return;
-  }
+  const isCoreFile =
+    event.request.mode === "navigate" ||
+    url.pathname.includes("manifest.json") ||
+    url.pathname.includes("vocab.json");
 
-  if (url.origin !== self.location.origin) {
-    return;
-  }
-
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-
-      return fetch(event.request)
+  if (isCoreFile) {
+    event.respondWith(
+      fetch(event.request)
         .then((response) => {
-          return caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, response.clone());
-            return response;
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, clone);
           });
+          return response;
         })
-        .catch(() => caches.match("/hangman/offline.html"));
-    }),
-  );
+        .catch(() => {
+          return caches.match(event.request).then((cached) => {
+            return cached || caches.match("offline.html");
+          });
+        }),
+    );
+  } else {
+    event.respondWith(
+      caches.match(event.request).then((cached) => {
+        if (cached) return cached;
+
+        return fetch(event.request).then((response) => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, clone);
+          });
+          return response;
+        });
+      }),
+    );
+  }
 });
