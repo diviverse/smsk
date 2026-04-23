@@ -28,10 +28,10 @@
       property="og:description"
       content="Deutsch Henker ile Almanca kelime bilginizi profesyonel bir arayüzle geliştirin. A1-B2 seviyelerine uygun artikeller, anlamlar ve örnek cümleler."
     />
-    <meta property="og:url" content="https://deutsch.smsk.one/hangman/" />
+    <meta property="og:url" content="https://deutsch.smsk.one/henker/" />
     <meta
       property="og:image"
-      content="https://deutsch.smsk.one/hangman/x512.png"
+      content="https://deutsch.smsk.one/henker/icon.png"
     />
     <meta property="og:site_name" content="Deutsch Henker" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -44,11 +44,11 @@
       content="Almanca kelime öğrenmenin en eğlenceli ve profesyonel yolu. Ücretsiz ve PWA desteğiyle her yerde yanınızda."
     />
     <meta name="theme-color" content="#1a1a1a" />
-    <link rel="canonical" href="https://deutsch.smsk.one/hangman/" />
+    <link rel="canonical" href="https://deutsch.smsk.one/henker/" />
 
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <link rel="apple-touch-icon" href="x512.png" />
+    <link rel="apple-touch-icon" href="icon.png" />
 
     <style>
       @font-face {
@@ -2839,7 +2839,7 @@
         <div class="credits-content">
           <button class="modal-close-btn" onclick="hideCredits()">×</button>
           <h2 class="credits-title">Deutsch Henker</h2>
-          <div class="credits-note">v1.8.0, 23.04.2026</div>
+          <div class="credits-note">v1.8.1, 24.04.2026</div>
           <br />
 
           <div class="credits-section">
@@ -2863,7 +2863,7 @@
           <div class="credits-section">
             <div class="credits-label">KAYNAKLAR</div>
             <a
-              href="https://deutsch.smsk.one/hangman/app.apk"
+              href="https://deutsch.smsk.one/henker/app.apk"
               class="credits-link"
               target="_blank"
               rel="noopener"
@@ -2872,7 +2872,7 @@
             </a>
             <br />
             <a
-              href="https://github.com/diviverse/smsk/tree/main/deutsch/hangman"
+              href="https://github.com/diviverse/smsk/tree/main/deutsch/henker"
               class="credits-link"
               target="_blank"
               rel="noopener"
@@ -3507,16 +3507,16 @@
       function shareResult(type) {
         let text = "";
         if (type === "round") {
-          text = `Deutsch Henker: "${gameState.currentWord.word}" kelimesini buldum! 🎯\nPuan: ${gameState.score}\nOyna: https://deutsch.smsk.one/hangman/`;
+          text = `Deutsch Henker: "${gameState.currentWord.word}" kelimesini buldum! 🎯\nPuan: ${gameState.score}\nOyna: https://deutsch.smsk.one/henker/`;
         } else {
-          text = `Deutsch Henker: ${gameState.score} puan topladım! 🏆\n${stats.dailyWordsCompleted || 0} kelime bildim.\nOyna: https://deutsch.smsk.one/hangman/`;
+          text = `Deutsch Henker: ${gameState.score} puan topladım! 🏆\n${stats.dailyWordsCompleted || 0} kelime bildim.\nOyna: https://deutsch.smsk.one/henker/`;
         }
 
         if (navigator.share) {
           navigator.share({
             title: "Deutsch Henker",
             text: text,
-            url: "https://deutsch.smsk.one/hangman/",
+            url: "https://deutsch.smsk.one/henker/",
           });
         } else {
           navigator.clipboard.writeText(text);
@@ -5798,14 +5798,14 @@
         const rate = totalGames > 0 ? Math.round((wins / totalGames) * 100) : 0;
         const words = (stats.learnedWords || []).length;
 
-        const text = `🎮 Deutsch Henker Profilim\n\n🏆 Seviye: ${level} (${stats.xp} XP)\n📊 Kazanma Oranı: %${rate}\n🎓 Öğrenilen Kelime: ${words}\n🕹️ Toplam Oyun: ${totalGames}\n\nSen de Almanca kelime dağarcığını geliştirmek ister misin?\n🔗 https://deutsch.smsk.one/hangman/`;
+        const text = `🎮 Deutsch Henker Profilim\n\n🏆 Seviye: ${level} (${stats.xp} XP)\n📊 Kazanma Oranı: %${rate}\n🎓 Öğrenilen Kelime: ${words}\n🕹️ Toplam Oyun: ${totalGames}\n\nSen de Almanca kelime dağarcığını geliştirmek ister misin?\n🔗 https://deutsch.smsk.one/henker/`;
 
         if (navigator.share) {
           try {
             await navigator.share({
               title: "Deutsch Henker Profilim",
               text: text,
-              url: "https://deutsch.smsk.one/hangman/",
+              url: "https://deutsch.smsk.one/henker/",
             });
           } catch (err) {
             console.log("Paylaşım iptal edildi veya başarısız.");
