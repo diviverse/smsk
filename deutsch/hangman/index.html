@@ -1,16 +1,16 @@
 <!doctype html>
-<html lang="en">
+<html lang="tr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Deutsch Hangman</title>
+    <title>Deutsch Henker</title>
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="preload" href="vocab.json" as="fetch" crossorigin="anonymous" />
     <link rel="manifest" href="manifest.json" />
 
     <meta
       name="description"
-      content="Deutsch Hangman ile Almanca kelime öğrenin. A1-B2 seviyelerine uygun bu eğlenceli adam asmaca oyununda artikeller, anlamlar ve örnek cümlelerle kelime bilginizi geliştirin."
+      content="Deutsch Henker ile Almanca kelime öğrenin. A1-B2 seviyelerine uygun bu eğlenceli adam asmaca oyununda artikeller, anlamlar ve örnek cümlelerle kelime bilginizi geliştirin."
     />
     <meta
       name="keywords"
@@ -22,21 +22,26 @@
     <meta property="og:type" content="website" />
     <meta
       property="og:title"
-      content="Deutsch Hangman - Eğlenceli Almanca Adam Asmaca"
+      content="Deutsch Henker - Eğlenceli Almanca Adam Asmaca"
     />
     <meta
       property="og:description"
-      content="Deutsch Hangman ile Almanca kelime öğrenin. A1-B2 seviyelerine uygun bu eğlenceli adam asmaca oyununda artikeller, anlamlar ve örnek cümlelerle kelime bilginizi geliştirin."
+      content="Deutsch Henker ile Almanca kelime bilginizi profesyonel bir arayüzle geliştirin. A1-B2 seviyelerine uygun artikeller, anlamlar ve örnek cümleler."
     />
     <meta property="og:url" content="https://deutsch.smsk.one/hangman/" />
-    <meta property="og:site_name" content="Deutsch Hangman" />
+    <meta
+      property="og:image"
+      content="https://deutsch.smsk.one/hangman/x512.png"
+    />
+    <meta property="og:site_name" content="Deutsch Henker" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta
       name="twitter:title"
-      content="Deutsch Hangman - Eğlenceli Almanca Adam Asmaca"
+      content="Deutsch Henker - Eğlenceli Almanca Adam Asmaca"
     />
     <meta
       name="twitter:description"
-      content="Deutsch Hangman ile Almanca kelime öğrenin. A1-B2 seviyelerine uygun bu eğlenceli adam asmaca oyununda artikeller, anlamlar ve örnek cümlelerle kelime bilginizi geliştirin."
+      content="Almanca kelime öğrenmenin en eğlenceli ve profesyonel yolu. Ücretsiz ve PWA desteğiyle her yerde yanınızda."
     />
     <meta name="theme-color" content="#1a1a1a" />
     <link rel="canonical" href="https://deutsch.smsk.one/hangman/" />
@@ -85,16 +90,19 @@
         --white-1: rgba(255, 255, 255, 0.1);
         --white-2: rgba(255, 255, 255, 0.2);
         --white-3: rgba(255, 255, 255, 0.3);
-        --white-7: rgba(255, 255, 255, 0.7);
         --gray-1: rgba(240, 240, 240, 0.1);
         --gray-2: rgba(240, 240, 240, 0.2);
         --gray-3: rgba(240, 240, 240, 0.3);
         --gray-4: rgba(240, 240, 240, 0.4);
         --gray-7: rgba(240, 240, 240, 0.7);
+        --black-3: rgba(0, 0, 0, 0.3);
+        --black-5: rgba(0, 0, 0, 0.5);
 
         --white-1-strict: rgba(255, 255, 255, 0.1);
         --white-2-strict: rgba(255, 255, 255, 0.2);
         --white-3-strict: rgba(255, 255, 255, 0.3);
+
+        --pattern-color: rgba(255, 255, 255, 0.03);
       }
 
       :root[data-theme="light"] {
@@ -111,12 +119,15 @@
         --white-1: rgba(0, 0, 0, 0.1);
         --white-2: rgba(0, 0, 0, 0.2);
         --white-3: rgba(0, 0, 0, 0.3);
-        --white-7: rgba(0, 0, 0, 0.5);
         --gray-1: rgba(15, 15, 15, 0.1);
         --gray-2: rgba(15, 15, 15, 0.2);
         --gray-3: rgba(15, 15, 15, 0.3);
         --gray-4: rgba(15, 15, 15, 0.4);
         --gray-7: rgba(15, 15, 15, 0.7);
+        --black-3: rgba(255, 255, 255, 0.3);
+        --black-5: rgba(255, 255, 255, 0.5);
+
+        --pattern-color: rgba(0, 0, 0, 0.03);
 
         --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
         --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
@@ -153,12 +164,68 @@
         box-shadow: 0 4px 12px rgba(0, 128, 0, 0.2);
       }
 
+      :root[data-theme="light"] .key {
+        background: rgba(0, 0, 0, 0.04);
+        border-color: rgba(0, 0, 0, 0.15);
+        color: #2c3e50;
+        box-shadow:
+          0 2px 0 rgba(0, 0, 0, 0.05),
+          0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      :root[data-theme="light"] .key:hover:not(:disabled) {
+        background: rgba(0, 0, 0, 0.08);
+        border-color: rgba(0, 0, 0, 0.2);
+      }
+
+      :root[data-theme="light"] .key.correct {
+        background: rgba(40, 167, 69, 0.1);
+        border-color: #28a745;
+        color: #28a745;
+      }
+
+      :root[data-theme="light"] .key.wrong {
+        background: rgba(220, 53, 69, 0.05);
+        border-color: #dc3545;
+        color: #dc3545;
+      }
+
+      :root[data-theme="light"] .article-das {
+        color: #2d7a5e;
+      }
+
       :root[data-theme="light"] .flashcard:hover {
         box-shadow: var(--shadow-md);
       }
 
       :root[data-theme="light"] .credits-title {
         text-shadow: var(--text-shadow);
+      }
+
+      .modal-close-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--white-1);
+        color: var(--chalk-gray);
+        font-size: 1.5rem;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 100;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .modal-close-btn:hover {
+        color: var(--chalk-white);
+        background: rgba(255, 255, 255, 0.15);
+        transform: rotate(90deg);
+        border-color: var(--white-2);
       }
 
       html,
@@ -168,6 +235,11 @@
         background: var(--board-dark);
         overflow: hidden;
         font-family: var(--content-font);
+        position: relative;
+      }
+
+      body::after {
+        display: none;
       }
 
       body.loading {
@@ -182,39 +254,12 @@
       }
 
       body::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image:
-          repeating-linear-gradient(
-            0deg,
-            transparent,
-            transparent 2px,
-            rgba(255, 255, 255, 0.03) 2px,
-            rgba(255, 255, 255, 0.03) 4px
-          ),
-          repeating-linear-gradient(
-            90deg,
-            transparent,
-            transparent 2px,
-            rgba(255, 255, 255, 0.02) 2px,
-            rgba(255, 255, 255, 0.02) 4px
-          ),
-          radial-gradient(
-            ellipse at 20% 30%,
-            rgba(255, 255, 255, 0.05) 0%,
-            transparent 50%
-          ),
-          radial-gradient(
-            ellipse at 80% 70%,
-            rgba(255, 255, 255, 0.03) 0%,
-            transparent 40%
-          );
-        pointer-events: none;
-        z-index: 1;
+        display: none;
+      }
+
+      span,
+      p {
+        color: var(--chalk-white);
       }
 
       .container {
@@ -269,6 +314,7 @@
         align-items: center;
         justify-content: center;
         line-height: 1;
+        color: var(--chalk-yellow);
       }
 
       .score-display {
@@ -288,9 +334,12 @@
       .heart {
         width: 28px;
         height: 28px;
-        fill: var(--chalk-red);
+        color: var(--chalk-red);
         filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.5));
-        transition: all 0.3s ease;
+        transition:
+          opacity 0.3s,
+          transform 0.3s,
+          background 0.3s;
       }
 
       .heart.lost {
@@ -380,6 +429,11 @@
         will-change: stroke-dashoffset;
       }
 
+      #gallows-base,
+      #gallows-pole {
+        stroke-dashoffset: 0;
+      }
+
       @keyframes draw-chalk {
         from {
           stroke-dashoffset: 1000;
@@ -423,7 +477,10 @@
         font-size: clamp(1.3rem, 3.5vw, 2rem);
         color: var(--chalk-white);
         position: relative;
-        transition: all 0.3s ease;
+        transition:
+          opacity 0.3s,
+          transform 0.3s,
+          background 0.3s;
       }
 
       @keyframes chalk-smear {
@@ -486,63 +543,93 @@
       }
 
       .word-progress {
-        font-size: 1.3rem;
-        color: var(--chalk-white);
+        font-size: 1.1rem;
+        color: var(--chalk-gray);
+        font-style: italic;
+      }
+
+      .game-info-line {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        min-height: 24px;
+        margin: 5px 0 15px 0;
+      }
+
+      .hint-text {
+        font-size: 1.1rem;
+        color: var(--chalk-yellow);
+        font-family: var(--content-font);
       }
 
       .keyboard {
         display: grid;
         grid-template-columns: repeat(10, 1fr);
-        gap: clamp(4px, 1vw, 6px);
-        max-width: 100%;
-        width: 100%;
-        margin-top: clamp(6px, 1.5vh, 20px);
-        padding: 0 5px;
+        gap: clamp(4px, 1.2vw, 8px);
+        width: calc(100% - 20px);
+        max-width: 650px;
+        margin: 10px auto;
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 16px;
+        border: 1px solid var(--white-1);
+        box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
         flex-shrink: 0;
       }
 
       .key {
         aspect-ratio: 1;
-        min-height: 0;
-        background: transparent;
-        border: 2px solid var(--gray-4);
-        border-radius: 6px;
+        width: 100%;
+        min-width: 0;
+        background: var(--white-1);
+        border: 1px solid var(--gray-4);
+        border-radius: 8px;
         color: var(--chalk-white);
         font-family: var(--content-font);
-        font-size: clamp(0.75rem, 2.5vw, 1.1rem);
+        font-size: clamp(0.75rem, 3vw, 1.3rem);
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
         display: flex;
         align-items: center;
         justify-content: center;
         text-transform: uppercase;
         padding: 0;
+        user-select: none;
+        box-shadow:
+          0 2px 0 rgba(255, 255, 255, 0.05),
+          0 4px 6px rgba(0, 0, 0, 0.2);
       }
 
       .key:hover:not(:disabled) {
-        background: var(--white-1);
+        background: var(--white-2);
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        border-color: var(--white-3);
       }
 
       .key:active:not(:disabled) {
-        transform: translateY(0);
+        transform: translateY(1px);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
       }
 
       .key.correct {
-        background: rgba(168, 229, 200, 0.3);
+        background: rgba(168, 229, 200, 0.2);
         border-color: var(--chalk-green);
         color: var(--chalk-green);
+        text-shadow: 0 0 8px rgba(168, 229, 200, 0.5);
+        box-shadow: 0 0 15px rgba(168, 229, 200, 0.1);
         cursor: not-allowed;
       }
 
       .key.wrong {
-        background: rgba(232, 165, 165, 0.2);
+        background: rgba(232, 165, 165, 0.1);
         border-color: var(--chalk-red);
         color: var(--chalk-red);
-        opacity: 0.6;
+        opacity: 0.5;
         cursor: not-allowed;
         text-decoration: line-through;
+        box-shadow: none;
       }
 
       .key:disabled {
@@ -555,7 +642,15 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: var(--board-dark);
+        background-color: var(--board-dark);
+        background-image: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          var(--pattern-color) 2px,
+          var(--pattern-color) 4px
+        );
+        background-attachment: fixed;
         z-index: 3;
         display: flex;
         flex-direction: column;
@@ -564,7 +659,7 @@
         padding: 20px;
         overflow-y: auto;
         overflow-x: hidden;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       #startScreen,
@@ -589,21 +684,145 @@
         display: none;
       }
 
-      .screen::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: repeating-linear-gradient(
-          0deg,
-          transparent,
-          transparent 2px,
-          rgba(255, 255, 255, 0.03) 2px,
-          rgba(255, 255, 255, 0.03) 4px
+      #resumeScreen {
+        justify-content: center;
+        background: radial-gradient(
+          circle at center,
+          var(--board-texture) 0%,
+          var(--board-dark) 100%
         );
-        pointer-events: none;
+      }
+
+      #resumeScreen .menu-content {
+        background: var(--black-3);
+        padding: 40px;
+        border-radius: 20px;
+        border: 2px dashed var(--gray-3);
+        box-shadow: 0 0 30px var(--black-5);
+      }
+
+      #resumeStats {
+        font-size: 1.2rem;
+        color: var(--chalk-yellow);
+        margin: 15px 0;
+        padding: 10px;
+        border-top: 1px solid var(--gray-2);
+        border-bottom: 1px solid var(--gray-2);
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto auto;
+        gap: 10px 15px;
+        margin: 20px 0;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--white-1);
+        padding: 20px;
+        border-radius: 16px;
+      }
+
+      .stats-val {
+        font-size: 2.2rem;
+        font-family: var(--title-font);
+        color: var(--chalk-yellow);
+        line-height: 1;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .stats-label {
+        font-size: 0.8rem;
+        color: var(--chalk-gray);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-align: center;
+      }
+
+      .difficulty-stat-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px dashed var(--gray-2);
+      }
+
+      .difficulty-stat-row:last-child {
+        border-bottom: none;
+      }
+
+      .stat-bar-container {
+        width: 100%;
+        height: 8px;
+        background: var(--gray-2);
+        border-radius: 4px;
+        margin-top: 5px;
+        overflow: hidden;
+      }
+
+      .stat-bar-fill {
+        height: 100%;
+        background: var(--chalk-green);
+        transition: width 1s ease-out;
+      }
+
+      .stats-header {
+        margin-bottom: 20px;
+      }
+
+      .stats-footer {
+        margin-top: 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .btn.danger {
+        border-color: var(--chalk-red);
+        color: var(--chalk-red);
+      }
+
+      .btn.danger:hover {
+        background: rgba(232, 165, 165, 0.1);
+      }
+
+      .menu-section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        padding: 5px 0;
+      }
+
+      .menu-section-header:hover .menu-title {
+        color: var(--chalk-white);
+      }
+
+      .collapse-icon {
+        transition: transform 0.3s ease;
+        color: var(--chalk-gray);
+      }
+
+      .collapsed .collapse-icon {
+        transform: rotate(-90deg);
+      }
+
+      .section-content {
+        overflow: hidden;
+        transition:
+          max-height 0.4s ease-out,
+          opacity 0.3s ease;
+        max-height: 1000px;
+        opacity: 1;
+        margin-top: 10px;
+      }
+
+      .collapsed .section-content {
+        max-height: 0;
+        opacity: 0;
+        margin-top: 0;
       }
 
       .menu-content {
@@ -642,12 +861,6 @@
         }
       }
 
-      .gallows-intro .hangman-path {
-        stroke-dasharray: 1000;
-        stroke-dashoffset: 1000;
-        animation: draw-gallows 0.8s ease forwards;
-      }
-
       @keyframes draw-gallows {
         to {
           stroke-dashoffset: 0;
@@ -656,7 +869,15 @@
 
       * {
         scrollbar-width: thin;
-        scrollbar-color: var(--gray-2) transparent;
+        scrollbar-color: var(--gray-4) transparent;
+      }
+
+      @media (min-width: 900px) {
+        .flashcards-grid {
+          flex-wrap: wrap;
+          justify-content: center;
+          overflow-x: visible;
+        }
       }
 
       ::-webkit-scrollbar {
@@ -692,11 +913,18 @@
         margin-bottom: clamp(16px, 4vh, 40px);
       }
 
-      .showOnboardingContainer {
+      .button-container {
         position: relative;
         width: 100%;
         max-width: 500px;
-        margin-bottom: 20px;
+        margin: 20px 0;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .button-container * {
+        margin: 0 !important;
       }
 
       #startScreen .showOnboardingBtn {
@@ -724,7 +952,6 @@
       .menu-title {
         color: var(--chalk-yellow);
         font-size: 1.3rem;
-        margin-bottom: 15px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -736,10 +963,11 @@
         gap: 10px;
         justify-content: center;
         flex-wrap: wrap;
+        margin-top: 15px;
       }
 
       .summary-line {
-        margin-top: 15px;
+        margin-top: 10px;
         font-size: 1.1rem;
         color: var(--chalk-white);
       }
@@ -753,7 +981,10 @@
         font-size: 1.1rem;
         border-radius: 8px;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition:
+          opacity 0.3s,
+          transform 0.3s,
+          background 0.3s;
         position: relative;
         overflow: hidden;
       }
@@ -920,6 +1151,7 @@
         transition: all 0.2s;
         font-size: 1rem;
         padding: 0;
+        flex-shrink: 0;
       }
 
       .audio-btn:hover {
@@ -983,18 +1215,6 @@
         color: var(--chalk-gray);
       }
 
-      .round-score {
-        margin-top: 15px;
-        color: var(--chalk-blue);
-        font-size: 1.1rem;
-      }
-
-      .score-total {
-        margin-top: 8px;
-        font-size: 1.6rem;
-        color: var(--chalk-green);
-      }
-
       .scores-container {
         background: rgba(255, 255, 255, 0.05);
         border-radius: 8px;
@@ -1044,8 +1264,9 @@
       }
 
       .flashcards-grid {
-        column-count: 2;
-        column-gap: 12px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
         width: 100%;
       }
 
@@ -1055,18 +1276,31 @@
         border-radius: 10px;
         padding: 15px;
         text-align: left;
-        transition: all 0.3s ease;
+        transition:
+          opacity 0.3s,
+          transform 0.3s,
+          background 0.3s;
         position: relative;
         animation: card-appear 0.5s ease backwards;
-        break-inside: avoid;
-        margin-bottom: 12px;
         width: 100%;
-        display: inline-block;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .flashcard:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+        justify-self: center;
+        width: calc(50% - 6px);
       }
 
       @media (max-width: 600px) {
         .flashcards-grid {
-          column-count: 1;
+          grid-template-columns: 1fr;
+        }
+        .flashcard:last-child:nth-child(odd) {
+          grid-column: auto;
+          justify-self: auto;
+          width: 100%;
         }
         .theme-toggle {
           right: 185px;
@@ -1096,7 +1330,16 @@
         margin-bottom: 5px;
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 8px;
+        width: 100%;
+      }
+
+      .flashcard-word span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        flex: 1;
       }
 
       .flashcard-translation {
@@ -1181,10 +1424,21 @@
         border: 2px solid var(--chalk-white);
         border-radius: 16px;
         padding: 30px;
-        max-width: 400px;
+        max-width: 450px;
+        width: 90%;
+        max-height: 85vh;
+        overflow-y: auto;
         text-align: center;
         position: relative;
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      }
+
+      .onboarding-content::-webkit-scrollbar {
+        width: 6px;
+      }
+      .onboarding-content::-webkit-scrollbar-thumb {
+        background: var(--chalk-blue);
+        border-radius: 10px;
       }
 
       .onboarding-content h2 {
@@ -1423,65 +1677,6 @@
         }
       }
 
-      .chalk-dust {
-        position: fixed;
-        width: 100px;
-        height: 100px;
-        background: radial-gradient(circle, var(--white-1) 0%, transparent 70%);
-        pointer-events: none;
-        opacity: 0;
-        animation: dustFloat 3s ease-in-out infinite;
-      }
-
-      @keyframes dustFloat {
-        0%,
-        100% {
-          transform: translateY(0) rotate(0deg);
-          opacity: 0.3;
-        }
-        50% {
-          transform: translateY(-20px) rotate(180deg);
-          opacity: 0.6;
-        }
-      }
-
-      .eraser-wipe {
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          90deg,
-          transparent 0%,
-          rgba(255, 255, 255, 0.1) 30%,
-          rgba(255, 255, 255, 0.4) 50%,
-          rgba(255, 255, 255, 0.1) 70%,
-          transparent 100%
-        );
-        backdrop-filter: blur(4px);
-        pointer-events: none;
-        z-index: 5;
-        animation: wipe-across 1.2s ease-in-out forwards;
-      }
-
-      @keyframes wipe-across {
-        0% {
-          left: -100%;
-          opacity: 0;
-        }
-        20% {
-          opacity: 1;
-        }
-        80% {
-          opacity: 1;
-        }
-        100% {
-          left: 200%;
-          opacity: 0;
-        }
-      }
-
       .credits-content {
         position: relative;
         z-index: 2;
@@ -1510,7 +1705,6 @@
       }
 
       .credits-section {
-        margin-bottom: 20px;
         padding: 15px;
         background: rgba(255, 255, 255, 0.05);
         border-radius: 10px;
@@ -1534,9 +1728,12 @@
         display: inline-block;
         color: var(--chalk-blue);
         font-size: 1.1rem;
-        margin-top: 2px;
+        margin-top: 3px;
         text-decoration: none;
-        transition: all 0.3s ease;
+        transition:
+          opacity 0.3s,
+          transform 0.3s,
+          background 0.3s;
         position: relative;
       }
 
@@ -1560,8 +1757,7 @@
       }
 
       .credits-close {
-        margin-top: 20px;
-        padding: 12px 30px;
+        margin-top: 30px !important;
       }
 
       .credits-btn {
@@ -1571,24 +1767,7 @@
       }
 
       #creditsScreen {
-        background: var(--board-dark);
-      }
-
-      #creditsScreen::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: repeating-linear-gradient(
-          0deg,
-          transparent,
-          transparent 2px,
-          rgba(255, 255, 255, 0.03) 2px,
-          rgba(255, 255, 255, 0.03) 4px
-        );
-        pointer-events: none;
+        background-color: var(--board-dark);
       }
 
       .chalk-white {
@@ -1618,52 +1797,347 @@
       .margin-none {
         margin: 0;
       }
+
+      #offlineIndicator {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: rgba(40, 40, 40, 0.85);
+        background: rgba(40, 40, 40, 0.95);
+        border: 1px solid var(--white-2);
+        color: var(--chalk-white);
+        padding: 6px 14px;
+        border-radius: 25px;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        z-index: 10000;
+        transition:
+          transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+          opacity 0.3s ease;
+        transform: translateY(100px);
+        opacity: 0;
+        pointer-events: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      }
+      #offlineIndicator.visible {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .offline-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--chalk-red);
+        border-radius: 50%;
+        animation: pulse-red 2s infinite;
+      }
+      @keyframes pulse-red {
+        0% {
+          box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 8px rgba(229, 57, 53, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(229, 57, 53, 0);
+        }
+      }
+
+      .level-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 15px;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        border: 1px solid var(--white-1);
+      }
+      .level-text {
+        font-family: var(--title-font);
+        font-size: 1.4rem;
+        color: var(--chalk-yellow);
+        margin-bottom: 5px;
+      }
+      .xp-bar-container {
+        width: 100%;
+        height: 12px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid var(--white-1);
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+      }
+      .xp-bar-fill {
+        height: 100%;
+        background: repeating-linear-gradient(
+          45deg,
+          var(--chalk-blue),
+          var(--chalk-blue) 10px,
+          rgba(168, 213, 229, 0.8) 10px,
+          rgba(168, 213, 229, 0.8) 20px
+        );
+        width: 0%;
+        transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+        filter: drop-shadow(0 0 5px rgba(168, 213, 229, 0.5));
+      }
+      .xp-label {
+        font-size: 0.8rem;
+        color: var(--chalk-gray);
+        margin-top: 4px;
+      }
+
+      .library-search-container {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid var(--white-1);
+      }
+      .library-search-container .search-input {
+        margin-top: 10px;
+      }
+      .library-footer {
+        position: sticky;
+        bottom: 0;
+        z-index: 10;
+        border-top: 1px solid var(--white-1);
+        margin-top: 20px;
+      }
+      .search-input {
+        width: 100%;
+        background: var(--white-1);
+        border: 2px solid var(--gray-3);
+        color: var(--chalk-white);
+        padding: 12px 15px;
+        border-radius: 10px;
+        font-family: var(--content-font);
+        font-size: 1.1rem;
+        outline: none;
+        transition: border-color 0.3s;
+      }
+      .search-input:focus {
+        border-color: var(--chalk-blue);
+      }
+      .library-filters {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+      .filter-chip {
+        padding: 4px 12px;
+        border-radius: 15px;
+        background: var(--gray-2);
+        color: var(--chalk-gray);
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .filter-chip.active {
+        background: var(--chalk-blue);
+        color: var(--board-dark);
+      }
+      .vocab-row {
+        border-bottom: 1px solid var(--white-1);
+        padding: 12px 5px;
+        display: grid;
+        grid-template-columns: 2fr 2fr 1fr 1fr;
+        align-items: center;
+        gap: 10px;
+      }
+      .vocab-word {
+        font-weight: bold;
+        color: var(--chalk-white);
+      }
+      .vocab-trans {
+        color: var(--chalk-blue);
+        font-size: 0.95rem;
+      }
+      .vocab-mastery {
+        text-align: right;
+        font-size: 0.85rem;
+      }
+      .mastery-high {
+        color: var(--chalk-green);
+      }
+      .mastery-med {
+        color: var(--chalk-yellow);
+      }
+      .mastery-low {
+        color: var(--chalk-red);
+      }
+      .vocab-list {
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .export-group {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 20px;
+        flex-wrap: wrap;
+      }
+      .btn-small {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+      }
+
+      .mastery-progress-card {
+        background: linear-gradient(
+          135deg,
+          rgba(168, 213, 229, 0.1) 0%,
+          rgba(168, 229, 200, 0.1) 100%
+        );
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        text-align: left;
+      }
+      .mastery-stat-title {
+        font-family: var(--title-font);
+        font-size: 1.3rem;
+        color: var(--chalk-white);
+        margin-bottom: 10px;
+      }
+
+      .main-tabs {
+        display: flex;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 16px;
+        padding: 4px;
+        margin-bottom: 24px;
+        border: 1px solid var(--white-1);
+        gap: 4px;
+      }
+      .tab-btn {
+        flex: 1;
+        padding: 12px 20px;
+        border: none;
+        background: transparent;
+        color: var(--chalk-gray);
+        font-family: var(--title-font);
+        font-size: 1.1rem;
+        cursor: pointer;
+        border-radius: 12px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        white-space: nowrap;
+      }
+      .tab-btn:hover:not(.active) {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--chalk-white);
+      }
+      .tab-btn.active {
+        background: var(--chalk-blue);
+        color: var(--board-dark);
+        box-shadow: 0 4px 15px rgba(168, 213, 229, 0.3);
+        transform: translateY(-1px);
+      }
+      .tab-content {
+        display: none;
+        animation: fadeIn 0.3s ease-out;
+      }
+      .tab-content.active {
+        display: block;
+      }
+
+      .xp-gain-badge {
+        display: inline-block;
+        background: rgba(168, 229, 200, 0.15);
+        color: var(--chalk-green);
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-weight: bold;
+        font-size: 0.9rem;
+        margin-top: 5px;
+        animation: slideInUp 0.5s ease-out;
+      }
+      .btn-red {
+        background: #e53935 !important;
+        border-color: #c62828 !important;
+        color: white !important;
+      }
+      .btn-red:hover {
+        background: #f44336 !important;
+      }
+      .article-der {
+        color: #7ab8ff !important;
+        text-shadow: 0 0 8px rgba(122, 184, 255, 0.3);
+      }
+      .article-die {
+        color: #ff8a80 !important;
+        text-shadow: 0 0 8px rgba(255, 138, 128, 0.3);
+      }
+      .article-das {
+        color: #b9f6ca !important;
+        text-shadow: 0 0 8px rgba(185, 246, 202, 0.3);
+      }
+
+      .vocab-difficulty {
+        font-size: 0.75rem;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--chalk-gray);
+        border: 1px solid var(--gray-3);
+        min-width: 50px;
+        text-align: center;
+      }
+
+      @keyframes dustDrift {
+        0% {
+          transform: translate(0, 0);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          transform: translate(100px, -100vh);
+          opacity: 0;
+        }
+      }
     </style>
   </head>
-  <body class="loading">
+  <body class="dark-theme">
+    <div id="offlineIndicator">
+      <div class="offline-dot"></div>
+      <span>Çevrimdışı Mod</span>
+    </div>
     <div class="main">
       <div class="onboarding-overlay hidden" id="onboarding">
         <div class="onboarding-content">
-          <h2>Deutsch Hangman 🇩🇪</h2>
+          <h2>Deutsch Henker 🇩🇪</h2>
 
           <div class="onboarding-section">
-            <p>
-              <span class="highlight">Almanca kelimeleri</span> tahmin ederek
-              öğrenin!
-            </p>
+            <p>Almanca kelimeleri eğlenerek öğrenmeye hazır mısın?</p>
           </div>
 
           <div class="onboarding-section">
             <div class="onboarding-label">🎮 Nasıl Oynanır?</div>
             <p>
-              Klavyedeki harflere tıklayarak gizli kelimeyi bulun. Her
-              <span class="highlight">doğru tahmin</span> o harfi açığa çıkarır,
-              her <span class="highlight">yanlış tahmin</span> ise bir can
-              kaybettirir ve asılmaya bir adım daha yaklaştırır.
+              Harflere tıklayarak gizli kelimeyi bul. Her yanlış tahmin bir can
+              götürür. 6 canın biterse asılırsın!
             </p>
           </div>
 
           <div class="onboarding-section">
-            <div class="onboarding-label">❤️ Can Sistemi</div>
+            <div class="onboarding-label">💡 İpuçları & XP</div>
             <p>
-              Toplam <span class="highlight">6 canınız</span> var. Tüm canlar
-              bittiğinde o tur biter. Kalan her can tur sonunda
-              <span class="highlight">+5 puan</span> kazandırır.
-            </p>
-          </div>
-
-          <div class="onboarding-section">
-            <div class="onboarding-label">💡 İpucu Sistemi</div>
-            <p>
-              Takıldıysanız <span class="highlight">İpucu butonu</span> ile
-              <span class="highlight">50 puan</span> karşılığında kelimenin
-              Türkçe anlamını görebilirsiniz. Dikkat edin, art arda ipucu
-              kullanamazsınız!
+              Zorlandığında 50 puan karşılığında ipucu al. Kelimeleri bildikçe
+              XP kazan ve seviye atla!
             </p>
           </div>
 
           <button class="btn primary dismiss-btn" onclick="dismissOnboarding()">
-            Anladım, Başlayalım!
+            Hadi Başlayalım!
           </button>
         </div>
       </div>
@@ -1692,100 +2166,212 @@
 
       <div class="screen" id="startScreen">
         <div class="menu-content">
-          <h1 id="mainTitle">Deutsch Hangman</h1>
+          <h1 id="mainTitle">Deutsch Henker</h1>
           <p class="subtitle">Almanca kelimeleri eğlenceli şekilde öğren!</p>
 
-          <div class="showOnboardingContainer">
-            <button class="btn" onclick="showOnboarding()">
-              Nasıl Oynanır?
+          <div class="main-tabs">
+            <button
+              class="tab-btn active"
+              onclick="switchMainTab('play', this)"
+            >
+              🎮 Oyna
+            </button>
+            <button class="tab-btn" onclick="switchMainTab('profile', this)">
+              👤 Profil
+            </button>
+            <button class="tab-btn" onclick="switchMainTab('library', this)">
+              📖 Liste
             </button>
           </div>
 
-          <div class="menu-section">
-            <div class="menu-title">📚 Zorluk Seç</div>
-            <div class="difficulty-buttons">
+          <div id="main-tab-play" class="tab-content active">
+            <div class="menu-section">
+              <div class="menu-title">📚 Zorluk Seç</div>
+              <div class="difficulty-buttons">
+                <button
+                  class="btn selected"
+                  onclick="selectDifficulty('easy', this)"
+                >
+                  Kolay (A1-A2)
+                </button>
+                <button class="btn" onclick="selectDifficulty('medium', this)">
+                  Orta (A2-B1)
+                </button>
+                <button class="btn" onclick="selectDifficulty('hard', this)">
+                  Zor (B1+)
+                </button>
+              </div>
+              <div class="summary-line" id="summaryLine">
+                5 Tur • Zamanlayıcı Kapalı • Artikel ✓
+              </div>
+            </div>
+
+            <div class="button-container">
+              <button class="btn primary" onclick="startGame()">
+                ▶ Oyunu Başlat
+              </button>
+
               <button
-                class="btn selected"
-                onclick="selectDifficulty('easy', this)"
+                class="btn primary"
+                onclick="startDailyGame()"
+                id="dailyWordBtn"
+                style="
+                  background: var(--chalk-blue);
+                  border-color: var(--chalk-blue);
+                  margin-top: 10px;
+                "
               >
-                Kolay (A1-A2)
-              </button>
-              <button class="btn" onclick="selectDifficulty('medium', this)">
-                Orta (A2-B1)
-              </button>
-              <button class="btn" onclick="selectDifficulty('hard', this)">
-                Zor (B1-B2)
+                🌟 Günün Kelimesi
               </button>
             </div>
-            <div class="summary-line" id="summaryLine">
-              5 Tur • Zamanlayıcı Kapalı • Artikel ✓
+
+            <div class="button-container">
+              <button class="btn" onclick="showOnboarding()">
+                ❓ Nasıl Oynanır?
+              </button>
+              <button class="btn" onclick="toggleOptions()">
+                ⚙️ Oyun Ayarları
+              </button>
+            </div>
+
+            <div class="options-panel" id="optionsPanel">
+              <div class="option-row">
+                <span class="option-label">Oyun Modu</span>
+                <div class="option-control">
+                  <button
+                    class="toggle-btn active"
+                    onclick="selectMode(5, this)"
+                  >
+                    5
+                  </button>
+                  <button class="toggle-btn" onclick="selectMode(10, this)">
+                    10
+                  </button>
+                  <button class="toggle-btn" onclick="selectMode(15, this)">
+                    15
+                  </button>
+                  <button
+                    class="toggle-btn"
+                    onclick="selectMode('infinite', this)"
+                  >
+                    Sonsuz
+                  </button>
+                </div>
+              </div>
+
+              <div class="option-row">
+                <span class="option-label">Zamanlayıcı</span>
+                <div class="option-control">
+                  <button
+                    class="toggle-btn active"
+                    onclick="selectTimer(false, this)"
+                  >
+                    Kapalı
+                  </button>
+                  <button class="toggle-btn" onclick="selectTimer(30, this)">
+                    30s
+                  </button>
+                  <button class="toggle-btn" onclick="selectTimer(45, this)">
+                    45s
+                  </button>
+                  <button class="toggle-btn" onclick="selectTimer(60, this)">
+                    60s
+                  </button>
+                </div>
+              </div>
+
+              <div class="option-row">
+                <span class="option-label"
+                  >Artikelleri Göster (der/die/das)</span
+                >
+                <div
+                  class="toggle-switch active"
+                  id="articleToggle"
+                  onclick="toggleArticle()"
+                ></div>
+              </div>
             </div>
           </div>
 
-          <button class="btn" onclick="toggleOptions()">
-            ⚙️ Daha Fazla Seçenek
-          </button>
-
-          <div class="options-panel" id="optionsPanel">
-            <div class="option-row">
-              <span class="option-label">Oyun Modu</span>
-              <div class="option-control">
-                <button class="toggle-btn active" onclick="selectMode(5, this)">
-                  5 Tur
-                </button>
-                <button class="toggle-btn" onclick="selectMode(10, this)">
-                  10
-                </button>
-                <button class="toggle-btn" onclick="selectMode(15, this)">
-                  15
-                </button>
-                <button
-                  class="toggle-btn"
-                  onclick="selectMode('infinite', this)"
-                >
-                  Sonsuz
-                </button>
+          <div id="main-tab-profile" class="tab-content">
+            <div class="level-info">
+              <div class="level-text" id="playerLevel">Seviye 1</div>
+              <div class="xp-bar-container">
+                <div class="xp-bar-fill" id="xpBarFill" style="width: 0%"></div>
               </div>
+              <div class="xp-label" id="playerXP">0 / 500 XP</div>
             </div>
 
-            <div class="option-row">
-              <span class="option-label">Zamanlayıcı</span>
-              <div class="option-control">
-                <button
-                  class="toggle-btn active"
-                  onclick="selectTimer(false, this)"
-                >
-                  Kapalı
-                </button>
-                <button class="toggle-btn" onclick="selectTimer(30, this)">
-                  30s
-                </button>
-                <button class="toggle-btn" onclick="selectTimer(45, this)">
-                  45s
-                </button>
-                <button class="toggle-btn" onclick="selectTimer(60, this)">
-                  60s
-                </button>
-              </div>
+            <div class="stats-grid">
+              <span class="stats-val" id="dailyStreakCount">0</span>
+              <span class="stats-val" id="menuWordsVal">0</span>
+              <span class="stats-label">Günlük Seri 🔥</span>
+              <span class="stats-label">Kelime 🎓</span>
             </div>
 
-            <div class="option-row">
-              <span class="option-label">Artikelleri Göster (der/die/das)</span>
-              <div
-                class="toggle-switch active"
-                id="articleToggle"
-                onclick="toggleArticle()"
-              ></div>
+            <div class="button-group" style="margin-top: 20px">
+              <button class="btn primary" onclick="showStats()">
+                📊 Detaylı İstatistikler
+              </button>
+              <button class="btn" onclick="showCredits()">
+                ℹ️ Bu Proje Hakkında
+              </button>
             </div>
           </div>
 
-          <button class="btn primary" onclick="startGame()">
-            ▶ Oyunu Başlat
-          </button>
-
-          <br />
-          <div class="credits-btn credits-link" onclick="showCredits()">
-            Bu Proje Hakkında
+          <div id="main-tab-library" class="tab-content">
+            <div
+              class="library-search-container"
+              style="background: transparent"
+            >
+              <input
+                type="text"
+                class="search-input"
+                id="librarySearchMain"
+                placeholder="Kelime ara..."
+                oninput="filterLibraryMain()"
+              />
+              <div class="library-filters">
+                <div
+                  class="filter-chip active"
+                  onclick="setLibraryFilterMain('all', this)"
+                >
+                  Tümü
+                </div>
+                <div
+                  class="filter-chip"
+                  onclick="setLibraryFilterMain('mastered', this)"
+                >
+                  Öğrenilenler
+                </div>
+                <div
+                  class="filter-chip"
+                  onclick="setLibraryFilterMain('struggled', this)"
+                >
+                  Zorlanılanlar
+                </div>
+              </div>
+            </div>
+            <div
+              id="libraryCountMain"
+              class="credits-note"
+              style="
+                text-align: left;
+                margin-bottom: 12px;
+                font-weight: bold;
+                color: var(--chalk-blue);
+              "
+            >
+              0 kelime listeleniyor
+            </div>
+            <div class="vocab-list" id="libraryListMain"></div>
+            <button
+              class="btn btn-small"
+              style="margin-top: 10px; width: 100%"
+              onclick="showLibrary()"
+            >
+              Tam Kütüphaneyi Aç 📖
+            </button>
           </div>
         </div>
       </div>
@@ -1870,10 +2456,12 @@
               </svg>
             </div>
 
-            <div class="word-container" id="wordContainer"></div>
-            <div class="word-progress" id="wordProgress"></div>
+            <div class="word-container" id="wordContainer" lang="de"></div>
+            <div class="game-info-line" id="gameInfoLine">
+              <div class="word-progress" id="wordProgress"></div>
+            </div>
 
-            <div class="keyboard" id="keyboard"></div>
+            <div class="keyboard" id="keyboard" lang="de"></div>
           </div>
         </div>
       </div>
@@ -1956,7 +2544,16 @@
             <button class="btn primary" id="nextWordBtn" onclick="nextWord()">
               Sonraki Kelime →
             </button>
-            <button class="btn" onclick="backToMenu()">Ana Menü</button>
+            <button
+              class="btn hidden btn-red"
+              id="finishGameBtn"
+              onclick="confirmFinishGame()"
+            >
+              🏁 Bitir
+            </button>
+            <button class="btn share-btn" onclick="shareResult('round')">
+              📤 Paylaş
+            </button>
           </div>
         </div>
       </div>
@@ -1968,6 +2565,13 @@
             Toplam Puan:
             <span id="finalScore" class="game-over-score">0</span>
           </p>
+          <div
+            id="gameXPGain"
+            class="xp-gain-badge"
+            style="margin-bottom: 20px"
+          >
+            Toplam +0 XP Kazanıldı!
+          </div>
           <p class="game-over-words">
             Tamamlanan Kelimeler:
             <span id="wordsCompleted" class="game-over-count">0</span>
@@ -1986,15 +2590,256 @@
             <button class="btn primary" onclick="playAgain()">
               Tekrar Oyna
             </button>
+            <button class="btn share-btn" onclick="shareResult('game')">
+              📤 Skoru Paylaş
+            </button>
             <button class="btn" onclick="backToMenu()">Ana Menü</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen hidden" id="resumeScreen">
+        <div class="menu-content">
+          <h1>Devam Et?</h1>
+          <p class="subtitle">
+            Yarım kalmış bir oyunun var. Devam etmek ister misin?
+          </p>
+
+          <div class="menu-section">
+            <div id="resumeStats" class="summary-line">Puan: 0 • Tur: 1/5</div>
+          </div>
+
+          <div class="button-group">
+            <button class="btn primary" onclick="resumeGame()">
+              ▶ Devam Et
+            </button>
+            <button class="btn" onclick="discardSavedGame()">Menüye Dön</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen hidden" id="libraryScreen">
+        <div class="menu-content" style="max-width: 700px">
+          <div class="library-search-container">
+            <h1>📖 Kelime Kütüphanesi</h1>
+            <input
+              type="text"
+              class="search-input"
+              id="librarySearch"
+              placeholder="Kelime ara (Almanca veya Türkçe)..."
+              oninput="filterLibrary()"
+            />
+            <div class="library-filters">
+              <div
+                class="filter-chip active"
+                onclick="setLibraryFilter('all', this)"
+              >
+                Tümü
+              </div>
+              <div
+                class="filter-chip"
+                onclick="setLibraryFilter('mastered', this)"
+              >
+                Öğrenilenler
+              </div>
+              <div
+                class="filter-chip"
+                onclick="setLibraryFilter('struggled', this)"
+              >
+                Zorlanılanlar
+              </div>
+
+              <div class="filter-chip" onclick="setLibraryFilter('easy', this)">
+                Kolay
+              </div>
+              <div
+                class="filter-chip"
+                onclick="setLibraryFilter('medium', this)"
+              >
+                Orta
+              </div>
+              <div class="filter-chip" onclick="setLibraryFilter('hard', this)">
+                Zor
+              </div>
+            </div>
+          </div>
+
+          <div
+            id="libraryCount"
+            class="credits-note"
+            style="text-align: left; margin-bottom: 5px"
+          >
+            0 kelime listeleniyor
+          </div>
+          <div class="vocab-list" id="libraryList"></div>
+
+          <div class="library-footer">
+            <div class="export-group">
+              <button class="btn btn-small" onclick="exportLibrary('json')">
+                JSON İndir
+              </button>
+              <button class="btn btn-small" onclick="exportLibrary('csv')">
+                CSV İndir
+              </button>
+              <button class="btn btn-small" onclick="exportLibrary('xlsx')">
+                Excel İndir
+              </button>
+            </div>
+
+            <button
+              class="btn primary"
+              onclick="
+                playSound('click');
+                hideLibrary();
+              "
+              style="margin-top: 15px; width: 100%"
+            >
+              Geri Dön
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen hidden" id="statsScreen">
+        <div class="menu-content" style="max-width: 600px">
+          <button class="modal-close-btn" onclick="hideStats()">×</button>
+          <h1 class="stats-header">📊 İstatistikler</h1>
+
+          <div class="stats-grid">
+            <span class="stats-val" id="statsTotalGames">0</span>
+            <span class="stats-val" id="statsWinRate">0%</span>
+            <span class="stats-label">Toplam Oyun</span>
+            <span class="stats-label">Kazanma Oranı</span>
+          </div>
+
+          <button
+            class="btn btn-secondary"
+            onclick="shareProfile()"
+            style="width: 100%; margin-bottom: 20px"
+          >
+            🔗 Profili Paylaş
+          </button>
+
+          <div class="menu-section collapsible">
+            <div
+              class="menu-section-header"
+              onclick="toggleCollapsible(this.parentElement)"
+            >
+              <div class="menu-title">📈 Genel İstatistikler</div>
+              <span class="collapse-icon">▼</span>
+            </div>
+            <div class="section-content">
+              <div class="difficulty-stat-row">
+                <span>Tamamlanan Kelimeler:</span>
+                <span class="chalk-yellow" id="statsWordsCompleted">0</span>
+              </div>
+              <div class="difficulty-stat-row">
+                <span>Toplam Hata:</span>
+                <span class="chalk-red" id="statsTotalMistakes">0</span>
+              </div>
+              <div class="difficulty-stat-row">
+                <span>Toplam Puan:</span>
+                <span class="chalk-blue" id="statsTotalPoints">0</span>
+              </div>
+              <div class="difficulty-stat-row">
+                <span>En İyi Seri:</span>
+                <span class="chalk-green" id="statsBestStreak">0</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="menu-section collapsible">
+            <div
+              class="menu-section-header"
+              onclick="toggleCollapsible(this.parentElement)"
+            >
+              <div class="menu-title">🏆 En İyi Skorlar</div>
+              <span class="collapse-icon">▼</span>
+            </div>
+            <div class="section-content">
+              <div id="statsBestScoresContainer"></div>
+            </div>
+          </div>
+
+          <div class="menu-section collapsible collapsed">
+            <div
+              class="menu-section-header"
+              onclick="toggleCollapsible(this.parentElement)"
+            >
+              <div class="menu-title">🎓 Kelime Ustalığı</div>
+              <span class="collapse-icon">▼</span>
+            </div>
+            <div class="section-content">
+              <div class="mastery-progress-card">
+                <div class="mastery-stat-title">Genel Gelişim</div>
+                <div id="statsMasterySummary" class="chalk-yellow">
+                  0 / 0 Kelime (%0 Ustalık)
+                </div>
+                <div
+                  class="xp-bar-container"
+                  style="margin-top: 10px; height: 12px"
+                >
+                  <div
+                    id="statsMasteryBar"
+                    class="xp-bar-fill"
+                    style="width: 0%"
+                  ></div>
+                </div>
+              </div>
+              <div class="difficulty-stat-row">
+                <span>Zorlanılan Kelimeler:</span>
+                <span class="chalk-red" id="statsStruggledCount">0</span>
+              </div>
+              <p class="credits-note" style="margin-top: 10px">
+                Ustalık, bir kelimeyi hatasız ve hızlı bildikçe artar.
+              </p>
+            </div>
+          </div>
+
+          <div class="menu-section collapsible">
+            <div
+              class="menu-section-header"
+              onclick="toggleCollapsible(this.parentElement)"
+            >
+              <div class="menu-title">🎯 Zorluk Başarısı</div>
+              <span class="collapse-icon">▼</span>
+            </div>
+            <div class="section-content">
+              <p class="credits-note" style="margin-bottom: 10px">
+                Kelime tahmin etme başarı oranınız:
+              </p>
+              <div id="statsDifficultyContainer"></div>
+            </div>
+          </div>
+
+          <div class="stats-footer">
+            <button
+              class="btn primary"
+              onclick="
+                playSound('click');
+                hideStats();
+              "
+            >
+              Geri Dön
+            </button>
+            <button
+              class="btn danger"
+              onclick="
+                playSound('click');
+                confirmResetStats();
+              "
+            >
+              🗑️ Verileri Sıfırla
+            </button>
           </div>
         </div>
       </div>
 
       <div class="screen hidden" id="creditsScreen">
         <div class="credits-content">
-          <h2 class="credits-title">Deutsch Hangman</h2>
-          <div class="credits-note">v1.6.7, 17.04.2026</div>
+          <button class="modal-close-btn" onclick="hideCredits()">×</button>
+          <h2 class="credits-title">Deutsch Henker</h2>
+          <div class="credits-note">v1.8.0, 23.04.2026</div>
           <br />
 
           <div class="credits-section">
@@ -2013,6 +2858,7 @@
               ege@smsk.one
             </a>
           </div>
+          <br />
 
           <div class="credits-section">
             <div class="credits-label">KAYNAKLAR</div>
@@ -2055,7 +2901,13 @@
             </div>
           </div>
 
-          <button class="btn primary credits-close" onclick="hideCredits()">
+          <button
+            class="btn primary credits-close"
+            onclick="
+              playSound('click');
+              hideCredits();
+            "
+          >
             Kapat
           </button>
         </div>
@@ -2069,10 +2921,30 @@
             .register("sw.js")
             .catch((err) => console.error("SW registration failed:", err));
         });
+
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+          if (!refreshing) {
+            window.location.reload();
+            refreshing = true;
+          }
+        });
       }
 
       let allVocab = null;
       let wordData = null;
+
+      function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
 
       const winPhrases = [
         "Aferin! 🎉",
@@ -2126,7 +2998,33 @@
         wordsCompleted: 0,
         totalMistakes: 0,
         highScore: 0,
+        sessionXP: 0,
         currentSessionWords: [],
+        isDailyWord: false,
+      };
+
+      let stats = {
+        totalGames: 0,
+        totalWins: 0,
+        totalLosses: 0,
+        totalMistakes: 0,
+        wordsCompleted: 0,
+        totalPoints: 0,
+        bestStreak: 0,
+        bestScores: [],
+        difficultySuccess: {
+          easy: { attempted: 0, correct: 0 },
+          medium: { attempted: 0, correct: 0 },
+          hard: { attempted: 0, correct: 0 },
+        },
+        xp: 0,
+        level: 1,
+        dailyStreak: 0,
+        lastPlayedDate: null,
+        dailyWordPlayedDate: null,
+        learnedWords: [],
+        encounteredWords: [],
+        struggledWords: [],
       };
 
       let timerTickInterval = null;
@@ -2136,6 +3034,195 @@
 
       let speechReady = false;
       let germanVoice = null;
+
+      function initStats() {
+        try {
+          const stored = localStorage.getItem("hangmanStats");
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            stats = { ...stats, ...parsed };
+
+            if (
+              parsed.wordMastery &&
+              (!stats.learnedWords || stats.learnedWords.length === 0)
+            ) {
+              if (!stats.learnedWords) stats.learnedWords = [];
+              if (!stats.encounteredWords) stats.encounteredWords = [];
+              for (const [word, val] of Object.entries(parsed.wordMastery)) {
+                if (val > 0 && !stats.encounteredWords.includes(word)) {
+                  stats.encounteredWords.push(word);
+                }
+                if (val >= 80 && !stats.learnedWords.includes(word)) {
+                  stats.learnedWords.push(word);
+                }
+              }
+
+              delete stats.wordMastery;
+              saveStats();
+            }
+          }
+        } catch (e) {
+          console.warn("Stats load failed", e);
+        }
+
+        if (!stats.struggledWords) stats.struggledWords = [];
+        if (!stats.encounteredWords) stats.encounteredWords = [];
+
+        stats.learnedWords = [
+          ...new Set((stats.learnedWords || []).filter(Boolean)),
+        ];
+        if (!stats.difficultySuccess) {
+          stats.difficultySuccess = {
+            easy: { attempted: 0, correct: 0 },
+            medium: { attempted: 0, correct: 0 },
+            hard: { attempted: 0, correct: 0 },
+          };
+        }
+
+        checkStreak();
+        updateMenuStats();
+      }
+
+      function addXP(amount) {
+        stats.xp += amount;
+        checkLevelUp();
+        saveStats();
+        updateMenuStats();
+      }
+
+      function checkLevelUp() {
+        const xpNeeded = stats.level * 500;
+        if (stats.xp >= xpNeeded) {
+          stats.xp -= xpNeeded;
+          stats.level++;
+
+          playSound("win");
+          checkLevelUp();
+        }
+      }
+
+      function getWordKey(w) {
+        if (!w) return "";
+        return (w.article ? w.article.trim() + " " : "") + w.word.trim();
+      }
+
+      function migrateStats() {
+        if (!allVocab) return;
+        let changed = false;
+
+        const migrateArray = (arr) => {
+          if (!arr || !Array.isArray(arr)) return arr;
+          let arrayChanged = false;
+          const newArr = arr.map((entry) => {
+            if (typeof entry !== "string" || entry.includes(" ")) return entry;
+            const match = allVocab.find((v) => v.word === entry);
+            if (match) {
+              arrayChanged = true;
+              changed = true;
+              return getWordKey(match);
+            }
+            return entry;
+          });
+          return arrayChanged ? [...new Set(newArr)] : arr;
+        };
+
+        stats.learnedWords = migrateArray(stats.learnedWords);
+        stats.encounteredWords = migrateArray(stats.encounteredWords);
+        stats.struggledWords = migrateArray(stats.struggledWords);
+
+        if (changed) saveStats();
+      }
+
+      function getLearnedCount() {
+        if (!allVocab) return (stats.learnedWords || []).length;
+        const learnedSet = new Set(stats.learnedWords || []);
+
+        const uniqueLearnedInBank = allVocab.filter((w) =>
+          learnedSet.has(getWordKey(w)),
+        );
+        return new Set(uniqueLearnedInBank.map((w) => getWordKey(w))).size;
+      }
+
+      function updateMenuStats() {
+        const levelEl = document.getElementById("playerLevel");
+        const xpEl = document.getElementById("playerXP");
+        const bar = document.getElementById("xpBarFill");
+
+        if (levelEl) levelEl.textContent = `Seviye ${stats.level}`;
+        const xpNeeded = stats.level * 500;
+        if (xpEl) xpEl.textContent = `${stats.xp} / ${xpNeeded} XP`;
+        if (bar) {
+          const pct = Math.min(100, (stats.xp / xpNeeded) * 100);
+          bar.style.width = `${pct}%`;
+        }
+
+        const streakEl = document.getElementById("dailyStreakCount");
+        if (streakEl) streakEl.textContent = stats.dailyStreak || 0;
+
+        const wordsVal = document.getElementById("menuWordsVal");
+        if (wordsVal) wordsVal.textContent = getLearnedCount();
+
+        const today = new Date().toLocaleDateString("tr-TR");
+        const dailyBtn = document.getElementById("dailyWordBtn");
+        if (dailyBtn) {
+          if (stats.dailyWordPlayedDate === today) {
+            dailyBtn.disabled = true;
+            dailyBtn.style.opacity = "0.5";
+            dailyBtn.textContent = "✅ Günlük Kelime Bitti";
+          } else {
+            dailyBtn.disabled = false;
+            dailyBtn.style.opacity = "1";
+            dailyBtn.textContent = "🌟 Günün Kelimesi";
+          }
+        }
+      }
+
+      function checkStreak() {
+        const today = new Date();
+        const todayStr = today.toLocaleDateString("tr-TR");
+
+        if (stats.lastPlayedDate) {
+          const lastDateParts = stats.lastPlayedDate.split(".");
+          const lastDate = new Date(
+            lastDateParts[2],
+            lastDateParts[1] - 1,
+            lastDateParts[0],
+          );
+          const diffDays = Math.floor(
+            (today.setHours(0, 0, 0, 0) - lastDate.setHours(0, 0, 0, 0)) /
+              (1000 * 60 * 60 * 24),
+          );
+
+          if (diffDays > 1) {
+            stats.dailyStreak = 0;
+          }
+          if (diffDays > 0) {
+            stats.dailyWordsCompleted = 0;
+          }
+        } else {
+          stats.dailyWordsCompleted = 0;
+        }
+      }
+
+      function updateStreak() {
+        const today = new Date();
+        const todayStr = today.toLocaleDateString("tr-TR");
+
+        if (stats.lastPlayedDate !== todayStr) {
+          stats.dailyStreak++;
+          stats.lastPlayedDate = todayStr;
+        }
+        saveStats();
+        updateMenuStats();
+      }
+
+      function saveStats() {
+        try {
+          localStorage.setItem("hangmanStats", JSON.stringify(stats));
+        } catch (e) {
+          console.warn("Stats save failed", e);
+        }
+      }
 
       function initHighScore() {
         try {
@@ -2168,29 +3255,44 @@
       }
 
       function categorizeVocab(allWords) {
-        function wl(wobj) {
-          return wobj.word.length + (wobj.article !== "" ? 3 : 0);
-        }
+        const calculateDifficulty = (w) => {
+          let score = 0;
 
-        const easy = allWords.filter(
-          (w) => ["A1", "A1+"].includes(w.level) && wl(w) >= 3 && wl(w) <= 7,
-        );
+          const levelScores = {
+            A1: 10,
+            "A1+": 15,
+            A2: 25,
+            B1: 35,
+            "B1+": 45,
+            B2: 55,
+          };
+          score += levelScores[w.level] || 20;
 
-        const medium = allWords.filter(
-          (w) =>
-            ((["A1+", "A2", "B1"].includes(w.level) && wl(w) >= 5) ||
-              (w.level == "A1" && wl(w) >= 7)) &&
-            wl(w) <= 11,
-        );
+          const len = w.word.length;
+          if (len <= 4) score += 15;
+          else if (len >= 12) score += 15;
+          else if (len >= 9) score += 5;
 
-        const hard = allWords.filter(
-          (w) =>
-            ((["A2", "B1", "B1+"].includes(w.level) && wl(w) >= 8) ||
-              (["A1", "A1+"].includes(w.level) && wl(w) >= 12)) &&
-            wl(w) <= 19,
-        );
+          const uniqueLetters = new Set(w.word.toLowerCase().split("")).size;
+          score += (uniqueLetters / len) * 15;
 
-        return { easy, medium, hard };
+          const rareChars = /[qxyzjvwüöäß]/gi;
+          const matches = w.word.match(rareChars);
+          if (matches) score += matches.length * 3;
+
+          return score;
+        };
+
+        const result = { easy: [], medium: [], hard: [] };
+        allWords.forEach((w) => {
+          const difficultyScore = calculateDifficulty(w);
+          w.difficultyScore = difficultyScore;
+          if (difficultyScore < 35) result.easy.push(w);
+          else if (difficultyScore < 55) result.medium.push(w);
+          else result.hard.push(w);
+        });
+
+        return result;
       }
 
       let vocabLoaded = false;
@@ -2199,21 +3301,32 @@
         const savedTheme = localStorage.getItem("hangmanTheme") || "dark";
         document.documentElement.setAttribute("data-theme", savedTheme);
         updateThemeIcon(savedTheme);
-
         initHighScore();
+        initStats();
         loadSettings();
         updateSummaryLine();
 
         try {
           const response = await fetch("vocab.json");
           allVocab = await response.json();
+          migrateStats();
+          updateMenuStats();
+          filterLibraryMain();
+
+          allVocab.sort((a, b) =>
+            a.word.localeCompare(b.word, "de", { sensitivity: "base" }),
+          );
+
           wordData = categorizeVocab(allVocab);
           vocabLoaded = true;
         } catch (error) {
           console.error("Failed to load vocab.json:", error);
         }
+
         checkFirstTime();
         initKeyboard();
+
+        checkSavedGame();
 
         animateTitle();
 
@@ -2241,6 +3354,331 @@
           localStorage.setItem("hangmanSettings", JSON.stringify(settings));
         } catch (e) {
           console.warn("Could not save settings");
+        }
+      }
+
+      function switchMainTab(tabId, btn) {
+        const startScreen = document.getElementById("startScreen");
+        if (startScreen) startScreen.scrollTop = 0;
+
+        playSound("click");
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        document
+          .querySelectorAll("#startScreen .tab-content")
+          .forEach((c) => c.classList.remove("active"));
+        document.getElementById(`main-tab-${tabId}`).classList.add("active");
+
+        if (tabId === "library") {
+          filterLibraryMain();
+        }
+      }
+
+      let libraryFilterMain = "all";
+      function setLibraryFilterMain(filter, btn) {
+        playSound("click");
+        libraryFilterMain = filter;
+        btn.parentElement
+          .querySelectorAll(".filter-chip")
+          .forEach((c) => c.classList.remove("active"));
+        btn.classList.add("active");
+        filterLibraryMain();
+      }
+
+      function filterLibraryMain() {
+        if (!vocabLoaded || !allVocab) return;
+        const query = document
+          .getElementById("librarySearchMain")
+          .value.toLowerCase();
+        const list = document.getElementById("libraryListMain");
+
+        const learnedSet = new Set(stats.learnedWords || []);
+        const struggledSet = new Set(stats.struggledWords || []);
+        const encounteredSet = new Set(stats.encounteredWords || []);
+
+        let filtered = allVocab.filter((w) => {
+          const matchSearch =
+            w.word.toLowerCase().includes(query) ||
+            w.translation.toLowerCase().includes(query);
+          if (!matchSearch) return false;
+
+          if (libraryFilterMain === "mastered")
+            return learnedSet.has(getWordKey(w));
+          if (libraryFilterMain === "struggled")
+            return struggledSet.has(getWordKey(w));
+          return true;
+        });
+
+        const countEl = document.getElementById("libraryCountMain");
+        if (countEl)
+          countEl.textContent =
+            filtered.length > 50
+              ? filtered.length + " kelimeden 50 tanesi listeleniyor"
+              : filtered.length + " kelime listeleniyor";
+
+        let html = "";
+        filtered.slice(0, 50).forEach((w) => {
+          const isLearned = learnedSet.has(getWordKey(w));
+          const isStruggled = struggledSet.has(getWordKey(w));
+          const isEncountered = encounteredSet.has(getWordKey(w));
+
+          let statusText = "✨ Yeni";
+          let statusClass = "mastery-low";
+
+          if (isStruggled) {
+            statusText = "⚠️ Zor";
+            statusClass = "mastery-low";
+          } else if (isLearned) {
+            statusText = "✅ Öğrenildi";
+            statusClass = "mastery-high";
+          } else if (isEncountered) {
+            statusText = "✔️ Görüldü";
+            statusClass = "mastery-med";
+          }
+
+          const articleClass = w.article
+            ? `article-${w.article.toLowerCase()}`
+            : "";
+          const levelLabel =
+            w.difficultyScore < 35
+              ? "Kolay"
+              : w.difficultyScore < 55
+                ? "Orta"
+                : "Zor";
+
+          html += `
+            <div class="vocab-row">
+              <div class="vocab-word" style="font-size:0.9rem">
+                ${w.article ? `<span class="${articleClass}">${w.article}</span> ` : ""}${w.word}
+              </div>
+              <div class="vocab-trans" style="font-size:0.85rem">${w.translation}</div>
+              <div class="vocab-difficulty">${levelLabel}</div>
+              <div class="vocab-mastery ${statusClass}" style="font-size:0.75rem">${statusText}</div>
+            </div>
+          `;
+        });
+        list.innerHTML = html;
+      }
+
+      function startDailyGame() {
+        if (!vocabLoaded) return;
+        const todayStr = new Date().toLocaleDateString("tr-TR");
+        if (stats.dailyWordPlayedDate === todayStr) {
+          alert("Bugünün kelimesini zaten tamamladın!");
+          return;
+        }
+
+        const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+        const seed = parseInt(dateStr);
+        const dailyWord = allVocab[seed % allVocab.length];
+
+        gameState.isDailyWord = true;
+        gameState.mode = 1;
+        gameState.round = 1;
+        gameState.score = 0;
+        gameState.remainingLives = 6;
+        gameState.currentWord = dailyWord;
+        gameState.usedWords.add(dailyWord.word);
+
+        if (!stats.encounteredWords) stats.encounteredWords = [];
+        if (!stats.encounteredWords.includes(dailyWord.word)) {
+          stats.encounteredWords.push(dailyWord.word);
+          saveStats();
+        }
+
+        gameState.currentSessionWords = [dailyWord];
+        gameState.gameActive = true;
+        gameState.usedLetters.clear();
+
+        document.getElementById("startScreen").classList.add("hidden");
+        document.getElementById("gameScreen").classList.remove("hidden");
+
+        updateHearts();
+        displayWord();
+        updateRoundDisplay();
+        if (gameState.timerValue) startTimer();
+        playSound("start");
+        saveGameProgress();
+      }
+
+      function shareResult(type) {
+        let text = "";
+        if (type === "round") {
+          text = `Deutsch Henker: "${gameState.currentWord.word}" kelimesini buldum! 🎯\nPuan: ${gameState.score}\nOyna: https://deutsch.smsk.one/hangman/`;
+        } else {
+          text = `Deutsch Henker: ${gameState.score} puan topladım! 🏆\n${stats.dailyWordsCompleted || 0} kelime bildim.\nOyna: https://deutsch.smsk.one/hangman/`;
+        }
+
+        if (navigator.share) {
+          navigator.share({
+            title: "Deutsch Henker",
+            text: text,
+            url: "https://deutsch.smsk.one/hangman/",
+          });
+        } else {
+          navigator.clipboard.writeText(text);
+          alert("Sonuç kopyalandı!");
+        }
+      }
+
+      let libraryFilter = "all";
+
+      function showLibrary() {
+        const screen = document.getElementById("libraryScreen");
+        screen.scrollTop = 0;
+        screen.classList.remove("hidden");
+        document.getElementById("startScreen").classList.add("hidden");
+        filterLibrary();
+      }
+
+      function hideLibrary() {
+        window.scrollTo(0, 0);
+        document.getElementById("libraryScreen").classList.add("hidden");
+        document.getElementById("startScreen").classList.remove("hidden");
+        animateTitle();
+      }
+
+      function setLibraryFilter(filter, btn) {
+        libraryFilter = filter;
+        btn.parentElement
+          .querySelectorAll(".filter-chip")
+          .forEach((c) => c.classList.remove("active"));
+        btn.classList.add("active");
+        filterLibrary();
+      }
+
+      const filterLibrary = debounce(function () {
+        if (!vocabLoaded || !allVocab) return;
+
+        const query = document
+          .getElementById("librarySearch")
+          .value.toLowerCase();
+        const list = document.getElementById("libraryList");
+
+        const learnedSet = new Set(stats.learnedWords || []);
+        const struggledSet = new Set(stats.struggledWords || []);
+        const encounteredSet = new Set(stats.encounteredWords || []);
+
+        let categorySet = null;
+        if (["easy", "medium", "hard"].includes(libraryFilter)) {
+          categorySet = new Set(wordData[libraryFilter].map((cw) => cw.word));
+        }
+
+        let filtered = allVocab.filter((w) => {
+          const matchSearch =
+            w.word.toLowerCase().includes(query) ||
+            w.translation.toLowerCase().includes(query);
+          if (!matchSearch) return false;
+
+          if (libraryFilter === "mastered")
+            return learnedSet.has(getWordKey(w));
+          if (libraryFilter === "struggled")
+            return struggledSet.has(getWordKey(w));
+          if (categorySet) return categorySet.has(w.word);
+          return true;
+        });
+
+        const countEl = document.getElementById("libraryCount");
+        if (countEl)
+          countEl.textContent =
+            filtered.length > 100
+              ? filtered.length + " kelimeden 100 tanesi listeleniyor"
+              : filtered.length + " kelime listeleniyor";
+
+        if (filtered.length === 0) {
+          list.innerHTML =
+            '<p class="credits-note" style="text-align:center; padding: 20px;">Kelime bulunamadı.</p>';
+          return;
+        }
+
+        let html = "";
+        filtered.slice(0, 100).forEach((w) => {
+          const isLearned = learnedSet.has(getWordKey(w));
+          const isStruggled = struggledSet.has(getWordKey(w));
+          const isEncountered = encounteredSet.has(getWordKey(w));
+
+          let statusText = "✨ Yeni";
+          let statusClass = "mastery-low";
+
+          if (isStruggled) {
+            statusText = "⚠️ Zor";
+            statusClass = "mastery-low";
+          } else if (isLearned) {
+            statusText = "✅ Öğrenildi";
+            statusClass = "mastery-high";
+          } else if (isEncountered) {
+            statusText = "✔️ Görüldü";
+            statusClass = "mastery-med";
+          }
+
+          const articleClass = w.article
+            ? `article-${w.article.toLowerCase()}`
+            : "";
+          const levelLabel =
+            w.difficultyScore < 35
+              ? "Kolay"
+              : w.difficultyScore < 55
+                ? "Orta"
+                : "Zor";
+
+          html += `
+            <div class="vocab-row">
+              <div class="vocab-word">
+                ${w.article ? `<span class="${articleClass}">${w.article}</span> ` : ""}${w.word}
+              </div>
+              <div class="vocab-trans">${w.translation}</div>
+              <div class="vocab-difficulty">${levelLabel}</div>
+              <div class="vocab-mastery ${statusClass}" style="font-size:0.75rem">${statusText}</div>
+            </div>
+          `;
+        });
+        list.innerHTML = html;
+      }, 250);
+
+      function exportLibrary(format) {
+        const learnedSet = new Set(stats.learnedWords || []);
+        const struggledSet = new Set(stats.struggledWords || []);
+
+        const data = allVocab.map((w) => ({
+          Kelime: (w.article ? w.article + " " : "") + w.word,
+          Anlam: w.translation,
+          Seviye: w.level,
+          Durum: learnedSet.has(getWordKey(w))
+            ? "Öğrenildi"
+            : struggledSet.has(getWordKey(w))
+              ? "Zor"
+              : "Yeni",
+        }));
+
+        if (format === "json") {
+          const blob = new Blob([JSON.stringify(data, null, 2)], {
+            type: "application/json",
+          });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "deutsch-vocab.json";
+          a.click();
+        } else if (format === "csv") {
+          const csvRows = [
+            ["Kelime", "Anlam", "Seviye", "Durum"],
+            ...data.map((w) => [w.Kelime, w.Anlam, w.Seviye, w.Durum]),
+          ];
+          const csvContent = csvRows.map((r) => r.join(",")).join("\n");
+          const blob = new Blob([csvContent], { type: "text/csv" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "deutsch-vocab.csv";
+          a.click();
+        } else if (format === "xlsx") {
+          const ws = XLSX.utils.json_to_sheet(data);
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "Wörter");
+          XLSX.writeFile(wb, "deutsch-vocab.xlsx");
         }
       }
 
@@ -2342,7 +3780,7 @@
             : `${gameState.mode} Tur`;
         const timerText =
           gameState.timerValue === false
-            ? "Zamanlayıcı Kapalı"
+            ? "Süre Sınırı Yok"
             : `${gameState.timerValue}s`;
         const articleText = gameState.showArticle ? "Artikel ✓" : "Artikel ✗";
 
@@ -2351,8 +3789,13 @@
 
       function animateTitle() {
         const title = document.getElementById("mainTitle");
+        if (!title || title.dataset.animated === "true") return;
+
         const text = title.textContent;
         title.innerHTML = "";
+        title.dataset.animated = "true";
+
+        title.style.minHeight = "1.2em";
 
         text.split("").forEach((char, index) => {
           const span = document.createElement("span");
@@ -2372,7 +3815,10 @@
       }
 
       function showOnboarding() {
-        document.getElementById("onboarding").classList.remove("hidden");
+        const screen = document.getElementById("onboarding");
+        const content = screen.querySelector(".onboarding-content");
+        if (content) content.scrollTop = 0;
+        screen.classList.remove("hidden");
       }
 
       function dismissOnboarding() {
@@ -2410,7 +3856,7 @@
 
         buttons.forEach((b) => {
           const text = b.textContent.trim();
-          const isInfinity = text === "∞";
+          const isInfinity = text === "Sonsuz";
           const isSelected = b === btn;
 
           if (isInfinity) {
@@ -2503,6 +3949,13 @@
         osc.stop(audioContext.currentTime + 0.05);
       }
 
+      function triggerHaptic(type) {
+        if ("vibrate" in navigator) {
+          if (type === "success") navigator.vibrate(15);
+          else if (type === "error") navigator.vibrate([30, 50, 30]);
+        }
+      }
+
       function playSound(type) {
         if (!gameState.soundEnabled) return;
 
@@ -2551,35 +4004,59 @@
             oscillator.start(audioContext.currentTime);
             oscillator.stop(audioContext.currentTime + 0.2);
             break;
+          case "lose":
+            const nowLose = audioContext.currentTime;
+            oscillator.type = "triangle";
+            oscillator.frequency.setValueAtTime(300, nowLose);
+            oscillator.frequency.exponentialRampToValueAtTime(
+              150,
+              nowLose + 0.15,
+            );
+            oscillator.frequency.setValueAtTime(150, nowLose + 0.15);
+            oscillator.frequency.exponentialRampToValueAtTime(
+              100,
+              nowLose + 0.4,
+            );
+
+            gainNode.gain.setValueAtTime(0.3, nowLose);
+            gainNode.gain.linearRampToValueAtTime(0.1, nowLose + 0.15);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, nowLose + 0.6);
+
+            oscillator.start(nowLose);
+            oscillator.stop(nowLose + 0.6);
+            break;
           case "win":
             const osc2 = audioContext.createOscillator();
             const gain2 = audioContext.createGain();
+            const osc3 = audioContext.createOscillator();
+            const gain3 = audioContext.createGain();
+
             osc2.connect(gain2);
             gain2.connect(audioContext.destination);
+            osc3.connect(gain3);
+            gain3.connect(audioContext.destination);
 
+            const nowWin = audioContext.currentTime;
             oscillator.type = "sine";
-            oscillator.frequency.setValueAtTime(
-              261.63,
-              audioContext.currentTime,
-            );
+            oscillator.frequency.setValueAtTime(261.63, nowWin);
             osc2.type = "sine";
-            osc2.frequency.setValueAtTime(329.63, audioContext.currentTime);
+            osc2.frequency.setValueAtTime(329.63, nowWin);
+            osc3.type = "sine";
+            osc3.frequency.setValueAtTime(392.0, nowWin);
 
-            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(
-              0.01,
-              audioContext.currentTime + 0.5,
-            );
-            gain2.gain.setValueAtTime(0.15, audioContext.currentTime);
-            gain2.gain.exponentialRampToValueAtTime(
-              0.01,
-              audioContext.currentTime + 0.5,
-            );
+            gainNode.gain.setValueAtTime(0.15, nowWin);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, nowWin + 0.6);
+            gain2.gain.setValueAtTime(0.12, nowWin);
+            gain2.gain.exponentialRampToValueAtTime(0.01, nowWin + 0.6);
+            gain3.gain.setValueAtTime(0.1, nowWin);
+            gain3.gain.exponentialRampToValueAtTime(0.01, nowWin + 0.6);
 
-            oscillator.start(audioContext.currentTime);
-            osc2.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.5);
-            osc2.stop(audioContext.currentTime + 0.5);
+            oscillator.start(nowWin);
+            osc2.start(nowWin);
+            osc3.start(nowWin);
+            oscillator.stop(nowWin + 0.6);
+            osc2.stop(nowWin + 0.6);
+            osc3.stop(nowWin + 0.6);
             break;
           case "tick":
             oscillator.frequency.setValueAtTime(1200, audioContext.currentTime);
@@ -2618,19 +4095,17 @@
             oscillator.stop(audioContext.currentTime + 0.15);
             break;
           case "gameover":
-            oscillator.type = "sawtooth";
-            oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+            const nowOver = audioContext.currentTime;
+            oscillator.type = "triangle";
+            oscillator.frequency.setValueAtTime(200, nowOver);
             oscillator.frequency.exponentialRampToValueAtTime(
-              100,
-              audioContext.currentTime + 0.5,
+              50,
+              nowOver + 0.8,
             );
-            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-            gainNode.gain.linearRampToValueAtTime(
-              0,
-              audioContext.currentTime + 0.5,
-            );
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.5);
+            gainNode.gain.setValueAtTime(0.3, nowOver);
+            gainNode.gain.linearRampToValueAtTime(0, nowOver + 0.8);
+            oscillator.start(nowOver);
+            oscillator.stop(nowOver + 0.8);
             break;
           case "click":
             oscillator.type = "triangle";
@@ -2672,22 +4147,48 @@
 
         if (gameState.score < 50) return;
 
+        const oldScore = gameState.score;
         gameState.score -= 50;
         gameState.hintUsed = true;
-        updateScore(50, -50);
+        updateScore(oldScore, -50);
         updateHintButton();
 
         const hintDisplay = document.createElement("div");
         hintDisplay.id = "hintDisplay";
-        hintDisplay.style.cssText =
-          "color: var(--chalk-yellow); font-size: 1.1rem; margin-top: 10px; font-style: italic;";
+        hintDisplay.className = "hint-text";
         hintDisplay.textContent = "İpucu: " + gameState.currentWord.translation;
 
+        const infoLine = document.getElementById("gameInfoLine");
+        if (infoLine) {
+          infoLine.appendChild(hintDisplay);
+        }
+        saveGameProgress();
+      }
+
+      function clearGameUI() {
+        document.querySelectorAll(".key").forEach((key) => {
+          key.classList.remove("correct", "wrong", "used-label");
+          key.disabled = false;
+        });
+
         const wordContainer = document.getElementById("wordContainer");
-        wordContainer.parentNode.insertBefore(
-          hintDisplay,
-          wordContainer.nextSibling,
-        );
+        if (wordContainer) wordContainer.innerHTML = "";
+
+        document.querySelectorAll(".hangman-path").forEach((path) => {
+          path.classList.remove("drawing");
+          path.style.strokeDashoffset = "1000";
+          if (path.classList.contains("hangman-hidden")) {
+            path.style.opacity = "0";
+          } else {
+            path.style.opacity = "1";
+          }
+        });
+
+        const existingHint = document.getElementById("hintDisplay");
+        if (existingHint) existingHint.remove();
+
+        const timerEl = document.getElementById("timerDisplay");
+        if (timerEl) timerEl.textContent = "";
       }
 
       function updateHintButton() {
@@ -2725,23 +4226,30 @@
         }
       }
 
+      let lastRenderedScore = 0;
+
       function updateScore(fromValue = null, increment = 0) {
         const targetValue = gameState.score;
-        const startValue =
-          fromValue !== null ? fromValue : targetValue - increment;
+        const startValue = fromValue !== null ? fromValue : lastRenderedScore;
+
+        lastRenderedScore = targetValue;
 
         document.querySelectorAll(".odometer").forEach((odm) => {
           animateOdometer(odm, startValue, targetValue, 800);
         });
       }
 
+      const activeOdometerAnims = new Map();
+
       function animateOdometer(element, startValue, endValue, duration) {
+        if (activeOdometerAnims.has(element)) {
+          cancelAnimationFrame(activeOdometerAnims.get(element));
+        }
+
         const startTime = performance.now();
         const diff = endValue - startValue;
-        const steps = Math.abs(diff);
-        const stepDuration = duration / Math.max(steps, 1);
-
         let currentValue = startValue;
+        let lastTickTime = 0;
 
         function update(currentTime) {
           const elapsed = currentTime - startTime;
@@ -2753,19 +4261,27 @@
           if (newValue !== currentValue) {
             currentValue = newValue;
             renderOdometer(currentValue, element);
-            if (Math.abs(newValue - endValue) > 0) {
+
+            if (
+              currentTime - lastTickTime > 50 &&
+              Math.abs(newValue - endValue) > 0
+            ) {
               playSound("tick");
+              lastTickTime = currentTime;
             }
           }
 
           if (progress < 1) {
-            requestAnimationFrame(update);
+            const animId = requestAnimationFrame(update);
+            activeOdometerAnims.set(element, animId);
           } else {
+            activeOdometerAnims.delete(element);
             renderOdometer(endValue, element);
           }
         }
 
-        requestAnimationFrame(update);
+        const animId = requestAnimationFrame(update);
+        activeOdometerAnims.set(element, animId);
       }
 
       function renderOdometer(value, specificElement = null) {
@@ -2792,24 +4308,34 @@
       }
 
       function speakWord(text) {
-        if (!("speechSynthesis" in window)) return;
+        if (!("speechSynthesis" in window) || !gameState.soundEnabled) return;
 
         window.speechSynthesis.cancel();
-        window.speechSynthesis.resume();
 
-        setTimeout(() => {
-          const utterance = new SpeechSynthesisUtterance(text);
-          utterance.lang = "de-DE";
-          utterance.rate = 0.8;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = "de-DE";
+        utterance.rate = 0.85;
 
-          const voices = window.speechSynthesis.getVoices();
-          const german = voices.find((v) =>
-            v.lang.toLowerCase().startsWith("de"),
+        let voices = window.speechSynthesis.getVoices();
+        if (voices.length === 0) {
+          voices = window.speechSynthesis.getVoices();
+        }
+
+        const findGermanVoice = () => {
+          return (
+            voices.find((v) => v.lang.toLowerCase().startsWith("de")) ||
+            voices.find((v) => v.lang.toLowerCase().includes("de")) ||
+            voices[0]
           );
-          if (german) utterance.voice = german;
+        };
 
-          window.speechSynthesis.speak(utterance);
-        }, 50);
+        if (typeof germanVoice !== "undefined" && germanVoice) {
+          utterance.voice = germanVoice;
+        } else {
+          utterance.voice = findGermanVoice();
+        }
+
+        window.speechSynthesis.speak(utterance);
       }
 
       function speakCurrentWord() {
@@ -2830,15 +4356,43 @@
         });
       }
 
+      async function warmUpAudio() {
+        if (!audioContext) {
+          audioContext = new (
+            window.AudioContext || window.webkitAudioContext
+          )();
+        }
+        if (audioContext.state === "suspended") {
+          await audioContext.resume();
+        }
+
+        const buffer = audioContext.createBuffer(1, 1, 22050);
+        const source = audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.connect(audioContext.destination);
+        source.start(0);
+        source.stop(0.001);
+      }
+
       document.addEventListener(
         "click",
         async function initAudio() {
-          if (audioContext && audioContext.state === "suspended") {
-            await audioContext.resume();
+          await warmUpAudio();
+
+          if ("speechSynthesis" in window) {
+            const utterance = new SpeechSynthesisUtterance("");
+            utterance.volume = 0;
+            window.speechSynthesis.speak(utterance);
           }
         },
         { once: true },
       );
+
+      document.addEventListener("visibilitychange", async () => {
+        if (!document.hidden) {
+          await warmUpAudio();
+        }
+      });
 
       function startGame() {
         if (!vocabLoaded) {
@@ -2848,26 +4402,29 @@
 
         gameState.remainingLives = gameState.lives;
         gameState.score = 0;
+        lastRenderedScore = 0;
         gameState.streak = 0;
         gameState.round = 1;
         gameState.wordsCompleted = 0;
         gameState.totalMistakes = 0;
+        gameState.sessionXP = 0;
         gameState.usedLetters.clear();
         gameState.usedWords.clear();
         gameState.currentSessionWords = [];
 
+        clearGameUI();
         document.getElementById("startScreen").classList.add("hidden");
         document.getElementById("gameScreen").classList.remove("hidden");
         document.getElementById("gameOverScreen").classList.add("hidden");
 
         renderOdometer(0);
+        lastRenderedScore = 0;
         updateHearts();
         updateHintButton();
 
         playSound("start");
-        setTimeout(() => {
-          loadNewWord();
-        }, 100);
+        loadNewWord();
+        saveGameProgress();
       }
 
       function updateRoundDisplay() {
@@ -2930,15 +4487,32 @@
 
         let wordPool = wordData[gameState.difficulty];
 
-        const available = wordPool.filter(
-          (w) => !gameState.usedWords.has(w.word),
-        );
-        const pool = available.length > 0 ? available : wordPool;
+        const screenWidth = window.innerWidth;
+        const maxChars = Math.max(10, Math.floor((screenWidth - 40) / 20));
 
-        gameState.currentWord = pool[Math.floor(Math.random() * pool.length)];
+        const available = wordPool.filter(
+          (w) => !gameState.usedWords.has(w.word) && w.word.length <= maxChars,
+        );
+        const pool =
+          available.length > 0
+            ? available
+            : wordPool.filter((w) => w.word.length <= maxChars);
+        const finalPool = pool.length > 0 ? pool : wordPool;
+
+        gameState.currentWord =
+          finalPool[Math.floor(Math.random() * finalPool.length)];
         gameState.usedWords.add(gameState.currentWord.word);
 
-        gameState.currentSessionWords.push(gameState.currentWord);
+        if (!stats.encounteredWords) stats.encounteredWords = [];
+        if (!stats.encounteredWords.includes(gameState.currentWord.word)) {
+          stats.encounteredWords.push(gameState.currentWord.word);
+          saveStats();
+        }
+
+        gameState.currentSessionWords.push({
+          ...gameState.currentWord,
+          guessed: false,
+        });
 
         gameState.usedLetters.clear();
         gameState.remainingLives = gameState.lives;
@@ -2967,7 +4541,7 @@
         });
 
         document.querySelectorAll(".key").forEach((key) => {
-          key.className = "key";
+          key.classList.remove("correct", "wrong", "used-label");
           key.disabled = false;
         });
 
@@ -2980,6 +4554,7 @@
         } else {
           document.getElementById("timerDisplay").classList.add("hidden");
         }
+        saveGameProgress();
       }
 
       function displayWord() {
@@ -3008,7 +4583,8 @@
           const lowerChar = char.toLowerCase();
 
           slot.className =
-            "letter-slot " + (char == "ß" ? "lowercase" : "uppercase");
+            "letter-slot " +
+            (char.toLowerCase() === "ß" ? "lowercase" : "uppercase");
 
           if (!alphabet.has(lowerChar)) {
             slot.textContent = char;
@@ -3054,8 +4630,9 @@
 
         alphabet.forEach((char) => {
           const key = document.createElement("button");
-          key.className = "key uppercase";
-          key.textContent = char.toUpperCase();
+          const isSharpS = char.toLowerCase() === "ß";
+          key.className = "key " + (isSharpS ? "lowercase" : "uppercase");
+          key.textContent = isSharpS ? "ß" : char.toLocaleUpperCase("de");
           key.onclick = () => handleGuess(char);
           keyboard.appendChild(key);
         });
@@ -3117,10 +4694,19 @@
         } else {
           handleWrongGuess(char);
         }
+        saveGameProgress();
       }
 
       function handleCorrectGuess(char) {
         playSound("correct");
+        triggerHaptic("success");
+
+        const btn = Array.from(document.querySelectorAll(".key")).find(
+          (b) => b.textContent.toLowerCase() === char.toLowerCase(),
+        );
+        if (btn) {
+          const rect = btn.getBoundingClientRect();
+        }
 
         const wordContainer = document.getElementById("wordContainer");
         wordContainer.classList.remove("correct-glow");
@@ -3170,6 +4756,7 @@
 
       function handleWrongGuess(char) {
         playSound("wrong");
+        triggerHaptic("error");
         gameState.remainingLives--;
         gameState.totalMistakes++;
 
@@ -3209,6 +4796,7 @@
 
             requestAnimationFrame(() => {
               part.classList.add("drawing");
+              const rect = part.getBoundingClientRect();
             });
           }
         }
@@ -3253,13 +4841,13 @@
           );
           heart.setAttribute("viewBox", "0 0 24 24");
           heart.innerHTML =
-            '<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>';
+            '<path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z" fill="currentColor"/>';
           container.appendChild(heart);
         }
       }
 
       function startTicking() {
-        if (timerTickInterval) clearInterval(timerTickInterval);
+        if (timerTickInterval) clearTimeout(timerTickInterval);
 
         function updateTick() {
           if (!gameState.gameActive) return;
@@ -3287,12 +4875,14 @@
         updateTick();
       }
 
-      function startTimer() {
+      function startTimer(isResuming = false) {
         const timerDisplay = document.getElementById("timerDisplay");
         timerDisplay.classList.remove("hidden");
         timerDisplay.classList.remove("warning");
 
-        gameState.timeRemaining = gameState.timerValue;
+        if (!isResuming) {
+          gameState.timeRemaining = gameState.timerValue;
+        }
 
         updateTimerDisplay();
 
@@ -3310,6 +4900,10 @@
             clearInterval(gameState.timer);
             handleLoss();
           }
+
+          if (gameState.timeRemaining % 2 === 0) {
+            saveGameProgress();
+          }
         }, 1000);
 
         startTicking();
@@ -3320,46 +4914,84 @@
           gameState.timeRemaining;
       }
 
-      function playEraserWipe(callback) {
-        const gameArea = document.getElementById("gameArea");
-        const wipe = document.createElement("div");
-        wipe.className = "eraser-wipe";
-        gameArea.appendChild(wipe);
+      function confirmFinishGame() {
+        if (confirm("Oyunu bitirmek istediğinize emin misiniz?")) {
+          showGameOver();
+        }
+      }
 
-        if (gameState.soundEnabled && audioContext) {
-          const oscillator = audioContext.createOscillator();
-          const gain = audioContext.createGain();
-          const filter = audioContext.createBiquadFilter();
+      function updateEndRoundUI(isWin) {
+        const baseScore = 30;
+        const heartBonus = isWin ? gameState.remainingLives * 5 : 0;
+        const timePercent =
+          isWin && gameState.timerValue
+            ? (gameState.timeRemaining / gameState.timerValue) * 100
+            : 0;
+        const timeBonus =
+          isWin && gameState.timerValue
+            ? Math.max(1, Math.floor(timePercent / 10))
+            : 0;
+        const streakMultiplier =
+          isWin && gameState.streak >= 2
+            ? Math.min(2, 1 + gameState.streak / 10)
+            : 1;
+        const roundScore = isWin
+          ? Math.floor((baseScore + heartBonus + timeBonus) * streakMultiplier)
+          : 0;
 
-          oscillator.type = "sawtooth";
-          oscillator.frequency.setValueAtTime(100, audioContext.currentTime);
-          oscillator.frequency.linearRampToValueAtTime(
-            50,
-            audioContext.currentTime + 0.5,
-          );
-
-          filter.type = "lowpass";
-          filter.frequency.setValueAtTime(2000, audioContext.currentTime);
-          filter.frequency.linearRampToValueAtTime(
-            100,
-            audioContext.currentTime + 0.5,
-          );
-
-          gain.gain.setValueAtTime(0.1, audioContext.currentTime);
-          gain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.5);
-
-          oscillator.connect(filter);
-          filter.connect(gain);
-          gain.connect(audioContext.destination);
-
-          oscillator.start(audioContext.currentTime);
-          oscillator.stop(audioContext.currentTime + 0.5);
+        const baseScoreEl = document.getElementById("scoreCorrectGuess");
+        const baseLabelEl = document.getElementById("scoreCorrectGuessLabel");
+        if (baseScoreEl && baseLabelEl) {
+          baseLabelEl.textContent = isWin ? "Doğru tahmin:" : "Yanlış tahmin:";
+          baseScoreEl.textContent = isWin ? "+" + baseScore : "+0";
+          baseScoreEl.className = isWin ? "chalk-green" : "chalk-gray";
         }
 
-        setTimeout(() => {
-          wipe.remove();
-          if (callback) callback();
-        }, 1200);
+        const heartBonusEl = document.getElementById("scoreHearts");
+        if (heartBonusEl) {
+          heartBonusEl.textContent = heartBonus > 0 ? "+" + heartBonus : "0";
+          heartBonusEl.className =
+            heartBonus > 0 ? "chalk-green" : "chalk-gray";
+        }
+
+        const timeBonusRow = document.getElementById("scoreTimeRow");
+        const timeBonusEl = document.getElementById("scoreTime");
+        if (timeBonusRow && timeBonusEl) {
+          if (isWin && gameState.timerValue) {
+            timeBonusRow.classList.remove("hidden");
+            timeBonusEl.textContent = "+" + timeBonus;
+            timeBonusEl.className = "chalk-green";
+          } else {
+            timeBonusRow.classList.add("hidden");
+          }
+        }
+
+        const multiplierRow = document.getElementById("scoreMultiplierRow");
+        const multiplierValue = document.getElementById("scoreMultiplier");
+        if (multiplierRow && multiplierValue) {
+          if (isWin && gameState.streak >= 2) {
+            multiplierRow.classList.remove("hidden");
+            multiplierValue.textContent = "x" + streakMultiplier.toFixed(1);
+          } else {
+            multiplierRow.classList.add("hidden");
+          }
+        }
+
+        const totalRoundEl = document.getElementById("scoreTotalRound");
+        if (totalRoundEl) {
+          totalRoundEl.textContent = "+" + roundScore;
+        }
+
+        // Also update the main stats row
+        document.getElementById("statStreak").textContent = isWin
+          ? gameState.streak
+          : 0;
+        document.getElementById("statTime").textContent =
+          isWin && gameState.timerValue
+            ? gameState.timerValue - gameState.timeRemaining + "s"
+            : "-";
+        document.getElementById("statMistakes").textContent =
+          gameState.lives - gameState.remainingLives;
       }
 
       function handleWin() {
@@ -3368,6 +5000,7 @@
 
         playSound("win");
         gameState.streak++;
+        stats.dailyWordsCompleted = (stats.dailyWordsCompleted || 0) + 1;
         gameState.wordsCompleted++;
 
         const streakMultiplier =
@@ -3394,85 +5027,86 @@
           } catch (e) {}
         }
 
+        stats.totalWordsCompleted++;
+        if (!stats.difficultySuccess) {
+          stats.difficultySuccess = {
+            easy: { attempted: 0, correct: 0 },
+            medium: { attempted: 0, correct: 0 },
+            hard: { attempted: 0, correct: 0 },
+          };
+        }
+        stats.difficultySuccess[gameState.difficulty].correct++;
+        stats.difficultySuccess[gameState.difficulty].attempted++;
+
+        const wordId = getWordKey(gameState.currentWord);
+        if (!stats.learnedWords.includes(wordId)) {
+          stats.learnedWords.push(wordId);
+        }
+        if (!stats.encounteredWords.includes(wordId)) {
+          stats.encounteredWords.push(wordId);
+        }
+
+        stats.struggledWords = stats.struggledWords.filter(
+          (wId) => wId !== wordId,
+        );
+
+        if (gameState.currentSessionWords.length > 0) {
+          gameState.currentSessionWords[
+            gameState.currentSessionWords.length - 1
+          ].guessed = true;
+        }
+
+        const xpGain = Math.max(roundScore, 0);
+        gameState.sessionXP += xpGain;
+        addXP(xpGain);
+        updateStreak();
+
+        if (gameState.isDailyWord) {
+          stats.dailyWordPlayedDate = new Date().toLocaleDateString("tr-TR");
+        }
+        saveGameProgress();
+        saveStats();
+
         setTimeout(() => {
-          playEraserWipe(() => {
-            document.getElementById("gameScreen").classList.add("hidden");
-            document
-              .getElementById("endRoundScreen")
-              .classList.remove("hidden");
+          document.getElementById("gameScreen").classList.add("hidden");
+          document.getElementById("endRoundScreen").classList.remove("hidden");
 
-            document.getElementById("resultTitle").textContent =
-              getRandomPhrase(winPhrases);
-            document.getElementById("resultTitle").className =
-              "result-title win";
-            document.getElementById("revealWord").textContent =
-              (gameState.currentWord.article
-                ? gameState.currentWord.article + " "
-                : "") + gameState.currentWord.word;
-            document.getElementById("revealTranslation").textContent =
-              gameState.currentWord.translation;
-            const pluralDiv = document.getElementById("revealPlural");
-            if (gameState.currentWord.plural) {
-              pluralDiv.textContent = "Çoğul: " + gameState.currentWord.plural;
-            } else {
-              pluralDiv.textContent = "";
-            }
-            document.getElementById("revealExample").textContent =
-              gameState.currentWord.example || "(örnek yok)";
+          const finishBtn = document.getElementById("finishGameBtn");
+          if (finishBtn) {
+            finishBtn.classList.remove("hidden");
+          }
 
-            setTimeout(() => {
-              renderOdometer(gameState.score);
-            }, 200);
+          document.getElementById("resultTitle").textContent =
+            getRandomPhrase(winPhrases);
+          document.getElementById("resultTitle").className = "result-title win";
+          document.getElementById("revealWord").textContent =
+            (gameState.currentWord.article
+              ? gameState.currentWord.article + " "
+              : "") + gameState.currentWord.word;
+          document.getElementById("revealTranslation").textContent =
+            gameState.currentWord.translation;
+          const pluralDiv = document.getElementById("revealPlural");
+          if (gameState.currentWord.plural) {
+            pluralDiv.textContent =
+              "Çoğul: die " + gameState.currentWord.plural;
+          } else {
+            pluralDiv.textContent = "";
+          }
+          document.getElementById("revealExample").textContent =
+            gameState.currentWord.example || "(örnek yok)";
 
-            document.getElementById("statStreak").textContent =
-              gameState.streak;
-            document.getElementById("statTime").textContent =
-              gameState.timerValue
-                ? gameState.timerValue - gameState.timeRemaining + "s"
-                : "-";
-            document.getElementById("statMistakes").textContent =
-              gameState.lives - gameState.remainingLives;
+          setTimeout(() => {
+            renderOdometer(gameState.score);
+          }, 200);
 
-            const baseScoreEl = document.getElementById("scoreCorrectGuess");
-            baseScoreEl.textContent = "+" + baseScore;
-            baseScoreEl.className = "chalk-green";
+          updateEndRoundUI(true);
+          updateScore(oldScore, roundScore);
 
-            const heartBonusEl = document.getElementById("scoreHearts");
-            if (heartBonus > 0) {
-              heartBonusEl.textContent = "+" + heartBonus;
-              heartBonusEl.className = "chalk-green";
-            } else if (heartBonus === 0) {
-              heartBonusEl.textContent = "0";
-              heartBonusEl.className = "chalk-gray";
-            }
+          stats.totalPoints += roundScore;
+          if (gameState.streak > stats.bestStreak)
+            stats.bestStreak = gameState.streak;
 
-            const timeBonusRow = document.getElementById("scoreTimeRow");
-            if (gameState.timerValue) {
-              timeBonusRow.classList.remove("hidden");
-              document.getElementById("scoreTime").textContent =
-                "+" + timeBonus;
-            } else {
-              timeBonusRow.classList.add("hidden");
-            }
-
-            document.getElementById("scoreCorrectGuessLabel").textContent =
-              "Doğru tahmin:";
-            document.getElementById("scoreCorrectGuess").textContent = "+30";
-
-            const multiplierRow = document.getElementById("scoreMultiplierRow");
-            const multiplierValue = document.getElementById("scoreMultiplier");
-            if (gameState.streak >= 2) {
-              multiplierRow.classList.remove("hidden");
-              multiplierValue.textContent = "x" + streakMultiplier.toFixed(1);
-            } else {
-              multiplierRow.classList.add("hidden");
-            }
-
-            document.getElementById("scoreTotalRound").textContent =
-              (roundScore >= 0 ? "+" : "") + roundScore;
-
-            updateScore(oldScore, roundScore);
-          });
+          saveStats();
         }, 500);
       }
 
@@ -3480,55 +5114,68 @@
         gameState.gameActive = false;
         if (gameState.timer) clearInterval(gameState.timer);
 
+        playSound("lose");
         gameState.streak = 0;
 
+        stats.totalLosses = (stats.totalLosses || 0) + 1;
+        if (!stats.difficultySuccess) {
+          stats.difficultySuccess = {
+            easy: { attempted: 0, correct: 0 },
+            medium: { attempted: 0, correct: 0 },
+            hard: { attempted: 0, correct: 0 },
+          };
+        }
+        stats.difficultySuccess[gameState.difficulty].attempted++;
+        stats.totalMistakes += 6 - gameState.remainingLives;
+
+        const word = gameState.currentWord.word;
+        if (!stats.struggledWords.includes(word)) {
+          stats.struggledWords.push(word);
+        }
+        if (!stats.encounteredWords.includes(word)) {
+          stats.encounteredWords.push(word);
+        }
+
+        updateStreak();
+        saveStats();
+
         setTimeout(() => {
-          playEraserWipe(() => {
-            document.getElementById("gameScreen").classList.add("hidden");
-            document
-              .getElementById("endRoundScreen")
-              .classList.remove("hidden");
+          document.getElementById("gameScreen").classList.add("hidden");
+          document.getElementById("endRoundScreen").classList.remove("hidden");
 
-            document.getElementById("resultTitle").textContent =
-              getRandomPhrase(lossPhrases);
-            document.getElementById("resultTitle").className =
-              "result-title lose";
-            document.getElementById("revealWord").textContent =
-              (gameState.currentWord.article
-                ? gameState.currentWord.article + " "
-                : "") + gameState.currentWord.word;
-            document.getElementById("revealTranslation").textContent =
-              gameState.currentWord.translation;
-            const pluralDiv = document.getElementById("revealPlural");
-            if (gameState.currentWord.plural) {
-              pluralDiv.textContent =
-                "Çoğul: die " + gameState.currentWord.plural;
-            } else {
-              pluralDiv.textContent = "";
-            }
-            document.getElementById("revealExample").textContent =
-              gameState.currentWord.example || "(örnek yok)";
+          const finishBtn = document.getElementById("finishGameBtn");
+          if (finishBtn) {
+            finishBtn.classList.remove("hidden");
+          }
 
-            setTimeout(() => {
-              renderOdometer(gameState.score);
-            }, 200);
+          document.getElementById("resultTitle").textContent =
+            getRandomPhrase(lossPhrases);
+          document.getElementById("resultTitle").className =
+            "result-title lose";
+          document.getElementById("revealWord").textContent =
+            (gameState.currentWord.article
+              ? gameState.currentWord.article + " "
+              : "") + gameState.currentWord.word;
+          document.getElementById("revealTranslation").textContent =
+            gameState.currentWord.translation;
+          const pluralDiv = document.getElementById("revealPlural");
+          if (gameState.currentWord.plural) {
+            pluralDiv.textContent =
+              "Çoğul: die " + gameState.currentWord.plural;
+          } else {
+            pluralDiv.textContent = "";
+          }
+          document.getElementById("revealExample").textContent =
+            gameState.currentWord.example || "(örnek yok)";
 
-            document.getElementById("statStreak").textContent = 0;
-            document.getElementById("statTime").textContent = "-";
-            document.getElementById("statMistakes").textContent =
-              gameState.lives - gameState.remainingLives;
+          setTimeout(() => {
+            renderOdometer(gameState.score);
+          }, 200);
 
-            document.getElementById("scoreCorrectGuessLabel").textContent =
-              "Yanlış tahmin:";
-            document.getElementById("scoreCorrectGuess").textContent = "+0";
-            document.getElementById("scoreHearts").textContent = "+0";
-            document.getElementById("scoreTime").textContent = "+0";
-            document
-              .getElementById("scoreMultiplierRow")
-              .classList.add("hidden");
-            document.getElementById("scoreTotalRound").textContent = "+0";
-          });
-        }, 500);
+          updateEndRoundUI(false);
+          saveGameProgress();
+          saveStats();
+        }, 1000);
       }
 
       function nextWord() {
@@ -3542,18 +5189,12 @@
 
         playSound("next");
         gameState.round++;
+        clearGameUI();
         document.getElementById("endRoundScreen").classList.add("hidden");
         document.getElementById("gameScreen").classList.remove("hidden");
 
-        document.querySelectorAll(".hangman-path").forEach((path) => {
-          path.classList.remove("drawing");
-          if (path.classList.contains("hangman-hidden")) {
-            path.style.opacity = "0";
-            path.style.strokeDashoffset = "1000";
-          }
-        });
-
         loadNewWord();
+        saveGameProgress();
       }
 
       function createFlashcards() {
@@ -3567,10 +5208,19 @@
 
           const wordText = (word.article ? word.article + " " : "") + word.word;
 
+          let feedbackIcon = "";
+          if (word.guessed === true) {
+            feedbackIcon =
+              '<span title="Doğru Bilindi" style="margin-left:8px; color: var(--chalk-green);">✅</span>';
+          } else if (word.guessed === false) {
+            feedbackIcon =
+              '<span title="Yanlış Bilindi" style="margin-left:8px; color: var(--chalk-red);">❌</span>';
+          }
+
           card.innerHTML = `
             <div class="flashcard-word">
-              ${wordText}
-              <button class="audio-btn" onclick="event.stopPropagation(); speakCurrentWord()" title="Dinle">🔊</button>
+              <span>${wordText}${feedbackIcon}</span>
+              <button class="audio-btn" onclick="event.stopPropagation(); speakWord('${wordText.replace(/'/g, "\\'")}')" title="Dinle">🔊</button>
             </div>
             <div class="flashcard-translation">${word.translation}</div>
             ${word.plural ? `<div class="flashcard-meta">Çoğul: ${word.plural}</div>` : ""}
@@ -3585,12 +5235,39 @@
         document.getElementById("gameOverScreen").classList.remove("hidden");
         document.getElementById("finalScore").textContent = gameState.score;
         document.getElementById("wordsCompleted").textContent =
-          gameState.wordsCompleted;
+          stats.dailyWordsCompleted || 0;
         document.getElementById("totalMistakes").textContent =
           gameState.totalMistakes;
 
         playSound("gameover");
+        const gameXPEl = document.getElementById("gameXPGain");
+        if (gameXPEl) {
+          gameXPEl.textContent = `Toplam +${gameState.sessionXP} XP Kazanıldı!`;
+        }
+
         createFlashcards();
+        saveGameProgress();
+
+        stats.totalGames++;
+        if (gameState.wordsCompleted > 0) {
+          stats.totalWins++;
+        } else {
+          stats.totalLosses++;
+        }
+
+        if (!stats.bestScores) stats.bestScores = [];
+        const modeLabel =
+          gameState.mode === "infinite" ? "Sonsuz" : gameState.mode + " Tur";
+        stats.bestScores.push({
+          score: gameState.score,
+          mode: modeLabel,
+          date: new Date().toLocaleDateString("tr-TR"),
+        });
+
+        stats.bestScores.sort((a, b) => b.score - a.score);
+        stats.bestScores = stats.bestScores.slice(0, 5);
+
+        saveStats();
 
         const highScoreEl =
           document.getElementById("highScore") || document.createElement("p");
@@ -3611,11 +5288,13 @@
       }
 
       function playAgain() {
+        window.scrollTo(0, 0);
         document.getElementById("gameOverScreen").classList.add("hidden");
         startGame();
       }
 
       function backToMenu() {
+        window.scrollTo(0, 0);
         if (
           gameState.gameActive &&
           (gameState.usedLetters.size > 0 || gameState.remainingLives < 6)
@@ -3630,6 +5309,11 @@
         }
 
         if (gameState.timer) clearInterval(gameState.timer);
+        clearGameProgress();
+
+        gameState.isDailyWord = false;
+        loadSettings();
+        updateSummaryLine();
 
         document.body.classList.remove(
           "low-lives-3",
@@ -3717,13 +5401,365 @@
       }
 
       function showCredits() {
-        document.getElementById("creditsScreen").classList.remove("hidden");
+        const screen = document.getElementById("creditsScreen");
+        screen.scrollTop = 0;
+        screen.classList.remove("hidden");
         document.getElementById("startScreen").classList.add("hidden");
       }
 
       function hideCredits() {
         document.getElementById("creditsScreen").classList.add("hidden");
         document.getElementById("startScreen").classList.remove("hidden");
+      }
+
+      function saveGameProgress() {
+        if (
+          !gameState.gameActive &&
+          document
+            .getElementById("endRoundScreen")
+            .classList.contains("hidden") &&
+          document.getElementById("gameOverScreen").classList.contains("hidden")
+        ) {
+          return;
+        }
+
+        try {
+          const stateToSave = {
+            ...gameState,
+            usedLetters: Array.from(gameState.usedLetters),
+            usedWords: Array.from(gameState.usedWords),
+            currentSessionWords: gameState.currentSessionWords,
+            timer: null,
+          };
+          localStorage.setItem("hangmanSavedGame", JSON.stringify(stateToSave));
+
+          let currentScreen = "startScreen";
+          if (
+            !document.getElementById("gameScreen").classList.contains("hidden")
+          )
+            currentScreen = "gameScreen";
+          else if (
+            !document
+              .getElementById("endRoundScreen")
+              .classList.contains("hidden")
+          )
+            currentScreen = "endRoundScreen";
+          else if (
+            !document
+              .getElementById("gameOverScreen")
+              .classList.contains("hidden")
+          )
+            currentScreen = "gameOverScreen";
+
+          localStorage.setItem("hangmanSavedScreen", currentScreen);
+        } catch (e) {
+          console.warn("Failed to save game progress", e);
+        }
+      }
+
+      function clearGameProgress() {
+        localStorage.removeItem("hangmanSavedGame");
+        localStorage.removeItem("hangmanSavedScreen");
+      }
+
+      function checkSavedGame() {
+        const saved = localStorage.getItem("hangmanSavedGame");
+        if (saved) {
+          try {
+            const data = JSON.parse(saved);
+            const savedScreen = localStorage.getItem("hangmanSavedScreen");
+            if (savedScreen && savedScreen !== "startScreen") {
+              document.getElementById("startScreen").classList.add("hidden");
+              document
+                .getElementById("resumeScreen")
+                .classList.remove("hidden");
+
+              const statsEl = document.getElementById("resumeStats");
+              if (statsEl) {
+                const modeText =
+                  data.mode === "infinite" ? "Sonsuz" : data.mode;
+                statsEl.textContent = `Puan: ${data.score} • Tur: ${data.round}/${modeText}`;
+              }
+            }
+          } catch (e) {
+            console.error("Failed to parse saved game", e);
+            clearGameProgress();
+          }
+        }
+      }
+
+      function resumeGame() {
+        const saved = localStorage.getItem("hangmanSavedGame");
+        const savedScreen = localStorage.getItem("hangmanSavedScreen");
+
+        if (!saved || !savedScreen) {
+          backToMenu();
+          return;
+        }
+
+        try {
+          const data = JSON.parse(saved);
+
+          Object.assign(gameState, data);
+          gameState.usedLetters = new Set(data.usedLetters);
+          gameState.usedWords = new Set(data.usedWords);
+
+          document
+            .querySelectorAll(".screen")
+            .forEach((s) => s.classList.add("hidden"));
+          document.getElementById(savedScreen).classList.remove("hidden");
+
+          if (savedScreen === "gameScreen") {
+            renderOdometer(gameState.score);
+            lastRenderedScore = gameState.score;
+            updateHearts();
+            updateHintButton();
+            saveGameProgress();
+            updateRoundDisplay();
+            displayWord();
+            initKeyboard();
+
+            const keys = document.querySelectorAll(".key");
+            keys.forEach((key) => {
+              const char = key.textContent.toLowerCase();
+              if (gameState.usedLetters.has(char)) {
+                key.disabled = true;
+                let foundMatch = false;
+                for (let i = 0; i < gameState.currentWord.word.length; i++) {
+                  if (matchesWithAccent(gameState.currentWord.word[i], char)) {
+                    foundMatch = true;
+                    break;
+                  }
+                }
+                if (foundMatch) key.classList.add("correct");
+                else key.classList.add("wrong");
+              }
+            });
+
+            updateLowLivesEffect();
+
+            const parts = [
+              "head",
+              "body",
+              "armLeft",
+              "armRight",
+              "legLeft",
+              "legRight",
+            ];
+            const mistakes = gameState.lives - gameState.remainingLives;
+            for (let i = 0; i < mistakes; i++) {
+              const part = document.getElementById(parts[i]);
+              if (part) {
+                part.style.opacity = "1";
+                part.style.strokeDashoffset = "0";
+              }
+            }
+
+            if (gameState.timerValue && gameState.gameActive) {
+              startTimer(true);
+            }
+          } else if (savedScreen === "endRoundScreen") {
+            document.getElementById("resultTitle").textContent =
+              gameState.remainingLives > 0
+                ? getRandomPhrase(winPhrases)
+                : getRandomPhrase(lossPhrases);
+            document.getElementById("resultTitle").className =
+              "result-title " + (gameState.remainingLives > 0 ? "win" : "lose");
+            document.getElementById("revealWord").textContent =
+              (gameState.currentWord.article
+                ? gameState.currentWord.article + " "
+                : "") + gameState.currentWord.word;
+            document.getElementById("revealTranslation").textContent =
+              gameState.currentWord.translation;
+            const pluralDiv = document.getElementById("revealPlural");
+            if (gameState.currentWord.plural)
+              pluralDiv.textContent = "Çoğul: " + gameState.currentWord.plural;
+            else pluralDiv.textContent = "";
+            document.getElementById("revealExample").textContent =
+              gameState.currentWord.example || "(örnek yok)";
+            renderOdometer(gameState.score);
+            updateEndRoundUI(gameState.remainingLives > 0);
+            updateRoundDisplay();
+          } else if (savedScreen === "gameOverScreen") {
+            document
+              .getElementById("gameOverScreen")
+              .classList.remove("hidden");
+            document.getElementById("finalScore").textContent = gameState.score;
+            document.getElementById("wordsCompleted").textContent =
+              stats.dailyWordsCompleted || 0;
+            document.getElementById("totalMistakes").textContent =
+              gameState.totalMistakes;
+
+            const gameXPEl = document.getElementById("gameXPGain");
+            if (gameXPEl) {
+              gameXPEl.textContent = `Toplam +${gameState.sessionXP} XP Kazanıldı!`;
+            }
+            createFlashcards();
+          }
+
+          playSound("start");
+        } catch (e) {
+          console.error("Resume failed", e);
+          backToMenu();
+        }
+      }
+
+      function discardSavedGame() {
+        clearGameProgress();
+        document.getElementById("resumeScreen").classList.add("hidden");
+        document.getElementById("startScreen").classList.remove("hidden");
+        animateTitle();
+      }
+
+      function showStats() {
+        const screen = document.getElementById("statsScreen");
+        screen.scrollTop = 0;
+        stats.learnedWords = [
+          ...new Set((stats.learnedWords || []).filter(Boolean)),
+        ];
+        document.getElementById("startScreen").classList.add("hidden");
+        screen.classList.remove("hidden");
+
+        document
+          .querySelectorAll("#statsScreen .menu-section.collapsible")
+          .forEach((el, i) => {
+            if (i === 0) el.classList.remove("collapsed");
+            else el.classList.add("collapsed");
+          });
+
+        document.getElementById("statsTotalGames").textContent =
+          stats.totalGames;
+        document.getElementById("statsTotalPoints").textContent =
+          stats.totalPoints;
+        document.getElementById("statsBestStreak").textContent =
+          stats.bestStreak;
+        document.getElementById("statsWordsCompleted").textContent =
+          stats.wordsCompleted;
+        document.getElementById("statsTotalMistakes").textContent =
+          stats.totalMistakes;
+
+        const totalGames = Math.max(
+          stats.totalGames || 0,
+          stats.totalWins || 0,
+        );
+        const winRate =
+          totalGames > 0
+            ? Math.min(
+                100,
+                Math.round(((stats.totalWins || 0) / totalGames) * 100),
+              )
+            : 0;
+        document.getElementById("statsWinRate").textContent = winRate + "%";
+
+        const scoresContainer = document.getElementById(
+          "statsBestScoresContainer",
+        );
+        scoresContainer.innerHTML = "";
+        if (stats.bestScores && stats.bestScores.length > 0) {
+          stats.bestScores.forEach((s, i) => {
+            const row = document.createElement("div");
+            row.className = "difficulty-stat-row";
+            row.innerHTML = `
+              <span>${i + 1}. <span class="chalk-yellow">${s.score}</span> <small class="chalk-gray">(${s.mode})</small></span>
+              <span class="chalk-gray" style="font-size: 0.8rem">${s.date}</span>
+            `;
+            scoresContainer.appendChild(row);
+          });
+        } else {
+          scoresContainer.innerHTML =
+            '<p class="credits-note">Henüz kaydedilmiş skor yok.</p>';
+        }
+
+        const diffContainer = document.getElementById(
+          "statsDifficultyContainer",
+        );
+        diffContainer.innerHTML = "";
+
+        const difficulties = [
+          { id: "easy", label: "Kolay" },
+          { id: "medium", label: "Orta" },
+          { id: "hard", label: "Zor" },
+        ];
+
+        difficulties.forEach((diff) => {
+          const dData = stats.difficultySuccess
+            ? stats.difficultySuccess[diff.id]
+            : { attempted: 0, correct: 0 };
+          const rate =
+            dData.attempted > 0
+              ? Math.round((dData.correct / dData.attempted) * 100)
+              : 0;
+
+          const row = document.createElement("div");
+          row.className = "difficulty-stat-row";
+          row.style.flexDirection = "column";
+          row.style.alignItems = "stretch";
+
+          row.innerHTML = `
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+              <span>${diff.label}</span>
+              <span class="chalk-gray">${dData.correct} / ${dData.attempted} kelime (${rate}%)</span>
+            </div>
+            <div class="stat-bar-container">
+              <div class="stat-bar-fill" style="width: 0%; transition: width 1s ease;"></div>
+            </div>
+          `;
+          diffContainer.appendChild(row);
+
+          setTimeout(() => {
+            row.querySelector(".stat-bar-fill").style.width = rate + "%";
+          }, 100);
+        });
+
+        const uniqueLearnedCount = getLearnedCount();
+        const totalInBank = allVocab
+          ? new Set(allVocab.map((w) => w.word)).size
+          : 0;
+        const masteryPct =
+          totalInBank > 0
+            ? Math.round((uniqueLearnedCount / totalInBank) * 100)
+            : 0;
+
+        const summaryEl = document.getElementById("statsMasterySummary");
+        if (summaryEl) {
+          summaryEl.textContent = `${uniqueLearnedCount} / ${totalInBank} Kelime Öğrenildi (%${masteryPct})`;
+        }
+        const barEl = document.getElementById("statsMasteryBar");
+        if (barEl) {
+          barEl.style.width = masteryPct + "%";
+        }
+        const struggledEl = document.getElementById("statsStruggledCount");
+        if (struggledEl) {
+          struggledEl.textContent = (stats.struggledWords || []).length;
+        }
+      }
+
+      function toggleCollapsible(el) {
+        const isOpening = el.classList.contains("collapsed");
+        el.classList.toggle("collapsed");
+
+        if (isOpening) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+
+      function hideStats() {
+        document.getElementById("statsScreen").classList.add("hidden");
+        document.getElementById("startScreen").classList.remove("hidden");
+        animateTitle();
+      }
+
+      function confirmResetStats() {
+        if (
+          confirm(
+            "Tüm profil verilerinizi, istatistiklerinizi, seviyenizi ve öğrenilen kelimeleri tamamen sıfırlamak istediğinize emin misiniz? Bu işlem geri alınamaz.",
+          )
+        ) {
+          const theme = localStorage.getItem("hangmanTheme");
+          localStorage.clear();
+          if (theme) localStorage.setItem("hangmanTheme", theme);
+          location.reload();
+        }
       }
 
       document
@@ -3735,6 +5771,54 @@
             playSound("click");
           });
         });
+
+      window.addEventListener("beforeunload", () => {
+        if (gameState.gameActive) {
+          saveGameProgress();
+        }
+      });
+
+      function updateOnlineStatus() {
+        const indicator = document.getElementById("offlineIndicator");
+        if (navigator.onLine) {
+          indicator.classList.remove("visible");
+        } else {
+          indicator.classList.add("visible");
+        }
+      }
+
+      window.addEventListener("online", updateOnlineStatus);
+      window.addEventListener("offline", updateOnlineStatus);
+      updateOnlineStatus();
+      async function shareProfile() {
+        const level = stats.level || 1;
+        const xp = stats.xp || 0;
+        const totalGames = stats.totalGames || 0;
+        const wins = stats.totalWins || 0;
+        const rate = totalGames > 0 ? Math.round((wins / totalGames) * 100) : 0;
+        const words = (stats.learnedWords || []).length;
+
+        const text = `🎮 Deutsch Henker Profilim\n\n🏆 Seviye: ${level} (${stats.xp} XP)\n📊 Kazanma Oranı: %${rate}\n🎓 Öğrenilen Kelime: ${words}\n🕹️ Toplam Oyun: ${totalGames}\n\nSen de Almanca kelime dağarcığını geliştirmek ister misin?\n🔗 https://deutsch.smsk.one/hangman/`;
+
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: "Deutsch Henker Profilim",
+              text: text,
+              url: "https://deutsch.smsk.one/hangman/",
+            });
+          } catch (err) {
+            console.log("Paylaşım iptal edildi veya başarısız.");
+          }
+        } else {
+          try {
+            await navigator.clipboard.writeText(text);
+            alert("Profil bilgileri panoya kopyalandı!");
+          } catch (err) {
+            alert("Kopyalama başarısız oldu.");
+          }
+        }
+      }
     </script>
   </body>
 </html>
