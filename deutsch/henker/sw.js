@@ -1,4 +1,4 @@
-const CACHE_NAME = "deutsch-henker-v1.8";
+const CACHE_NAME = "deutsch-henker-v1.8.1";
 
 const FILES_TO_CACHE = [
   "index.html",
@@ -7,7 +7,7 @@ const FILES_TO_CACHE = [
   "vocab.json",
   "CaveatBrush.ttf",
   "PatrickHand.ttf",
-  "x512.png",
+  "icon.png",
 ];
 
 self.addEventListener("install", (event) => {
